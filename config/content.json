@@ -82,35 +82,31 @@
     "accommodations": [
       {
         "name": "Bona Bona Game Lodge (op die plek)",
-        "description": "Bly oornag waar die troue self plaasvind — geen verdere reis na die onthaal nodig nie. Let wel: kamers is tans nie beskikbaar vir bespreking nie volgens die jongste navraag — gaan asseblief nader aan die tyd direk met die lodge na.",
+        "description": "Bly oornag waar die troue self plaasvind — geen verdere reis na die onthaal nodig nie. Ons het die hele lodge vir ons gaste bespreek. Kontak hulle direk via die skakel onder om jou kamer te bespreek, en sê net dat jy by die Brooks-Marx troue is.",
         "address": "N12, tussen Klerksdorp en Wolmaransstad, Noordwes, 2570",
         "link": "https://bonabona.co.za",
-        "mapUrl": "https://www.google.com/maps?q=-27.02,26.229167",
-        "priceRange": "TODO"
+        "mapUrl": "https://www.google.com/maps?q=-27.02,26.229167"
       },
       {
         "name": "Motswedi Gaste Plaas",
-        "description": "'n Klein plaasverblyf op die N12, sowat 3.8 km vanaf Bona Bona — die naaste alternatief as die lodge se kamers nie beskikbaar is nie.",
+        "description": "'n Klein plaasverblyf op die N12, sowat 3.8 km vanaf Bona Bona — die naaste alternatief.",
         "address": "N12, Plaas Klipfontein 318, Gedeelte 29, Maquassi Hills, Noordwes, 2650",
         "link": "https://www.lekkeslaap.co.za/accommodation/motswedi-gaste-plaas",
-        "mapUrl": "https://www.google.com/maps/dir/?api=1&origin=-27.02,26.229167&destination=-26.989222,26.213444",
-        "priceRange": "TODO"
+        "mapUrl": "https://www.google.com/maps/dir/?api=1&origin=-27.02,26.229167&destination=-26.989222,26.213444"
       },
       {
         "name": "Grootbosch Guest Farm & Venue",
-        "description": "Nog 'n plaasverblyf op dieselfde N12-roete tussen Klerksdorp en Wolmaransstad. TODO: bevestig presiese afstand vanaf Bona Bona.",
+        "description": "Nog 'n plaasverblyf op dieselfde N12-roete tussen Klerksdorp en Wolmaransstad.",
         "address": "N12, Wolmaransstad, Noordwes, 2570",
         "link": "https://www.grootbosch.co.za",
-        "mapUrl": "https://www.google.com/maps/dir/?api=1&origin=-27.02,26.229167&destination=Grootbosch+Guest+Farm+%26+Venue,+Wolmaransstad",
-        "priceRange": "TODO"
+        "mapUrl": "https://www.google.com/maps/dir/?api=1&origin=-27.02,26.229167&destination=Grootbosch+Guest+Farm+%26+Venue,+Wolmaransstad"
       },
       {
         "name": "Oryx Boutique Hotel",
         "description": "'n Deftige boetiekhotel in Klerksdorp self, ongeveer 50 km vanaf Bona Bona ('n goeie opsie as jy eerder in die dorp wil bly).",
         "address": "22 Yulanda Straat, Flamwood, Klerksdorp, Noordwes, 2571",
         "link": "https://oryxbh.co.za",
-        "mapUrl": "https://www.google.com/maps/dir/?api=1&origin=-27.02,26.229167&destination=22+Yulanda+St,+Flamwood,+Klerksdorp,+South+Africa",
-        "priceRange": "TODO"
+        "mapUrl": "https://www.google.com/maps/dir/?api=1&origin=-27.02,26.229167&destination=22+Yulanda+St,+Flamwood,+Klerksdorp,+South+Africa"
       }
     ],
     "transportNotes": "TODO: Parkering, vervoerdiens, oprit-vervoer notas, ens."

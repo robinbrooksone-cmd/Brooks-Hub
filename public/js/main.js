@@ -140,7 +140,6 @@
         <h3>${escapeHtml(a.name)}</h3>
         <p>${escapeHtml(a.description)}</p>
         <p>${escapeHtml(a.address)}</p>
-        ${a.priceRange && a.priceRange !== 'TODO' ? `<p><strong>${escapeHtml(a.priceRange)}</strong></p>` : ''}
         <div class="card-links">
           ${a.link ? `<a href="${escapeHtml(a.link)}" target="_blank" rel="noopener">Bespreek / Inligting</a>` : ''}
           ${a.mapUrl ? `<a href="${escapeHtml(a.mapUrl)}" target="_blank" rel="noopener">Wys Roete</a>` : ''}
