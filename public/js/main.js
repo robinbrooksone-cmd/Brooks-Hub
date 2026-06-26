@@ -70,20 +70,37 @@
   }
 
   function renderWeddingParty() {
-    const el = document.getElementById('wedding-party-grid');
+    const el = document.getElementById('wedding-party-columns');
     const party = content.weddingParty || [];
     if (!party.length) {
       el.innerHTML = '<p class="empty-note">Bruidsparty-besonderhede kom binnekort.</p>';
       return;
     }
-    el.innerHTML = party.map((p) => `
-      <div class="card">
-        ${p.photo ? `<img src="${escapeHtml(p.photo)}" alt="${escapeHtml(p.name)}" onerror="this.remove()" />` : ''}
-        <h3>${escapeHtml(p.name)}</h3>
-        <div class="role">${escapeHtml(p.role)}</div>
-        ${p.bio ? `<p>${escapeHtml(p.bio)}</p>` : ''}
-      </div>
-    `).join('');
+    const columns = [
+      { side: 'partnerOne', heading: 'Strooimeisies' },
+      { side: 'partnerTwo', heading: 'Strooijonkers' },
+    ];
+    el.innerHTML = columns.map((col) => {
+      const members = party.filter((p) => p.side === col.side);
+      if (!members.length) return '';
+      return `
+        <div class="wedding-party-column">
+          <h3 class="wedding-party-column-heading">${escapeHtml(col.heading)}</h3>
+          <div class="wedding-party-list">
+            ${members.map((p) => `
+              <div class="wedding-party-row">
+                ${p.photo ? `<img src="${escapeHtml(p.photo)}" alt="${escapeHtml(p.name)}" onerror="this.remove()" />` : ''}
+                <div>
+                  <h4>${escapeHtml(p.name)}</h4>
+                  <div class="role">${escapeHtml(p.role)}</div>
+                  ${p.bio ? `<p>${escapeHtml(p.bio)}</p>` : ''}
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }).join('');
   }
 
   function renderSchedule() {
