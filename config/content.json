@@ -48,17 +48,17 @@
     {
       "event": "Plegtigheid",
       "time": "16:00",
-      "venueName": "TODO: Plek se naam",
-      "address": "TODO: Volledige straatadres",
-      "mapUrl": "TODO: Google Maps-skakel",
-      "details": "Kom asseblief om 15:30 aan; die plegtigheid begin om 16:00. TODO: voeg verdere besonderhede by, bv. buiteplek-sitplek, duur van die plegtigheid."
+      "venueName": "Bona Bona Game Lodge",
+      "address": "N12, tussen Klerksdorp en Wolmaransstad, Noordwes, 2570",
+      "mapUrl": "https://www.google.com/maps?q=-27.02,26.229167",
+      "details": "Kom asseblief om 15:30 aan; die plegtigheid begin om 16:00 in die kapel. TODO: voeg verdere besonderhede by, bv. buiteplek-sitplek, duur van die plegtigheid."
     },
     {
       "event": "Onthaal",
       "time": "TODO: bv. '17:30'",
-      "venueName": "TODO: Plek se naam",
-      "address": "TODO: Volledige straatadres",
-      "mapUrl": "TODO: Google Maps-skakel",
+      "venueName": "Bona Bona Game Lodge",
+      "address": "N12, tussen Klerksdorp en Wolmaransstad, Noordwes, 2570",
+      "mapUrl": "https://www.google.com/maps?q=-27.02,26.229167",
       "details": "TODO: bv. 'Aandete en dans sal volg.'"
     }
   ],
@@ -70,18 +70,18 @@
   },
   "travel": {
     "heading": "Reis & Verblyf",
-    "intro": "TODO: Algemene reisinligting — naaste lughawe, voorgestelde aankomsdag, ens.",
+    "intro": "Ons troue vind plaas by Bona Bona Game Lodge, op die N12 tussen Klerksdorp en Wolmaransstad. TODO: voeg naaste lughawe en voorgestelde aankomsdag/-tyd by.",
     "accommodations": [
       {
-        "name": "TODO: Hotel se naam",
-        "description": "TODO: Waarom jy dit aanbeveel (afstand tot die plek, kamerblok-kode, prysklas).",
-        "address": "TODO",
-        "link": "TODO: Besprekingskakel",
+        "name": "Bona Bona Game Lodge (op die plek)",
+        "description": "Bly oornag waar die troue self plaasvind — geen verdere reis na die onthaal nodig nie. TODO: bevestig hoe gaste hul eie kamer kan bespreek (bespreking direk by die lodge, of 'n kamerblok wat vir die troue gereserveer is) en die prysklas.",
+        "address": "N12, tussen Klerksdorp en Wolmaransstad, Noordwes, 2570",
+        "link": "https://bonabona.co.za",
         "priceRange": "TODO: bv. 'R1500-R2000/nag'"
       },
       {
-        "name": "TODO: Hotel se naam",
-        "description": "TODO",
+        "name": "TODO: Hotel se naam (Klerksdorp)",
+        "description": "TODO: 'n alternatief vir gaste wat eerder in die dorp wil bly — afstand tot die plek, prysklas.",
         "address": "TODO",
         "link": "TODO",
         "priceRange": "TODO"
