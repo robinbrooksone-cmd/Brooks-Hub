@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Wedding</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <header class="hero" id="hero">
+    <nav class="nav">
+      <a href="#story">Our Story</a>
+      <a href="#wedding-party">Wedding Party</a>
+      <a href="#details">Details</a>
+      <a href="#attire">Attire</a>
+      <a href="#travel">Travel & Stay</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#registry">Registry</a>
+      <a href="#faq">FAQ</a>
+      <a href="#rsvp" class="nav-rsvp">RSVP</a>
+    </nav>
+    <div class="hero-content">
+      <h1 id="couple-names">Loading…</h1>
+      <p id="wedding-date" class="hero-date"></p>
+      <div id="countdown" class="countdown"></div>
+      <p id="intro-message" class="hero-intro"></p>
+      <a href="#rsvp" class="btn btn-primary">RSVP Now</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="story" class="section">
+      <h2 id="story-heading">Our Story</h2>
+      <div id="story-timeline" class="timeline"></div>
+    </section>
+
+    <section id="wedding-party" class="section alt">
+      <h2>Wedding Party</h2>
+      <div id="wedding-party-grid" class="card-grid"></div>
+    </section>
+
+    <section id="details" class="section">
+      <h2>Wedding Details</h2>
+      <div id="schedule-list" class="schedule-list"></div>
+    </section>
+
+    <section id="attire" class="section alt">
+      <h2 id="attire-heading">What to Wear</h2>
+      <div id="attire-content" class="attire-content"></div>
+    </section>
+
+    <section id="travel" class="section">
+      <h2 id="travel-heading">Travel &amp; Accommodation</h2>
+      <p id="travel-intro" class="section-intro"></p>
+      <div id="accommodations-grid" class="card-grid"></div>
+      <p id="transport-notes" class="section-note"></p>
+    </section>
+
+    <section id="gallery" class="section alt">
+      <h2 id="gallery-heading">Gallery</h2>
+      <div id="gallery-grid" class="gallery-grid"></div>
+    </section>
+
+    <section id="registry" class="section">
+      <h2 id="registry-heading">Registry</h2>
+      <p id="registry-intro" class="section-intro"></p>
+      <div id="registry-links" class="registry-links"></div>
+    </section>
+
+    <section id="faq" class="section alt">
+      <h2>FAQ</h2>
+      <div id="faq-list" class="faq-list"></div>
+    </section>
+
+    <section id="rsvp" class="section">
+      <h2 id="rsvp-heading">RSVP</h2>
+      <p id="rsvp-intro" class="section-intro"></p>
+
+      <div id="rsvp-closed-message" class="rsvp-closed" hidden></div>
+
+      <div id="rsvp-search-step" class="rsvp-step">
+        <label for="rsvp-name-input">Find your invitation by typing your name</label>
+        <input type="text" id="rsvp-name-input" placeholder="e.g. Jordan Smith" autocomplete="off" />
+        <div id="rsvp-search-results" class="rsvp-search-results"></div>
+      </div>
+
+      <form id="rsvp-form" class="rsvp-form" hidden>
+        <h3 id="rsvp-form-party-label"></h3>
+        <div id="rsvp-guest-list"></div>
+
+        <label for="rsvp-song">Song that will get you on the dance floor</label>
+        <input type="text" id="rsvp-song" />
+
+        <label for="rsvp-message">Message for the couple (optional)</label>
+        <textarea id="rsvp-message" rows="3"></textarea>
+
+        <button type="submit" class="btn btn-primary">Submit RSVP</button>
+        <button type="button" id="rsvp-back-btn" class="btn btn-link">Search again</button>
+      </form>
+
+      <div id="rsvp-success" class="rsvp-success" hidden>
+        <p>Thank you! Your RSVP has been received. 💛</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p id="footer-hashtag"></p>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

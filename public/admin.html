@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding Admin</title>
+  <link rel="stylesheet" href="/css/admin.css" />
+</head>
+<body>
+  <div id="login-screen" class="login-screen">
+    <form id="login-form">
+      <h1>Admin Login</h1>
+      <input type="password" id="login-password" placeholder="Admin password" autocomplete="current-password" required />
+      <button type="submit">Log In</button>
+      <p id="login-error" class="error" hidden></p>
+    </form>
+  </div>
+
+  <div id="dashboard" class="dashboard" hidden>
+    <header class="dashboard-header">
+      <h1>Guest List & RSVPs</h1>
+      <div class="header-actions">
+        <a id="export-link" href="/api/admin/export.csv">Export RSVPs (CSV)</a>
+        <button id="logout-btn">Log Out</button>
+      </div>
+    </header>
+
+    <section class="summary" id="summary-cards"></section>
+
+    <section class="panel">
+      <h2>Add a Party / Household</h2>
+      <form id="add-party-form" class="inline-form">
+        <input type="text" id="new-party-label" placeholder="Household label, e.g. 'The Smith Family'" required />
+        <input type="text" id="new-guest-first" placeholder="First name" required />
+        <input type="text" id="new-guest-last" placeholder="Last name" required />
+        <label class="checkbox-label"><input type="checkbox" id="new-guest-child" /> Child</label>
+        <button type="submit">Add Party</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Bulk Import (CSV)</h2>
+      <p class="hint">Header row required: <code>first_name,last_name,party_label,max_guests,is_child,invited_events</code>. Group a household by giving them the same <code>party_label</code>.</p>
+      <textarea id="csv-input" rows="6" placeholder="first_name,last_name,party_label,max_guests,is_child,invited_events&#10;Jane,Doe,The Doe Family,4,0,ceremony,reception"></textarea>
+      <button id="csv-import-btn">Import CSV</button>
+      <p id="csv-result" class="hint"></p>
+    </section>
+
+    <section class="panel">
+      <h2>All Parties</h2>
+      <table id="parties-table">
+        <thead>
+          <tr>
+            <th>Household</th>
+            <th>Guests</th>
+            <th>RSVP Status</th>
+            <th>Meal Choices</th>
+            <th>Dietary</th>
+            <th>Song / Message</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="parties-table-body"></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script src="/js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+* { box-sizing: border-box; }
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  background: #f5ede4;
+  color: #3b332c;
+}
+
+.login-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-screen form {
+  background: #fff;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 280px;
+}
+
+.login-screen input {
+  padding: 0.65rem;
+  border: 1px solid #d9cfc2;
+  border-radius: 6px;
+}
+
+.login-screen button,
+.dashboard button {
+  background: #a9714e;
+  color: #fff;
+  border: none;
+  padding: 0.65rem 1.25rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.login-screen button:hover,
+.dashboard button:hover {
+  background: #7c5236;
+}
+
+.error {
+  color: #b3261e;
+}
+
+.dashboard {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.header-actions a {
+  text-decoration: none;
+  color: #7c5236;
+  font-weight: bold;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.summary .card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+
+.summary .card strong {
+  display: block;
+  font-size: 1.8rem;
+  color: #a9714e;
+}
+
+.panel {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+
+.panel h2 {
+  margin-top: 0;
+}
+
+.inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.inline-form input[type="text"] {
+  padding: 0.6rem;
+  border: 1px solid #d9cfc2;
+  border-radius: 6px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.hint {
+  color: #7a6f63;
+  font-size: 0.9rem;
+}
+
+textarea#csv-input {
+  width: 100%;
+  font-family: monospace;
+  padding: 0.75rem;
+  border: 1px solid #d9cfc2;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid #eee0d2;
+  vertical-align: top;
+  font-size: 0.9rem;
+}
+
+th {
+  color: #7a6f63;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+}
+
+.status-attending { color: #2e7d32; font-weight: bold; }
+.status-declined { color: #b3261e; font-weight: bold; }
+.status-pending { color: #7a6f63; }
+
+.delete-btn {
+  background: none;
+  color: #b3261e;
+  padding: 0.3rem 0.6rem;
+}
+
+.delete-btn:hover {
+  background: #fbe9e7;
+}
