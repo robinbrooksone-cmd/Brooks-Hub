@@ -218,7 +218,15 @@
   ],
   "gallery": {
     "heading": "Galery",
-    "photos": []
+    "photos": [
+      "/img/gallery/engagement-01.jpg",
+      "/img/gallery/engagement-02.jpg",
+      "/img/gallery/engagement-03.jpg",
+      "/img/gallery/engagement-04.jpg",
+      "/img/gallery/engagement-05.jpg",
+      "/img/gallery/engagement-06.jpg",
+      "/img/gallery/engagement-07.jpg"
+    ]
   },
   "rsvp": {
     "heading": "RSVP",

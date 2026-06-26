@@ -7,62 +7,71 @@
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
-  <header class="hero" id="hero">
-    <nav class="nav">
-      <a href="#story">Ons Storie</a>
-      <a href="#wedding-party">Bruidsparty</a>
-      <a href="#details">Besonderhede</a>
-      <a href="#attire">Kleredrag</a>
-      <a href="#travel">Reis & Verblyf</a>
-      <a href="#gallery">Galery</a>
-      <a href="#registry">Geskenklys</a>
-      <a href="#faq">Vrae</a>
-      <a href="#rsvp" class="nav-rsvp">RSVP</a>
-    </nav>
-    <div class="hero-content">
-      <img id="hero-photo" class="hero-photo" alt="" hidden />
-      <h1 id="couple-names">Laai tans…</h1>
-      <p id="wedding-date" class="hero-date"></p>
-      <div id="countdown" class="countdown"></div>
-      <p id="intro-message" class="hero-intro"></p>
-      <a href="#rsvp" class="btn btn-primary">RSVP Nou</a>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a href="#home" class="brand" data-tab="home">Annami &amp; Robin</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Wys kieslys" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav class="nav" id="site-nav">
+        <a href="#story" data-tab="story">Ons Storie</a>
+        <a href="#wedding-party" data-tab="wedding-party">Bruidsparty</a>
+        <a href="#details" data-tab="details">Besonderhede</a>
+        <a href="#attire" data-tab="attire">Kleredrag</a>
+        <a href="#travel" data-tab="travel">Reis &amp; Verblyf</a>
+        <a href="#gallery" data-tab="gallery">Galery</a>
+        <a href="#registry" data-tab="registry">Geskenklys</a>
+        <a href="#faq" data-tab="faq">Vrae</a>
+        <a href="#rsvp" class="nav-rsvp" data-tab="rsvp">RSVP</a>
+      </nav>
     </div>
   </header>
 
   <main>
-    <section id="story" class="section">
+    <section class="page hero" id="home" data-page="home">
+      <div class="hero-content">
+        <img id="hero-photo" class="hero-photo" alt="" hidden />
+        <h1 id="couple-names">Laai tans…</h1>
+        <p id="wedding-date" class="hero-date"></p>
+        <div id="countdown" class="countdown"></div>
+        <p id="intro-message" class="hero-intro"></p>
+        <a href="#rsvp" class="btn btn-primary" data-tab="rsvp">RSVP Nou</a>
+      </div>
+    </section>
+
+    <section class="page section" id="story" data-page="story" hidden>
       <h2 id="story-heading">Ons Storie</h2>
       <div id="story-timeline" class="timeline"></div>
     </section>
 
-    <section id="wedding-party" class="section alt">
+    <section class="page section alt" id="wedding-party" data-page="wedding-party" hidden>
       <h2>Bruidsparty</h2>
       <div id="wedding-party-columns" class="wedding-party-columns"></div>
     </section>
 
-    <section id="details" class="section">
+    <section class="page section" id="details" data-page="details" hidden>
       <h2>Troubesonderhede</h2>
       <div id="schedule-list" class="schedule-list"></div>
     </section>
 
-    <section id="attire" class="section alt">
+    <section class="page section alt" id="attire" data-page="attire" hidden>
       <h2 id="attire-heading">Wat om te Dra</h2>
       <div id="attire-content" class="attire-content"></div>
     </section>
 
-    <section id="travel" class="section">
+    <section class="page section" id="travel" data-page="travel" hidden>
       <h2 id="travel-heading">Reis &amp; Verblyf</h2>
       <p id="travel-intro" class="section-intro"></p>
       <div id="accommodations-grid" class="card-grid"></div>
       <p id="transport-notes" class="section-note"></p>
     </section>
 
-    <section id="gallery" class="section alt">
+    <section class="page section alt" id="gallery" data-page="gallery" hidden>
       <h2 id="gallery-heading">Galery</h2>
       <div id="gallery-grid" class="gallery-grid"></div>
     </section>
 
-    <section id="registry" class="section">
+    <section class="page section" id="registry" data-page="registry" hidden>
       <h2 id="registry-heading">Geskenklys</h2>
       <p id="registry-intro" class="section-intro"></p>
       <p id="registry-note" class="section-intro"></p>
@@ -70,12 +79,12 @@
       <div id="registry-links" class="registry-links"></div>
     </section>
 
-    <section id="faq" class="section alt">
+    <section class="page section alt" id="faq" data-page="faq" hidden>
       <h2>Gereelde Vrae</h2>
       <div id="faq-list" class="faq-list"></div>
     </section>
 
-    <section id="rsvp" class="section">
+    <section class="page section" id="rsvp" data-page="rsvp" hidden>
       <h2 id="rsvp-heading">RSVP</h2>
       <p id="rsvp-intro" class="section-intro"></p>
 

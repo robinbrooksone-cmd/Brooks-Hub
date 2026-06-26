@@ -2,6 +2,47 @@
   let content = null;
   let selectedParty = null;
 
+  const PAGES = ['home', 'story', 'wedding-party', 'details', 'attire', 'travel', 'gallery', 'registry', 'faq', 'rsvp'];
+
+  function getPageFromHash() {
+    const page = window.location.hash.replace('#', '');
+    return PAGES.includes(page) ? page : 'home';
+  }
+
+  function showPage(page) {
+    PAGES.forEach((p) => {
+      const section = document.querySelector(`[data-page="${p}"]`);
+      if (section) section.hidden = p !== page;
+    });
+    document.querySelectorAll('[data-tab]').forEach((link) => {
+      link.classList.toggle('active', link.getAttribute('data-tab') === page);
+    });
+    document.getElementById('site-nav').classList.remove('nav-open');
+    document.getElementById('nav-toggle').setAttribute('aria-expanded', 'false');
+    window.scrollTo(0, 0);
+  }
+
+  function wireNav() {
+    document.querySelectorAll('[data-tab]').forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const page = link.getAttribute('data-tab');
+        if (page === window.location.hash.replace('#', '')) {
+          showPage(page);
+        } else {
+          window.location.hash = page;
+        }
+      });
+    });
+    window.addEventListener('hashchange', () => showPage(getPageFromHash()));
+
+    document.getElementById('nav-toggle').addEventListener('click', () => {
+      const nav = document.getElementById('site-nav');
+      const isOpen = nav.classList.toggle('nav-open');
+      document.getElementById('nav-toggle').setAttribute('aria-expanded', String(isOpen));
+    });
+  }
+
   function escapeHtml(str) {
     return String(str ?? '').replace(/[&<>"']/g, (c) => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -366,6 +407,8 @@
     renderFaq();
     renderRsvpIntro();
     wireRsvp();
+    wireNav();
+    showPage(getPageFromHash());
   }
 
   init();
