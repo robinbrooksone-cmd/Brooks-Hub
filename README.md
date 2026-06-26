@@ -46,14 +46,19 @@ choice and dietary notes).
 You load the guest list ahead of time via the admin dashboard:
 
 - **Add one household at a time** with the "Add a Party / Household" form.
-- **Bulk import via CSV** — paste rows with this header:
+- **Bulk import** — paste rows with this header:
   ```
   first_name,last_name,party_label,max_guests,is_child,invited_events
   ```
   Give everyone in the same household the same `party_label` (e.g.
   "The Smith Family") to group them. `invited_events` can be
-  `ceremony,reception` or just one of them, for guests only invited to part
-  of the day.
+  `ceremony;reception` or just one of them, for guests only invited to part
+  of the day (use a semicolon, not a comma, between the two).
+
+  You can paste this straight from your Excel spreadsheet — just select your
+  guest list cells (with a header row matching the columns above, in any
+  order) and paste into the import box. Comma-separated `.csv` text works
+  too. Open the import box and it'll detect whichever format you pasted.
 - **Export all RSVPs as CSV** anytime from the dashboard, for caterers,
   seating charts, etc.
 

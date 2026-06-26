@@ -1,10 +1,10 @@
 :root {
-  --color-bg: #fdfaf6;
-  --color-bg-alt: #f5ede4;
-  --color-text: #3b332c;
-  --color-muted: #7a6f63;
-  --color-accent: #a9714e;
-  --color-accent-dark: #7c5236;
+  --color-bg: #fbf7f2;
+  --color-bg-alt: #ede1d3;
+  --color-text: #2e1f17;
+  --color-muted: #6b574a;
+  --color-accent: #6b3f2a;
+  --color-accent-dark: #3f2415;
   --font-serif: 'Georgia', 'Times New Roman', serif;
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
 }
@@ -40,7 +40,7 @@ a {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.45)), var(--color-bg-alt);
+  background: linear-gradient(180deg, rgba(30, 16, 8, 0.25), rgba(20, 10, 5, 0.65)), var(--color-bg-alt);
   background-size: cover;
   background-position: center;
   color: #fff;

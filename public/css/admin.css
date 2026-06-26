@@ -7,8 +7,8 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-  background: #f5ede4;
-  color: #3b332c;
+  background: #ede1d3;
+  color: #2e1f17;
 }
 
 .login-screen {
@@ -37,7 +37,7 @@ body {
 
 .login-screen button,
 .dashboard button {
-  background: #a9714e;
+  background: #6b3f2a;
   color: #fff;
   border: none;
   padding: 0.65rem 1.25rem;
@@ -47,7 +47,7 @@ body {
 
 .login-screen button:hover,
 .dashboard button:hover {
-  background: #7c5236;
+  background: #3f2415;
 }
 
 .error {
@@ -75,7 +75,7 @@ body {
 
 .header-actions a {
   text-decoration: none;
-  color: #7c5236;
+  color: #3f2415;
   font-weight: bold;
 }
 
@@ -97,7 +97,7 @@ body {
 .summary .card strong {
   display: block;
   font-size: 1.8rem;
-  color: #a9714e;
+  color: #6b3f2a;
 }
 
 .panel {
@@ -132,7 +132,7 @@ body {
 }
 
 .hint {
-  color: #7a6f63;
+  color: #6b574a;
   font-size: 0.9rem;
 }
 
@@ -159,14 +159,14 @@ th, td {
 }
 
 th {
-  color: #7a6f63;
+  color: #6b574a;
   text-transform: uppercase;
   font-size: 0.75rem;
 }
 
 .status-attending { color: #2e7d32; font-weight: bold; }
 .status-declined { color: #b3261e; font-weight: bold; }
-.status-pending { color: #7a6f63; }
+.status-pending { color: #6b574a; }
 
 .delete-btn {
   background: none;

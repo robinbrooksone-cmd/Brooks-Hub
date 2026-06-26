@@ -40,8 +40,8 @@
 
     <section class="panel">
       <h2>Bulk Import (CSV)</h2>
-      <p class="hint">Header row required: <code>first_name,last_name,party_label,max_guests,is_child,invited_events</code>. Group a household by giving them the same <code>party_label</code>.</p>
-      <textarea id="csv-input" rows="6" placeholder="first_name,last_name,party_label,max_guests,is_child,invited_events&#10;Jane,Doe,The Doe Family,4,0,ceremony,reception"></textarea>
+      <p class="hint">Header row required: <code>first_name,last_name,party_label,max_guests,is_child,invited_events</code>. Group a household by giving them the same <code>party_label</code>. For <code>invited_events</code>, use a semicolon if listing both, e.g. <code>ceremony;reception</code>. You can paste cells straight out of Excel/Google Sheets (tab-separated) or comma-separated CSV text — both work.</p>
+      <textarea id="csv-input" rows="6" placeholder="first_name,last_name,party_label,max_guests,is_child,invited_events&#10;Jane,Doe,The Doe Family,4,0,ceremony;reception"></textarea>
       <button id="csv-import-btn">Import CSV</button>
       <p id="csv-result" class="hint"></p>
     </section>

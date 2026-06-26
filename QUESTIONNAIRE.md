@@ -82,17 +82,19 @@ Common ones to consider — answer any that apply, skip the rest:
 ## 10. Guest list (for RSVP)
 
 This one's the most time-consuming but most important — RSVPs won't work
-until the guest list is loaded. Easiest way: send a spreadsheet/CSV with one
-row per guest:
+until the guest list is loaded. You already have this in Excel, which makes
+it easy: just make sure your spreadsheet has these columns (any order):
 
 ```
 first_name,last_name,party_label,max_guests,is_child,invited_events
 ```
 
 - `party_label` groups people into a household (e.g. everyone in "The Smith
-  Family" RSVPs together).
-- `invited_events` is `ceremony,reception` or just one, for guests only
-  invited to part of the day.
+  Family" RSVPs together, and counts toward the same `max_guests`).
+- `invited_events` is `ceremony;reception` or just one, for guests only
+  invited to part of the day. Leave it blank to default to both.
+- `is_child` is `1`/`yes` for kids, blank otherwise.
 
-Send me the list (or paste it into the admin dashboard's "Bulk Import"
-panel yourself) and I'll get everyone loaded in.
+Send me the spreadsheet (or export/copy it and paste into the admin
+dashboard's "Bulk Import" panel yourself — it accepts a direct paste from
+Excel) and I'll get everyone loaded in.

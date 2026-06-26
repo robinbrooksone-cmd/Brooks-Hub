@@ -240,7 +240,41 @@ app.delete('/api/admin/guests/:id', requireAdmin, (req, res) => {
   res.json({ ok: true });
 });
 
-// CSV import: header row first_name,last_name,party_label,max_guests,is_child,invited_events
+// Splits a delimited row, respecting double-quoted fields (handles commas/quotes
+// inside a cell when pasted as CSV from a spreadsheet).
+function splitDelimitedLine(line, delimiter) {
+  if (delimiter === '\t') return line.split('\t').map((c) => c.trim());
+
+  const cells = [];
+  let cur = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQuotes) {
+      if (ch === '"' && line[i + 1] === '"') {
+        cur += '"';
+        i++;
+      } else if (ch === '"') {
+        inQuotes = false;
+      } else {
+        cur += ch;
+      }
+    } else if (ch === '"') {
+      inQuotes = true;
+    } else if (ch === delimiter) {
+      cells.push(cur.trim());
+      cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  cells.push(cur.trim());
+  return cells;
+}
+
+// Bulk import: accepts comma-separated CSV, or tab-separated text pasted
+// directly from Excel/Sheets. Header row required:
+// first_name,last_name,party_label,max_guests,is_child,invited_events
 app.post('/api/admin/import-csv', requireAdmin, (req, res) => {
   const { csv } = req.body || {};
   if (!csv || typeof csv !== 'string') {
@@ -250,7 +284,8 @@ app.post('/api/admin/import-csv', requireAdmin, (req, res) => {
   const lines = csv.trim().split(/\r?\n/);
   if (lines.length < 2) return res.status(400).json({ error: 'csv has no data rows' });
 
-  const header = lines[0].split(',').map((h) => h.trim().toLowerCase());
+  const delimiter = lines[0].includes('\t') ? '\t' : ',';
+  const header = splitDelimitedLine(lines[0], delimiter).map((h) => h.toLowerCase());
   const required = ['first_name', 'last_name', 'party_label'];
   for (const r of required) {
     if (!header.includes(r)) {
@@ -271,13 +306,14 @@ app.post('/api/admin/import-csv', requireAdmin, (req, res) => {
     for (let i = 1; i < lines.length; i++) {
       const raw = lines[i].trim();
       if (!raw) continue;
-      const cols = raw.split(',').map((c) => c.trim());
+      const cols = splitDelimitedLine(raw, delimiter);
 
       const firstName = cols[idx('first_name')] || '';
       const lastName = cols[idx('last_name')] || '';
       const partyLabel = cols[idx('party_label')] || `${firstName} ${lastName}`;
       const isChild = idx('is_child') >= 0 ? /^(1|true|yes)$/i.test(cols[idx('is_child')] || '') : false;
-      const invitedEvents = idx('invited_events') >= 0 ? cols[idx('invited_events')] || 'ceremony,reception' : 'ceremony,reception';
+      // Accept "ceremony;reception" (safe with comma-delimited CSV) or "ceremony,reception".
+      const invitedEvents = (idx('invited_events') >= 0 ? cols[idx('invited_events')] || 'ceremony;reception' : 'ceremony;reception').replace(/;/g, ',');
       const maxGuestsCol = idx('max_guests') >= 0 ? parseInt(cols[idx('max_guests')], 10) : null;
 
       if (!firstName || !lastName) continue;
