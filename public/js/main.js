@@ -93,12 +93,23 @@
       el.innerHTML = '<p class="empty-note">Program kom binnekort.</p>';
       return;
     }
-    el.innerHTML = schedule.map((s) => `
-      <div class="schedule-item">
-        <div class="time">${escapeHtml(s.time)}</div>
-        <h3>${escapeHtml(s.event)}</h3>
-        <p>${s.mapUrl ? `<a href="${escapeHtml(s.mapUrl)}" target="_blank" rel="noopener">${escapeHtml(s.venueName)}</a>` : escapeHtml(s.venueName)}<br/>${escapeHtml(s.address)}</p>
-        <p>${escapeHtml(s.details)}</p>
+    el.innerHTML = schedule.map((day) => `
+      <div class="schedule-day">
+        <h3 class="schedule-day-heading">${escapeHtml(day.date)}</h3>
+        <p class="schedule-day-venue">
+          ${day.mapUrl ? `<a href="${escapeHtml(day.mapUrl)}" target="_blank" rel="noopener">${escapeHtml(day.venueName)}</a>` : escapeHtml(day.venueName)}<br/>${escapeHtml(day.address)}
+        </p>
+        <div class="schedule-events">
+          ${(day.events || []).map((e) => `
+            <div class="schedule-event">
+              <div class="time">${escapeHtml(e.time)}</div>
+              <div>
+                <h4>${escapeHtml(e.title)}</h4>
+                ${e.details ? `<p>${escapeHtml(e.details)}</p>` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
       </div>
     `).join('');
   }
@@ -129,8 +140,11 @@
         <h3>${escapeHtml(a.name)}</h3>
         <p>${escapeHtml(a.description)}</p>
         <p>${escapeHtml(a.address)}</p>
-        ${a.priceRange ? `<p><strong>${escapeHtml(a.priceRange)}</strong></p>` : ''}
-        ${a.link ? `<a href="${escapeHtml(a.link)}" target="_blank" rel="noopener">Bespreek / Inligting</a>` : ''}
+        ${a.priceRange && a.priceRange !== 'TODO' ? `<p><strong>${escapeHtml(a.priceRange)}</strong></p>` : ''}
+        <div class="card-links">
+          ${a.link ? `<a href="${escapeHtml(a.link)}" target="_blank" rel="noopener">Bespreek / Inligting</a>` : ''}
+          ${a.mapUrl ? `<a href="${escapeHtml(a.mapUrl)}" target="_blank" rel="noopener">Wys Roete</a>` : ''}
+        </div>
       </div>
     `).join('');
   }

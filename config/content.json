@@ -46,20 +46,28 @@
   ],
   "schedule": [
     {
-      "event": "Plegtigheid",
-      "time": "16:00",
+      "date": "Saterdag, 5 Desember 2026",
       "venueName": "Bona Bona Game Lodge",
       "address": "N12, tussen Klerksdorp en Wolmaransstad, Noordwes, 2570",
       "mapUrl": "https://www.google.com/maps?q=-27.02,26.229167",
-      "details": "Kom asseblief om 15:30 aan; die plegtigheid begin om 16:00 in die kapel. TODO: voeg verdere besonderhede by, bv. buiteplek-sitplek, duur van die plegtigheid."
+      "events": [
+        { "time": "15:30", "title": "Gaste arriveer", "details": "" },
+        { "time": "16:00", "title": "Seremonie", "details": "" },
+        { "time": "16:45", "title": "Groepfoto's", "details": "" },
+        { "time": "17:00", "title": "Canapés", "details": "" },
+        { "time": "19:00", "title": "Onthaal", "details": "" },
+        { "time": "20:00", "title": "Hoofgereg", "details": "" },
+        { "time": "21:00", "title": "Partytjie!", "details": "" }
+      ]
     },
     {
-      "event": "Onthaal",
-      "time": "TODO: bv. '17:30'",
+      "date": "Sondag, 6 Desember 2026",
       "venueName": "Bona Bona Game Lodge",
       "address": "N12, tussen Klerksdorp en Wolmaransstad, Noordwes, 2570",
       "mapUrl": "https://www.google.com/maps?q=-27.02,26.229167",
-      "details": "TODO: bv. 'Aandete en dans sal volg.'"
+      "events": [
+        { "time": "09:00", "title": "Post-troue Brunch", "details": "" }
+      ]
     }
   ],
   "attire": {
@@ -74,16 +82,34 @@
     "accommodations": [
       {
         "name": "Bona Bona Game Lodge (op die plek)",
-        "description": "Bly oornag waar die troue self plaasvind — geen verdere reis na die onthaal nodig nie. TODO: bevestig hoe gaste hul eie kamer kan bespreek (bespreking direk by die lodge, of 'n kamerblok wat vir die troue gereserveer is) en die prysklas.",
+        "description": "Bly oornag waar die troue self plaasvind — geen verdere reis na die onthaal nodig nie. Let wel: kamers is tans nie beskikbaar vir bespreking nie volgens die jongste navraag — gaan asseblief nader aan die tyd direk met die lodge na.",
         "address": "N12, tussen Klerksdorp en Wolmaransstad, Noordwes, 2570",
         "link": "https://bonabona.co.za",
-        "priceRange": "TODO: bv. 'R1500-R2000/nag'"
+        "mapUrl": "https://www.google.com/maps?q=-27.02,26.229167",
+        "priceRange": "TODO"
       },
       {
-        "name": "TODO: Hotel se naam (Klerksdorp)",
-        "description": "TODO: 'n alternatief vir gaste wat eerder in die dorp wil bly — afstand tot die plek, prysklas.",
-        "address": "TODO",
-        "link": "TODO",
+        "name": "Motswedi Gaste Plaas",
+        "description": "'n Klein plaasverblyf op die N12, sowat 3.8 km vanaf Bona Bona — die naaste alternatief as die lodge se kamers nie beskikbaar is nie.",
+        "address": "N12, Plaas Klipfontein 318, Gedeelte 29, Maquassi Hills, Noordwes, 2650",
+        "link": "https://www.lekkeslaap.co.za/accommodation/motswedi-gaste-plaas",
+        "mapUrl": "https://www.google.com/maps/dir/?api=1&origin=-27.02,26.229167&destination=-26.989222,26.213444",
+        "priceRange": "TODO"
+      },
+      {
+        "name": "Grootbosch Guest Farm & Venue",
+        "description": "Nog 'n plaasverblyf op dieselfde N12-roete tussen Klerksdorp en Wolmaransstad. TODO: bevestig presiese afstand vanaf Bona Bona.",
+        "address": "N12, Wolmaransstad, Noordwes, 2570",
+        "link": "https://www.grootbosch.co.za",
+        "mapUrl": "https://www.google.com/maps/dir/?api=1&origin=-27.02,26.229167&destination=Grootbosch+Guest+Farm+%26+Venue,+Wolmaransstad",
+        "priceRange": "TODO"
+      },
+      {
+        "name": "Oryx Boutique Hotel",
+        "description": "'n Deftige boetiekhotel in Klerksdorp self, ongeveer 50 km vanaf Bona Bona ('n goeie opsie as jy eerder in die dorp wil bly).",
+        "address": "22 Yulanda Straat, Flamwood, Klerksdorp, Noordwes, 2571",
+        "link": "https://oryxbh.co.za",
+        "mapUrl": "https://www.google.com/maps/dir/?api=1&origin=-27.02,26.229167&destination=22+Yulanda+St,+Flamwood,+Klerksdorp,+South+Africa",
         "priceRange": "TODO"
       }
     ],
