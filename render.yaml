@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: brooks-hub-wedding
+    runtime: node
+    plan: starter
+    region: oregon
+    buildCommand: npm install && npm run seed
+    startCommand: npm start
+    envVars:
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DB_PATH
+        value: /var/data/wedding.db
+    disk:
+      name: wedding-data
+      mountPath: /var/data
+      sizeGB: 1
