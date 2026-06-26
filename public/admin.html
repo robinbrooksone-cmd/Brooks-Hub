@@ -63,6 +63,21 @@
         <tbody id="parties-table-body"></tbody>
       </table>
     </section>
+
+    <section class="panel">
+      <h2>Seating Chart</h2>
+      <form id="add-table-form" class="inline-form">
+        <input type="text" id="new-table-name" placeholder="Table name, e.g. 'Table 1'" required />
+        <input type="number" id="new-table-capacity" placeholder="Seats" min="1" value="8" required />
+        <button type="submit">Add Table</button>
+      </form>
+
+      <div id="tables-list" class="tables-list"></div>
+
+      <h3>Guests</h3>
+      <input type="text" id="seating-filter" class="seating-filter" placeholder="Filter guests by name or household…" />
+      <div id="seating-guest-list" class="seating-guest-list"></div>
+    </section>
   </div>
 
   <script src="/js/admin.js"></script>

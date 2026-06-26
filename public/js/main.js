@@ -14,9 +14,13 @@
     document.getElementById('wedding-date').textContent = wedding.displayDate;
     document.getElementById('intro-message').textContent = wedding.introMessage || '';
     document.getElementById('footer-hashtag').textContent = couple.hashtag || '';
+    const heroPhoto = document.getElementById('hero-photo');
     if (wedding.heroPhoto) {
-      document.getElementById('hero').style.backgroundImage =
-        `linear-gradient(180deg, rgba(0,0,0,0.15), rgba(0,0,0,0.45)), url('${wedding.heroPhoto}')`;
+      heroPhoto.src = wedding.heroPhoto;
+      heroPhoto.onerror = () => { heroPhoto.hidden = true; };
+      heroPhoto.onload = () => { heroPhoto.hidden = false; };
+    } else {
+      heroPhoto.hidden = true;
     }
     startCountdown(wedding.date);
   }

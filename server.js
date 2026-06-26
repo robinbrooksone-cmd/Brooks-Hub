@@ -335,6 +335,69 @@ app.post('/api/admin/import-csv', requireAdmin, (req, res) => {
   res.json({ ok: true, imported });
 });
 
+// ---------- Admin: seating chart ----------
+
+app.get('/api/admin/tables', requireAdmin, (req, res) => {
+  const tables = db.prepare('SELECT * FROM tables ORDER BY name').all();
+  const guests = db
+    .prepare(
+      `SELECT g.id, g.first_name, g.last_name, g.is_child, g.table_id, p.label AS party_label
+       FROM guests g JOIN parties p ON p.id = g.party_id
+       ORDER BY g.last_name, g.first_name`
+    )
+    .all();
+
+  const result = tables.map((t) => ({
+    ...t,
+    guests: guests.filter((g) => g.table_id === t.id),
+  }));
+  const unassigned = guests.filter((g) => !g.table_id);
+
+  res.json({ tables: result, unassigned });
+});
+
+app.post('/api/admin/tables', requireAdmin, (req, res) => {
+  const { name, capacity, notes } = req.body || {};
+  if (!name) return res.status(400).json({ error: 'name is required' });
+
+  const info = db
+    .prepare('INSERT INTO tables (name, capacity, notes) VALUES (?, ?, ?)')
+    .run(name, capacity || 8, notes || null);
+  res.json({ table: db.prepare('SELECT * FROM tables WHERE id = ?').get(info.lastInsertRowid) });
+});
+
+app.put('/api/admin/tables/:id', requireAdmin, (req, res) => {
+  const table = db.prepare('SELECT * FROM tables WHERE id = ?').get(req.params.id);
+  if (!table) return res.status(404).json({ error: 'Table not found' });
+
+  const { name, capacity, notes } = req.body || {};
+  db.prepare('UPDATE tables SET name = ?, capacity = ?, notes = ? WHERE id = ?').run(
+    name ?? table.name,
+    capacity ?? table.capacity,
+    notes ?? table.notes,
+    table.id
+  );
+  res.json({ table: db.prepare('SELECT * FROM tables WHERE id = ?').get(table.id) });
+});
+
+app.delete('/api/admin/tables/:id', requireAdmin, (req, res) => {
+  db.prepare('DELETE FROM tables WHERE id = ?').run(req.params.id);
+  res.json({ ok: true });
+});
+
+app.put('/api/admin/guests/:id/table', requireAdmin, (req, res) => {
+  const guest = db.prepare('SELECT * FROM guests WHERE id = ?').get(req.params.id);
+  if (!guest) return res.status(404).json({ error: 'Guest not found' });
+
+  const { tableId } = req.body || {};
+  if (tableId) {
+    const table = db.prepare('SELECT * FROM tables WHERE id = ?').get(tableId);
+    if (!table) return res.status(404).json({ error: 'Table not found' });
+  }
+  db.prepare('UPDATE guests SET table_id = ? WHERE id = ?').run(tableId || null, guest.id);
+  res.json({ guest: db.prepare('SELECT * FROM guests WHERE id = ?').get(guest.id) });
+});
+
 // RSVP export as CSV
 app.get('/api/admin/export.csv', requireAdmin, (req, res) => {
   const rows = db

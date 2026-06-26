@@ -177,3 +177,160 @@ th {
 .delete-btn:hover {
   background: #fbe9e7;
 }
+
+.edit-btn {
+  background: none;
+  color: #6b3f2a;
+  padding: 0.3rem 0.6rem;
+}
+
+.edit-btn:hover {
+  background: #f3e9e0;
+}
+
+.edit-row td {
+  background: #fbf7f2;
+}
+
+.edit-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
+
+.edit-panel label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: #6b574a;
+}
+
+.edit-panel input[type="text"],
+.edit-panel input[type="number"] {
+  padding: 0.5rem;
+  border: 1px solid #d9cfc2;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.edit-guests {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.edit-guest {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Seating chart */
+
+.tables-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.table-card {
+  border: 1px solid #eee0d2;
+  border-radius: 8px;
+  padding: 0.85rem;
+}
+
+.table-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.table-capacity {
+  font-size: 0.8rem;
+  color: #6b574a;
+  background: #f3e9e0;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+
+.delete-table-btn {
+  background: none;
+  color: #b3261e;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.delete-table-btn:hover {
+  background: #fbe9e7;
+}
+
+.table-guest-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+}
+
+.table-guest-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fbf7f2;
+  border-radius: 6px;
+  padding: 0.3rem 0.5rem;
+}
+
+.unassign-btn {
+  background: none;
+  color: #b3261e;
+  padding: 0 0.4rem;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.seating-filter {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #d9cfc2;
+  border-radius: 6px;
+  margin-bottom: 0.75rem;
+}
+
+.seating-guest-list {
+  max-height: 360px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.seating-guest-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid #eee0d2;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.assign-select {
+  padding: 0.3rem;
+  border: 1px solid #d9cfc2;
+  border-radius: 6px;
+}

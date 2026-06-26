@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "seed": "node scripts/seed-guests.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

@@ -9,6 +9,7 @@ dashboard for managing the guest list and viewing responses.
 ```bash
 npm install
 cp .env.example .env   # then edit .env — set ADMIN_PASSWORD and SESSION_SECRET
+npm run seed            # loads the guest list from data/guests.csv
 npm start
 ```
 
@@ -62,6 +63,37 @@ You load the guest list ahead of time via the admin dashboard:
 - **Export all RSVPs as CSV** anytime from the dashboard, for caterers,
   seating charts, etc.
 
+The full guest list (45 households / 81 guests) is already seeded from
+`data/guests.csv`. To (re)load it into a fresh database, run:
+
+```bash
+npm run seed
+```
+
+This is idempotent — it skips loading if the `parties` table already has
+rows, so it's safe to run after `npm install` on a new machine but won't
+duplicate data on a database that's already populated. To edit the guest
+list itself, either use the admin dashboard directly, or edit
+`data/guests.csv` and re-seed against a fresh `data/wedding.db`.
+
+> **Data note:** the "Van Rensburg Family (Helene)" household in
+> `data/guests.csv` has a placeholder second guest (`Guest TBD Van
+> Rensburg`) because the dictated guest list named "Helene Van Rensburg"
+> twice for that household — likely a transcription error for the second
+> person's real name. Edit that row in the admin dashboard once you
+> confirm who it should be.
+
+## Seating chart
+
+The admin dashboard has a **Seating Chart** panel:
+
+- Add tables with a name and seat capacity.
+- Every guest (grouped by household) is listed below with a dropdown to
+  assign them to a table; assigning over capacity is allowed (the seat
+  count next to each table just tells you when you've gone over).
+- Use the filter box to search by guest or household name.
+- Removing a table unassigns its guests rather than deleting them.
+
 ## Deployment
 
 This is a Node.js app with a local SQLite file, so it needs a host that runs
@@ -79,12 +111,14 @@ Whatever you choose:
 ## Project structure
 
 ```
-config/content.json   — all editable site copy
-data/wedding.db        — SQLite database (guests, RSVPs) — gitignored
-db.js                  — database schema/connection
-server.js              — Express app: public site, RSVP API, admin API
-public/                — static frontend
+config/content.json    — all editable site copy
+data/wedding.db         — SQLite database (guests, RSVPs) — gitignored
+data/guests.csv         — committed guest list seed, loaded by npm run seed
+scripts/seed-guests.js  — idempotent guest list loader
+db.js                   — database schema/connection
+server.js               — Express app: public site, RSVP API, admin API
+public/                 — static frontend
   index.html, css/style.css, js/main.js   — public site
   admin.html, css/admin.css, js/admin.js  — admin dashboard
-QUESTIONNAIRE.md        — content to fill in, organized by section
+QUESTIONNAIRE.md         — content to fill in, organized by section
 ```

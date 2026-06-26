@@ -20,6 +20,7 @@
     document.getElementById('login-screen').hidden = true;
     document.getElementById('dashboard').hidden = false;
     loadParties();
+    loadSeating();
   }
 
   document.getElementById('login-form').addEventListener('submit', async (e) => {
@@ -120,14 +121,17 @@
       return;
     }
     tbody.innerHTML = parties.map((p) => `
-      <tr>
+      <tr data-party-id="${p.id}">
         <td><strong>${escapeHtml(p.label)}</strong></td>
         <td>${p.guests.map((g) => `${escapeHtml(g.first_name)} ${escapeHtml(g.last_name)}${g.is_child ? ' (child)' : ''}`).join('<br/>')}</td>
         <td>${p.guests.map((g) => attendingLabel(g.attending)).join('<br/>')}</td>
         <td>${p.guests.map((g) => escapeHtml(g.meal_choice || '—')).join('<br/>')}</td>
         <td>${p.guests.map((g) => escapeHtml(g.dietary_notes || '—')).join('<br/>')}</td>
         <td>${p.song_request ? `🎵 ${escapeHtml(p.song_request)}<br/>` : ''}${escapeHtml(p.message || '')}</td>
-        <td><button class="delete-btn" data-id="${p.id}">Delete</button></td>
+        <td>
+          <button class="edit-btn" data-id="${p.id}">Edit</button>
+          <button class="delete-btn" data-id="${p.id}">Delete</button>
+        </td>
       </tr>
     `).join('');
 
@@ -138,7 +142,186 @@
         loadParties();
       });
     });
+
+    tbody.querySelectorAll('.edit-btn').forEach((btn) => {
+      btn.addEventListener('click', () => openEditRow(btn.dataset.id, parties));
+    });
   }
+
+  function openEditRow(partyId, parties) {
+    const party = parties.find((p) => String(p.id) === String(partyId));
+    if (!party) return;
+    const row = document.querySelector(`tr[data-party-id="${partyId}"]`);
+    if (!row || row.nextElementSibling?.classList.contains('edit-row')) return;
+
+    const editRow = document.createElement('tr');
+    editRow.className = 'edit-row';
+    editRow.innerHTML = `
+      <td colspan="7">
+        <div class="edit-panel">
+          <label>Household label <input type="text" class="edit-label" value="${escapeHtml(party.label)}" /></label>
+          <label>Max guests <input type="number" class="edit-max-guests" min="1" value="${party.max_guests}" /></label>
+          <label>Notes <input type="text" class="edit-notes" value="${escapeHtml(party.notes || '')}" /></label>
+          <div class="edit-guests">
+            ${party.guests.map((g) => `
+              <div class="edit-guest" data-guest-id="${g.id}">
+                <input type="text" class="edit-guest-first" value="${escapeHtml(g.first_name)}" placeholder="First name" />
+                <input type="text" class="edit-guest-last" value="${escapeHtml(g.last_name)}" placeholder="Last name" />
+                <label class="checkbox-label"><input type="checkbox" class="edit-guest-child" ${g.is_child ? 'checked' : ''} /> Child</label>
+              </div>
+            `).join('')}
+          </div>
+          <div class="edit-actions">
+            <button type="button" class="save-edit-btn">Save</button>
+            <button type="button" class="cancel-edit-btn">Cancel</button>
+          </div>
+        </div>
+      </td>
+    `;
+    row.after(editRow);
+
+    editRow.querySelector('.cancel-edit-btn').addEventListener('click', () => editRow.remove());
+    editRow.querySelector('.save-edit-btn').addEventListener('click', async () => {
+      const label = editRow.querySelector('.edit-label').value;
+      const maxGuests = parseInt(editRow.querySelector('.edit-max-guests').value, 10) || 1;
+      const notes = editRow.querySelector('.edit-notes').value;
+
+      await fetch(`/api/admin/parties/${partyId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ label, maxGuests, notes }),
+      });
+
+      const guestEls = editRow.querySelectorAll('.edit-guest');
+      await Promise.all(Array.from(guestEls).map((el) => {
+        const guestId = el.dataset.guestId;
+        const firstName = el.querySelector('.edit-guest-first').value;
+        const lastName = el.querySelector('.edit-guest-last').value;
+        const isChild = el.querySelector('.edit-guest-child').checked;
+        return fetch(`/api/admin/guests/${guestId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ firstName, lastName, isChild }),
+        });
+      }));
+
+      loadParties();
+    });
+  }
+
+  // ---------- Seating chart ----------
+
+  let seatingData = { tables: [], unassigned: [] };
+
+  async function loadSeating() {
+    const res = await fetch('/api/admin/tables');
+    seatingData = await res.json();
+    renderTables();
+    renderSeatingGuestList();
+  }
+
+  function allSeatingGuests() {
+    const assigned = seatingData.tables.flatMap((t) => t.guests.map((g) => ({ ...g, tableName: t.name })));
+    return [...assigned, ...seatingData.unassigned];
+  }
+
+  function renderTables() {
+    const container = document.getElementById('tables-list');
+    if (!seatingData.tables.length) {
+      container.innerHTML = '<p class="hint">No tables yet. Add one above.</p>';
+      return;
+    }
+    container.innerHTML = seatingData.tables.map((t) => `
+      <div class="table-card" data-table-id="${t.id}">
+        <div class="table-card-header">
+          <strong>${escapeHtml(t.name)}</strong>
+          <span class="table-capacity">${t.guests.length} / ${t.capacity}</span>
+          <button class="delete-table-btn" data-id="${t.id}">Remove table</button>
+        </div>
+        <ul class="table-guest-list">
+          ${t.guests.map((g) => `
+            <li>
+              ${escapeHtml(g.first_name)} ${escapeHtml(g.last_name)}
+              <button class="unassign-btn" data-guest-id="${g.id}">×</button>
+            </li>
+          `).join('') || '<li class="hint">No guests assigned</li>'}
+        </ul>
+      </div>
+    `).join('');
+
+    container.querySelectorAll('.delete-table-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Remove this table? Assigned guests become unassigned.')) return;
+        await fetch(`/api/admin/tables/${btn.dataset.id}`, { method: 'DELETE' });
+        loadSeating();
+      });
+    });
+
+    container.querySelectorAll('.unassign-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        await fetch(`/api/admin/guests/${btn.dataset.guestId}/table`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tableId: null }),
+        });
+        loadSeating();
+      });
+    });
+  }
+
+  function renderSeatingGuestList() {
+    const filter = (document.getElementById('seating-filter').value || '').toLowerCase();
+    const container = document.getElementById('seating-guest-list');
+    const guests = allSeatingGuests().filter((g) =>
+      `${g.first_name} ${g.last_name} ${g.party_label}`.toLowerCase().includes(filter)
+    );
+
+    if (!guests.length) {
+      container.innerHTML = '<p class="hint">No guests match.</p>';
+      return;
+    }
+
+    const tableOptions = seatingData.tables.map((t) => `<option value="${t.id}">${escapeHtml(t.name)}</option>`).join('');
+
+    container.innerHTML = guests.map((g) => `
+      <div class="seating-guest-row">
+        <span>${escapeHtml(g.first_name)} ${escapeHtml(g.last_name)} <span class="hint">(${escapeHtml(g.party_label)})</span></span>
+        <select class="assign-select" data-guest-id="${g.id}">
+          <option value="">Unassigned</option>
+          ${tableOptions}
+        </select>
+      </div>
+    `).join('');
+
+    container.querySelectorAll('.assign-select').forEach((sel) => {
+      const guest = guests.find((g) => String(g.id) === sel.dataset.guestId);
+      sel.value = guest?.table_id || '';
+      sel.addEventListener('change', async () => {
+        await fetch(`/api/admin/guests/${sel.dataset.guestId}/table`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tableId: sel.value ? parseInt(sel.value, 10) : null }),
+        });
+        loadSeating();
+      });
+    });
+  }
+
+  document.getElementById('add-table-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('new-table-name').value;
+    const capacity = parseInt(document.getElementById('new-table-capacity').value, 10) || 8;
+    await fetch('/api/admin/tables', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, capacity }),
+    });
+    e.target.reset();
+    document.getElementById('new-table-capacity').value = 8;
+    loadSeating();
+  });
+
+  document.getElementById('seating-filter').addEventListener('input', renderSeatingGuestList);
 
   checkAuth();
 })();
