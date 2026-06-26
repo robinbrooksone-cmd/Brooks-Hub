@@ -37,7 +37,7 @@
       if (!res.ok) throw new Error();
       showDashboard();
     } catch {
-      errEl.textContent = 'Incorrect password.';
+      errEl.textContent = 'Verkeerde wagwoord.';
       errEl.hidden = false;
     }
   });
@@ -77,19 +77,19 @@
         body: JSON.stringify({ csv }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Import failed');
-      resultEl.textContent = `Imported ${data.imported} guest(s).`;
+      if (!res.ok) throw new Error(data.error || 'Invoer het misluk');
+      resultEl.textContent = `${data.imported} gas(te) ingevoer.`;
       document.getElementById('csv-input').value = '';
       loadParties();
     } catch (err) {
-      resultEl.textContent = `Error: ${err.message}`;
+      resultEl.textContent = `Fout: ${err.message}`;
     }
   });
 
   function attendingLabel(value) {
-    if (value === 1) return '<span class="status-attending">Attending</span>';
-    if (value === 0) return '<span class="status-declined">Declined</span>';
-    return '<span class="status-pending">Pending</span>';
+    if (value === 1) return '<span class="status-attending">Kom</span>';
+    if (value === 0) return '<span class="status-declined">Kom nie</span>';
+    return '<span class="status-pending">Wagtend</span>';
   }
 
   async function loadParties() {
@@ -106,38 +106,38 @@
     const pending = totalGuests - attending - declined;
 
     document.getElementById('summary-cards').innerHTML = `
-      <div class="card"><strong>${parties.length}</strong>Households</div>
-      <div class="card"><strong>${totalGuests}</strong>Total Guests</div>
-      <div class="card"><strong>${attending}</strong>Attending</div>
-      <div class="card"><strong>${declined}</strong>Declined</div>
-      <div class="card"><strong>${pending}</strong>Pending</div>
+      <div class="card"><strong>${parties.length}</strong>Huishoudings</div>
+      <div class="card"><strong>${totalGuests}</strong>Totale Gaste</div>
+      <div class="card"><strong>${attending}</strong>Kom</div>
+      <div class="card"><strong>${declined}</strong>Kom nie</div>
+      <div class="card"><strong>${pending}</strong>Wagtend</div>
     `;
   }
 
   function renderTable(parties) {
     const tbody = document.getElementById('parties-table-body');
     if (!parties.length) {
-      tbody.innerHTML = '<tr><td colspan="7">No parties yet. Add one above or import a CSV.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7">Nog geen groepe nie. Voeg een hierbo by of voer \'n CSV in.</td></tr>';
       return;
     }
     tbody.innerHTML = parties.map((p) => `
       <tr data-party-id="${p.id}">
         <td><strong>${escapeHtml(p.label)}</strong></td>
-        <td>${p.guests.map((g) => `${escapeHtml(g.first_name)} ${escapeHtml(g.last_name)}${g.is_child ? ' (child)' : ''}`).join('<br/>')}</td>
+        <td>${p.guests.map((g) => `${escapeHtml(g.first_name)} ${escapeHtml(g.last_name)}${g.is_child ? ' (kind)' : ''}`).join('<br/>')}</td>
         <td>${p.guests.map((g) => attendingLabel(g.attending)).join('<br/>')}</td>
         <td>${p.guests.map((g) => escapeHtml(g.meal_choice || '—')).join('<br/>')}</td>
         <td>${p.guests.map((g) => escapeHtml(g.dietary_notes || '—')).join('<br/>')}</td>
         <td>${p.song_request ? `🎵 ${escapeHtml(p.song_request)}<br/>` : ''}${escapeHtml(p.message || '')}</td>
         <td>
-          <button class="edit-btn" data-id="${p.id}">Edit</button>
-          <button class="delete-btn" data-id="${p.id}">Delete</button>
+          <button class="edit-btn" data-id="${p.id}">Wysig</button>
+          <button class="delete-btn" data-id="${p.id}">Skrap</button>
         </td>
       </tr>
     `).join('');
 
     tbody.querySelectorAll('.delete-btn').forEach((btn) => {
       btn.addEventListener('click', async () => {
-        if (!confirm('Delete this party and all its guests?')) return;
+        if (!confirm('Skrap hierdie groep en al sy gaste?')) return;
         await fetch(`/api/admin/parties/${btn.dataset.id}`, { method: 'DELETE' });
         loadParties();
       });
@@ -159,21 +159,21 @@
     editRow.innerHTML = `
       <td colspan="7">
         <div class="edit-panel">
-          <label>Household label <input type="text" class="edit-label" value="${escapeHtml(party.label)}" /></label>
-          <label>Max guests <input type="number" class="edit-max-guests" min="1" value="${party.max_guests}" /></label>
-          <label>Notes <input type="text" class="edit-notes" value="${escapeHtml(party.notes || '')}" /></label>
+          <label>Huishouding-etiket <input type="text" class="edit-label" value="${escapeHtml(party.label)}" /></label>
+          <label>Maks gaste <input type="number" class="edit-max-guests" min="1" value="${party.max_guests}" /></label>
+          <label>Notas <input type="text" class="edit-notes" value="${escapeHtml(party.notes || '')}" /></label>
           <div class="edit-guests">
             ${party.guests.map((g) => `
               <div class="edit-guest" data-guest-id="${g.id}">
-                <input type="text" class="edit-guest-first" value="${escapeHtml(g.first_name)}" placeholder="First name" />
-                <input type="text" class="edit-guest-last" value="${escapeHtml(g.last_name)}" placeholder="Last name" />
-                <label class="checkbox-label"><input type="checkbox" class="edit-guest-child" ${g.is_child ? 'checked' : ''} /> Child</label>
+                <input type="text" class="edit-guest-first" value="${escapeHtml(g.first_name)}" placeholder="Voornaam" />
+                <input type="text" class="edit-guest-last" value="${escapeHtml(g.last_name)}" placeholder="Van" />
+                <label class="checkbox-label"><input type="checkbox" class="edit-guest-child" ${g.is_child ? 'checked' : ''} /> Kind</label>
               </div>
             `).join('')}
           </div>
           <div class="edit-actions">
-            <button type="button" class="save-edit-btn">Save</button>
-            <button type="button" class="cancel-edit-btn">Cancel</button>
+            <button type="button" class="save-edit-btn">Stoor</button>
+            <button type="button" class="cancel-edit-btn">Kanselleer</button>
           </div>
         </div>
       </td>
@@ -228,7 +228,7 @@
   function renderTables() {
     const container = document.getElementById('tables-list');
     if (!seatingData.tables.length) {
-      container.innerHTML = '<p class="hint">No tables yet. Add one above.</p>';
+      container.innerHTML = '<p class="hint">Nog geen tafels nie. Voeg een hierbo by.</p>';
       return;
     }
     container.innerHTML = seatingData.tables.map((t) => `
@@ -236,7 +236,7 @@
         <div class="table-card-header">
           <strong>${escapeHtml(t.name)}</strong>
           <span class="table-capacity">${t.guests.length} / ${t.capacity}</span>
-          <button class="delete-table-btn" data-id="${t.id}">Remove table</button>
+          <button class="delete-table-btn" data-id="${t.id}">Verwyder tafel</button>
         </div>
         <ul class="table-guest-list">
           ${t.guests.map((g) => `
@@ -244,14 +244,14 @@
               ${escapeHtml(g.first_name)} ${escapeHtml(g.last_name)}
               <button class="unassign-btn" data-guest-id="${g.id}">×</button>
             </li>
-          `).join('') || '<li class="hint">No guests assigned</li>'}
+          `).join('') || '<li class="hint">Geen gaste toegewys nie</li>'}
         </ul>
       </div>
     `).join('');
 
     container.querySelectorAll('.delete-table-btn').forEach((btn) => {
       btn.addEventListener('click', async () => {
-        if (!confirm('Remove this table? Assigned guests become unassigned.')) return;
+        if (!confirm('Verwyder hierdie tafel? Toegewysde gaste word ontoegewys.')) return;
         await fetch(`/api/admin/tables/${btn.dataset.id}`, { method: 'DELETE' });
         loadSeating();
       });
@@ -277,7 +277,7 @@
     );
 
     if (!guests.length) {
-      container.innerHTML = '<p class="hint">No guests match.</p>';
+      container.innerHTML = '<p class="hint">Geen gaste pas nie.</p>';
       return;
     }
 
@@ -287,7 +287,7 @@
       <div class="seating-guest-row">
         <span>${escapeHtml(g.first_name)} ${escapeHtml(g.last_name)} <span class="hint">(${escapeHtml(g.party_label)})</span></span>
         <select class="assign-select" data-guest-id="${g.id}">
-          <option value="">Unassigned</option>
+          <option value="">Nie toegewys nie</option>
           ${tableOptions}
         </select>
       </div>

@@ -33,7 +33,7 @@
     function tick() {
       const diff = target - Date.now();
       if (diff <= 0) {
-        el.innerHTML = '<div class="unit"><strong>It\'s the big day!</strong></div>';
+        el.innerHTML = '<div class="unit"><strong>Dit is die groot dag!</strong></div>';
         clearInterval(timer);
         return;
       }
@@ -41,8 +41,8 @@
       const h = Math.floor((diff % 86400000) / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
       el.innerHTML = `
-        <div class="unit"><strong>${d}</strong>days</div>
-        <div class="unit"><strong>${h}</strong>hrs</div>
+        <div class="unit"><strong>${d}</strong>dae</div>
+        <div class="unit"><strong>${h}</strong>ure</div>
         <div class="unit"><strong>${m}</strong>min</div>
       `;
     }
@@ -52,10 +52,10 @@
 
   function renderStory() {
     const { story } = content;
-    document.getElementById('story-heading').textContent = story.heading || 'Our Story';
+    document.getElementById('story-heading').textContent = story.heading || 'Ons Storie';
     const el = document.getElementById('story-timeline');
     if (!story.timeline || !story.timeline.length) {
-      el.innerHTML = '<p class="empty-note">The story is coming soon.</p>';
+      el.innerHTML = '<p class="empty-note">Die storie kom binnekort.</p>';
       return;
     }
     el.innerHTML = story.timeline.map((item) => `
@@ -73,7 +73,7 @@
     const el = document.getElementById('wedding-party-grid');
     const party = content.weddingParty || [];
     if (!party.length) {
-      el.innerHTML = '<p class="empty-note">Wedding party details coming soon.</p>';
+      el.innerHTML = '<p class="empty-note">Bruidsparty-besonderhede kom binnekort.</p>';
       return;
     }
     el.innerHTML = party.map((p) => `
@@ -90,7 +90,7 @@
     const el = document.getElementById('schedule-list');
     const schedule = content.schedule || [];
     if (!schedule.length) {
-      el.innerHTML = '<p class="empty-note">Schedule coming soon.</p>';
+      el.innerHTML = '<p class="empty-note">Program kom binnekort.</p>';
       return;
     }
     el.innerHTML = schedule.map((s) => `
@@ -105,23 +105,23 @@
 
   function renderAttire() {
     const { attire } = content;
-    document.getElementById('attire-heading').textContent = attire.heading || 'What to Wear';
+    document.getElementById('attire-heading').textContent = attire.heading || 'Wat om te Dra';
     document.getElementById('attire-content').innerHTML = `
       ${attire.dressCode ? `<div class="dress-code">${escapeHtml(attire.dressCode)}</div>` : ''}
       <p>${escapeHtml(attire.details)}</p>
-      ${attire.photo ? `<img src="${escapeHtml(attire.photo)}" alt="Attire inspiration" style="max-width:280px;border-radius:12px;margin-top:1rem;" />` : ''}
+      ${attire.photo ? `<img src="${escapeHtml(attire.photo)}" alt="Kleredrag-inspirasie" style="max-width:280px;border-radius:12px;margin-top:1rem;" />` : ''}
     `;
   }
 
   function renderTravel() {
     const { travel } = content;
-    document.getElementById('travel-heading').textContent = travel.heading || 'Travel & Accommodation';
+    document.getElementById('travel-heading').textContent = travel.heading || 'Reis & Verblyf';
     document.getElementById('travel-intro').textContent = travel.intro || '';
     document.getElementById('transport-notes').textContent = travel.transportNotes || '';
     const el = document.getElementById('accommodations-grid');
     const list = travel.accommodations || [];
     if (!list.length) {
-      el.innerHTML = '<p class="empty-note">Accommodation suggestions coming soon.</p>';
+      el.innerHTML = '<p class="empty-note">Verblyf-voorstelle kom binnekort.</p>';
       return;
     }
     el.innerHTML = list.map((a) => `
@@ -130,31 +130,31 @@
         <p>${escapeHtml(a.description)}</p>
         <p>${escapeHtml(a.address)}</p>
         ${a.priceRange ? `<p><strong>${escapeHtml(a.priceRange)}</strong></p>` : ''}
-        ${a.link ? `<a href="${escapeHtml(a.link)}" target="_blank" rel="noopener">Book / Info</a>` : ''}
+        ${a.link ? `<a href="${escapeHtml(a.link)}" target="_blank" rel="noopener">Bespreek / Inligting</a>` : ''}
       </div>
     `).join('');
   }
 
   function renderGallery() {
     const { gallery } = content;
-    document.getElementById('gallery-heading').textContent = gallery.heading || 'Gallery';
+    document.getElementById('gallery-heading').textContent = gallery.heading || 'Galery';
     const el = document.getElementById('gallery-grid');
     const photos = gallery.photos || [];
     if (!photos.length) {
-      el.innerHTML = '<p class="empty-note">Photos coming soon — check back after the wedding!</p>';
+      el.innerHTML = '<p class="empty-note">Foto\'s kom binnekort — kom kyk weer na die troue!</p>';
       return;
     }
-    el.innerHTML = photos.map((src) => `<img src="${escapeHtml(src)}" alt="Wedding photo" loading="lazy" />`).join('');
+    el.innerHTML = photos.map((src) => `<img src="${escapeHtml(src)}" alt="Troufoto" loading="lazy" />`).join('');
   }
 
   function renderRegistry() {
     const { registry } = content;
-    document.getElementById('registry-heading').textContent = registry.heading || 'Registry';
+    document.getElementById('registry-heading').textContent = registry.heading || 'Geskenklys';
     document.getElementById('registry-intro').textContent = registry.intro || '';
     const el = document.getElementById('registry-links');
     const links = registry.links || [];
     if (!links.length) {
-      el.innerHTML = '<p class="empty-note">Registry coming soon.</p>';
+      el.innerHTML = '<p class="empty-note">Geskenklys kom binnekort.</p>';
       return;
     }
     el.innerHTML = links.map((l) => `<a class="btn btn-primary" href="${escapeHtml(l.url)}" target="_blank" rel="noopener">${escapeHtml(l.name)}</a>`).join('');
@@ -164,7 +164,7 @@
     const el = document.getElementById('faq-list');
     const faq = content.faq || [];
     if (!faq.length) {
-      el.innerHTML = '<p class="empty-note">FAQs coming soon.</p>';
+      el.innerHTML = '<p class="empty-note">Vrae kom binnekort.</p>';
       return;
     }
     el.innerHTML = faq.map((f) => `
@@ -181,7 +181,7 @@
     document.getElementById('rsvp-intro').textContent = rsvp.intro || '';
     if (rsvp.isOpen === false) {
       document.getElementById('rsvp-closed-message').hidden = false;
-      document.getElementById('rsvp-closed-message').textContent = rsvp.closedMessage || 'RSVPs are closed.';
+      document.getElementById('rsvp-closed-message').textContent = rsvp.closedMessage || "RSVP's is gesluit.";
       document.getElementById('rsvp-search-step').hidden = true;
       return;
     }
@@ -209,7 +209,7 @@
         const res = await fetch(`/api/rsvp/search?name=${encodeURIComponent(q)}`);
         const data = await res.json();
         if (!data.parties.length) {
-          resultsEl.innerHTML = '<p class="empty-note">No matching invitation found. Double check the spelling, or contact us directly.</p>';
+          resultsEl.innerHTML = '<p class="empty-note">Geen ooreenstemmende uitnodiging gevind nie. Gaan die spelling na, of kontak ons direk.</p>';
           return;
         }
         resultsEl.innerHTML = data.parties.map((p) => `
@@ -226,7 +226,7 @@
           });
         });
       } catch (err) {
-        resultsEl.innerHTML = '<p class="empty-note">Something went wrong searching. Please try again.</p>';
+        resultsEl.innerHTML = '<p class="empty-note">Iets het verkeerd geloop met soek. Probeer asseblief weer.</p>';
       }
     }
 
@@ -253,19 +253,19 @@
       <div class="rsvp-guest-row" data-guest-id="${g.id}">
         <div class="guest-name">${escapeHtml(g.first_name)} ${escapeHtml(g.last_name)}</div>
         <div class="attending-toggle">
-          <label><input type="radio" name="attending-${g.id}" value="yes" checked /> Joyfully attending</label>
-          <label><input type="radio" name="attending-${g.id}" value="no" /> Can't make it</label>
+          <label><input type="radio" name="attending-${g.id}" value="yes" checked /> Sal met graagte bywoon</label>
+          <label><input type="radio" name="attending-${g.id}" value="no" /> Kan nie kom nie</label>
         </div>
         ${mealOptions.length ? `
-          <label>Meal choice
+          <label>Ete-keuse
             <select class="meal-choice">
-              <option value="">Select a meal</option>
+              <option value="">Kies 'n ete</option>
               ${mealOptions.map((m) => `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join('')}
             </select>
           </label>
         ` : ''}
-        <label>Dietary restrictions / allergies
-          <input type="text" class="dietary-notes" placeholder="e.g. gluten-free, nut allergy" />
+        <label>Dieetbeperkings / allergieë
+          <input type="text" class="dietary-notes" placeholder="bv. glutenvry, neutallergie" />
         </label>
       </div>
     `).join('');
@@ -288,7 +288,7 @@
 
     const submitBtn = e.target.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting…';
+    submitBtn.textContent = 'Word ingedien…';
 
     try {
       const res = await fetch('/api/rsvp/submit', {
@@ -301,8 +301,8 @@
       document.getElementById('rsvp-success').hidden = false;
     } catch (err) {
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit RSVP';
-      alert('Something went wrong submitting your RSVP. Please try again.');
+      submitBtn.textContent = 'Dien RSVP In';
+      alert('Iets het verkeerd geloop met die indien van jou RSVP. Probeer asseblief weer.');
     }
   }
 

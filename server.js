@@ -39,7 +39,7 @@ function timingSafeEqual(a, b) {
 
 function requireAdmin(req, res, next) {
   if (req.session && req.session.isAdmin) return next();
-  return res.status(401).json({ error: 'Not authenticated' });
+  return res.status(401).json({ error: 'Nie geverifieer nie' });
 }
 
 // ---------- Public content ----------
@@ -80,16 +80,16 @@ app.get('/api/rsvp/search', (req, res) => {
 app.post('/api/rsvp/submit', (req, res) => {
   const content = readContent();
   if (content.rsvp && content.rsvp.isOpen === false) {
-    return res.status(403).json({ error: 'RSVPs are closed' });
+    return res.status(403).json({ error: 'RSVP word nie meer aanvaar nie' });
   }
 
   const { partyId, guests, songRequest, message } = req.body || {};
   if (!partyId || !Array.isArray(guests)) {
-    return res.status(400).json({ error: 'partyId and guests[] are required' });
+    return res.status(400).json({ error: 'partyId en guests[] word vereis' });
   }
 
   const party = db.prepare('SELECT * FROM parties WHERE id = ?').get(partyId);
-  if (!party) return res.status(404).json({ error: 'Party not found' });
+  if (!party) return res.status(404).json({ error: 'Groep nie gevind nie' });
 
   const validGuestIds = new Set(
     db.prepare('SELECT id FROM guests WHERE party_id = ?').all(partyId).map((g) => g.id)
@@ -121,13 +121,13 @@ app.post('/api/rsvp/submit', (req, res) => {
 app.post('/api/admin/login', (req, res) => {
   const { password } = req.body || {};
   if (!ADMIN_PASSWORD) {
-    return res.status(500).json({ error: 'Server has no ADMIN_PASSWORD configured' });
+    return res.status(500).json({ error: 'Bediener het geen ADMIN_PASSWORD gekonfigureer nie' });
   }
   if (password && timingSafeEqual(password, ADMIN_PASSWORD)) {
     req.session.isAdmin = true;
     return res.json({ ok: true });
   }
-  return res.status(401).json({ error: 'Incorrect password' });
+  return res.status(401).json({ error: 'Verkeerde wagwoord' });
 });
 
 app.post('/api/admin/logout', (req, res) => {
@@ -154,7 +154,7 @@ app.get('/api/admin/parties', requireAdmin, (req, res) => {
 
 app.post('/api/admin/parties', requireAdmin, (req, res) => {
   const { label, maxGuests, notes, guests } = req.body || {};
-  if (!label) return res.status(400).json({ error: 'label is required' });
+  if (!label) return res.status(400).json({ error: "'n etiket word vereis" });
 
   const insertParty = db.prepare(
     'INSERT INTO parties (label, max_guests, notes) VALUES (?, ?, ?)'
@@ -185,7 +185,7 @@ app.post('/api/admin/parties', requireAdmin, (req, res) => {
 app.put('/api/admin/parties/:id', requireAdmin, (req, res) => {
   const { label, maxGuests, notes } = req.body || {};
   const party = db.prepare('SELECT * FROM parties WHERE id = ?').get(req.params.id);
-  if (!party) return res.status(404).json({ error: 'Party not found' });
+  if (!party) return res.status(404).json({ error: 'Groep nie gevind nie' });
 
   db.prepare('UPDATE parties SET label = ?, max_guests = ?, notes = ? WHERE id = ?').run(
     label ?? party.label,
@@ -203,11 +203,11 @@ app.delete('/api/admin/parties/:id', requireAdmin, (req, res) => {
 
 app.post('/api/admin/parties/:id/guests', requireAdmin, (req, res) => {
   const party = db.prepare('SELECT * FROM parties WHERE id = ?').get(req.params.id);
-  if (!party) return res.status(404).json({ error: 'Party not found' });
+  if (!party) return res.status(404).json({ error: 'Groep nie gevind nie' });
 
   const { firstName, lastName, isChild, invitedEvents } = req.body || {};
   if (!firstName || !lastName) {
-    return res.status(400).json({ error: 'firstName and lastName are required' });
+    return res.status(400).json({ error: 'voornaam en van word vereis' });
   }
   const info = db
     .prepare(
@@ -220,7 +220,7 @@ app.post('/api/admin/parties/:id/guests', requireAdmin, (req, res) => {
 
 app.put('/api/admin/guests/:id', requireAdmin, (req, res) => {
   const guest = db.prepare('SELECT * FROM guests WHERE id = ?').get(req.params.id);
-  if (!guest) return res.status(404).json({ error: 'Guest not found' });
+  if (!guest) return res.status(404).json({ error: 'Gas nie gevind nie' });
 
   const { firstName, lastName, isChild, invitedEvents } = req.body || {};
   db.prepare(
@@ -278,18 +278,18 @@ function splitDelimitedLine(line, delimiter) {
 app.post('/api/admin/import-csv', requireAdmin, (req, res) => {
   const { csv } = req.body || {};
   if (!csv || typeof csv !== 'string') {
-    return res.status(400).json({ error: 'csv text is required' });
+    return res.status(400).json({ error: 'csv-teks word vereis' });
   }
 
   const lines = csv.trim().split(/\r?\n/);
-  if (lines.length < 2) return res.status(400).json({ error: 'csv has no data rows' });
+  if (lines.length < 2) return res.status(400).json({ error: 'csv het geen datareëls nie' });
 
   const delimiter = lines[0].includes('\t') ? '\t' : ',';
   const header = splitDelimitedLine(lines[0], delimiter).map((h) => h.toLowerCase());
   const required = ['first_name', 'last_name', 'party_label'];
   for (const r of required) {
     if (!header.includes(r)) {
-      return res.status(400).json({ error: `Missing required column: ${r}` });
+      return res.status(400).json({ error: `Vereiste kolom ontbreek: ${r}` });
     }
   }
 
@@ -358,7 +358,7 @@ app.get('/api/admin/tables', requireAdmin, (req, res) => {
 
 app.post('/api/admin/tables', requireAdmin, (req, res) => {
   const { name, capacity, notes } = req.body || {};
-  if (!name) return res.status(400).json({ error: 'name is required' });
+  if (!name) return res.status(400).json({ error: "'n naam word vereis" });
 
   const info = db
     .prepare('INSERT INTO tables (name, capacity, notes) VALUES (?, ?, ?)')
@@ -368,7 +368,7 @@ app.post('/api/admin/tables', requireAdmin, (req, res) => {
 
 app.put('/api/admin/tables/:id', requireAdmin, (req, res) => {
   const table = db.prepare('SELECT * FROM tables WHERE id = ?').get(req.params.id);
-  if (!table) return res.status(404).json({ error: 'Table not found' });
+  if (!table) return res.status(404).json({ error: 'Tafel nie gevind nie' });
 
   const { name, capacity, notes } = req.body || {};
   db.prepare('UPDATE tables SET name = ?, capacity = ?, notes = ? WHERE id = ?').run(
@@ -387,12 +387,12 @@ app.delete('/api/admin/tables/:id', requireAdmin, (req, res) => {
 
 app.put('/api/admin/guests/:id/table', requireAdmin, (req, res) => {
   const guest = db.prepare('SELECT * FROM guests WHERE id = ?').get(req.params.id);
-  if (!guest) return res.status(404).json({ error: 'Guest not found' });
+  if (!guest) return res.status(404).json({ error: 'Gas nie gevind nie' });
 
   const { tableId } = req.body || {};
   if (tableId) {
     const table = db.prepare('SELECT * FROM tables WHERE id = ?').get(tableId);
-    if (!table) return res.status(404).json({ error: 'Table not found' });
+    if (!table) return res.status(404).json({ error: 'Tafel nie gevind nie' });
   }
   db.prepare('UPDATE guests SET table_id = ? WHERE id = ?').run(tableId || null, guest.id);
   res.json({ guest: db.prepare('SELECT * FROM guests WHERE id = ?').get(guest.id) });

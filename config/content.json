@@ -5,24 +5,24 @@
     "hashtag": "#AnnamiAndRobin"
   },
   "wedding": {
-    "date": "2027-06-26",
-    "displayDate": "Saturday, 26 June 2027",
-    "rsvpBy": "2027-04-26",
+    "date": "2026-12-05",
+    "displayDate": "Saterdag, 5 Desember 2026",
+    "rsvpBy": "2026-10-03",
     "heroPhoto": "/img/gallery/hero.jpg",
-    "introMessage": "TODO: Write a short welcome message for guests landing on the site (1-2 sentences)."
+    "introMessage": "TODO: Skryf 'n kort welkomsboodskap vir gaste wat op die webwerf land (1-2 sinne)."
   },
   "story": {
-    "heading": "Our Story",
+    "heading": "Ons Storie",
     "timeline": [
       {
-        "date": "TODO: e.g. 'March 2022'",
-        "title": "TODO: e.g. 'How We Met'",
-        "text": "TODO: Tell this part of the story in a few sentences.",
+        "date": "TODO: bv. 'Maart 2022'",
+        "title": "TODO: bv. 'Hoe Ons Ontmoet Het'",
+        "text": "TODO: Vertel hierdie deel van die storie in 'n paar sinne.",
         "photo": "/img/gallery/story-1.jpg"
       },
       {
         "date": "TODO",
-        "title": "TODO: e.g. 'The Proposal'",
+        "title": "TODO: bv. 'Die Aanbod'",
         "text": "TODO",
         "photo": "/img/gallery/story-2.jpg"
       }
@@ -30,15 +30,15 @@
   },
   "weddingParty": [
     {
-      "name": "TODO: Name",
-      "role": "TODO: e.g. 'Maid of Honor'",
+      "name": "TODO: Naam",
+      "role": "TODO: bv. 'Strooimeisie'",
       "side": "partnerOne",
-      "bio": "TODO: A couple of sentences about them and how they know the couple.",
+      "bio": "TODO: 'n Paar sinne oor hulle en hoe hulle die paartjie ken.",
       "photo": "/img/gallery/party-placeholder.jpg"
     },
     {
-      "name": "TODO: Name",
-      "role": "TODO: e.g. 'Best Man'",
+      "name": "TODO: Naam",
+      "role": "TODO: bv. 'Strooijonker'",
       "side": "partnerTwo",
       "bio": "TODO",
       "photo": "/img/gallery/party-placeholder.jpg"
@@ -46,76 +46,76 @@
   ],
   "schedule": [
     {
-      "event": "Ceremony",
-      "time": "TODO: e.g. '3:00 PM'",
-      "venueName": "TODO: Venue name",
-      "address": "TODO: Full street address",
-      "mapUrl": "TODO: Google Maps link",
-      "details": "TODO: e.g. 'Please arrive 20 minutes early. Outdoor seating, ceremony lasts ~30 minutes.'"
+      "event": "Plegtigheid",
+      "time": "16:00",
+      "venueName": "TODO: Plek se naam",
+      "address": "TODO: Volledige straatadres",
+      "mapUrl": "TODO: Google Maps-skakel",
+      "details": "Kom asseblief om 15:30 aan; die plegtigheid begin om 16:00. TODO: voeg verdere besonderhede by, bv. buiteplek-sitplek, duur van die plegtigheid."
     },
     {
-      "event": "Reception",
-      "time": "TODO: e.g. '5:30 PM'",
-      "venueName": "TODO: Venue name",
-      "address": "TODO: Full street address",
-      "mapUrl": "TODO: Google Maps link",
-      "details": "TODO: e.g. 'Cocktail hour, dinner, and dancing to follow.'"
+      "event": "Onthaal",
+      "time": "TODO: bv. '17:30'",
+      "venueName": "TODO: Plek se naam",
+      "address": "TODO: Volledige straatadres",
+      "mapUrl": "TODO: Google Maps-skakel",
+      "details": "TODO: bv. 'Aandete en dans sal volg.'"
     }
   ],
   "attire": {
-    "heading": "What to Wear",
-    "dressCode": "TODO: e.g. 'Formal / Black Tie Optional'",
-    "details": "TODO: Add guidance — colors to avoid, indoor/outdoor considerations, etc.",
+    "heading": "Wat om te Dra",
+    "dressCode": "TODO: bv. 'Deftig / Aandklere opsioneel'",
+    "details": "TODO: Voeg riglyne by — kleure om te vermy, oorwegings vir binne/buite, ens.",
     "photo": "/img/gallery/attire.jpg"
   },
   "travel": {
-    "heading": "Travel & Accommodation",
-    "intro": "TODO: General travel intro — nearest airport, suggested arrival day, etc.",
+    "heading": "Reis & Verblyf",
+    "intro": "TODO: Algemene reisinligting — naaste lughawe, voorgestelde aankomsdag, ens.",
     "accommodations": [
       {
-        "name": "TODO: Hotel name",
-        "description": "TODO: Why you recommend it (distance to venue, room block code, price range).",
+        "name": "TODO: Hotel se naam",
+        "description": "TODO: Waarom jy dit aanbeveel (afstand tot die plek, kamerblok-kode, prysklas).",
         "address": "TODO",
-        "link": "TODO: Booking link",
-        "priceRange": "TODO: e.g. '$150-200/night'"
+        "link": "TODO: Besprekingskakel",
+        "priceRange": "TODO: bv. 'R1500-R2000/nag'"
       },
       {
-        "name": "TODO: Hotel name",
+        "name": "TODO: Hotel se naam",
         "description": "TODO",
         "address": "TODO",
         "link": "TODO",
         "priceRange": "TODO"
       }
     ],
-    "transportNotes": "TODO: Parking, shuttle service, rideshare notes, etc."
+    "transportNotes": "TODO: Parkering, vervoerdiens, oprit-vervoer notas, ens."
   },
   "registry": {
-    "heading": "Registry",
-    "intro": "TODO: e.g. 'Your presence is the greatest gift, but if you'd like to give something...'",
+    "heading": "Geskenklys",
+    "intro": "TODO: bv. 'Jou aanwesigheid is die grootste geskenk, maar as jy iets wil gee...'",
     "links": [
-      { "name": "TODO: Registry name", "url": "TODO" },
-      { "name": "TODO: Registry name", "url": "TODO" }
+      { "name": "TODO: Geskenklys naam", "url": "TODO" },
+      { "name": "TODO: Geskenklys naam", "url": "TODO" }
     ]
   },
   "faq": [
     {
-      "question": "TODO: e.g. 'Are kids welcome?'",
+      "question": "TODO: bv. 'Is kinders welkom?'",
       "answer": "TODO"
     },
     {
-      "question": "TODO: e.g. 'Is there parking at the venue?'",
+      "question": "TODO: bv. 'Is daar parkering by die plek?'",
       "answer": "TODO"
     }
   ],
   "gallery": {
-    "heading": "Gallery",
+    "heading": "Galery",
     "photos": []
   },
   "rsvp": {
     "heading": "RSVP",
-    "intro": "TODO: e.g. 'We can't wait to celebrate with you! Please RSVP below by the date shown.'",
-    "mealOptions": ["Chicken", "Beef", "Vegetarian", "Vegan", "Kids Meal"],
-    "closedMessage": "RSVPs are now closed. Please contact us directly if you need to make changes.",
+    "intro": "TODO: bv. 'Ons sien uit daarna om saam met jou te vier! Dien asseblief jou RSVP hieronder in voor die datum hierbo aangedui.'",
+    "mealOptions": ["Hoender", "Beesvleis", "Vegetaries", "Vegan", "Kinderete"],
+    "closedMessage": "RSVP's is nou gesluit. Kontak ons asseblief direk as jy veranderinge wil maak.",
     "isOpen": true
   }
 }
