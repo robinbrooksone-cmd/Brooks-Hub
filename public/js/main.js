@@ -164,10 +164,25 @@
     const { registry } = content;
     document.getElementById('registry-heading').textContent = registry.heading || 'Geskenklys';
     document.getElementById('registry-intro').textContent = registry.intro || '';
+    document.getElementById('registry-note').textContent = registry.note || '';
+
+    const bankEl = document.getElementById('registry-bank-details');
+    const bank = registry.bankDetails;
+    if (bank && (bank.bank || bank.accountName || bank.accountNumber)) {
+      bankEl.hidden = false;
+      bankEl.innerHTML = `
+        ${bank.bank ? `<div class="bank-row"><span>Bank</span><strong>${escapeHtml(bank.bank)}</strong></div>` : ''}
+        ${bank.accountName ? `<div class="bank-row"><span>Rekeninghouer</span><strong>${escapeHtml(bank.accountName)}</strong></div>` : ''}
+        ${bank.accountNumber ? `<div class="bank-row"><span>Rekeningnommer</span><strong>${escapeHtml(bank.accountNumber)}</strong></div>` : ''}
+      `;
+    } else {
+      bankEl.hidden = true;
+    }
+
     const el = document.getElementById('registry-links');
     const links = registry.links || [];
     if (!links.length) {
-      el.innerHTML = '<p class="empty-note">Geskenklys kom binnekort.</p>';
+      el.innerHTML = '';
       return;
     }
     el.innerHTML = links.map((l) => `<a class="btn btn-primary" href="${escapeHtml(l.url)}" target="_blank" rel="noopener">${escapeHtml(l.name)}</a>`).join('');

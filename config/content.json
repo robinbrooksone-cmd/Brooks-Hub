@@ -72,9 +72,9 @@
   ],
   "attire": {
     "heading": "Wat om te Dra",
-    "dressCode": "TODO: bv. 'Deftig / Aandklere opsioneel'",
-    "details": "TODO: Voeg riglyne by — kleure om te vermy, oorwegings vir binne/buite, ens.",
-    "photo": "/img/gallery/attire.jpg"
+    "dressCode": "Deftig — Sjokoladebruin & Sjampanje Palet",
+    "details": "Vroue: lang aandrokke in donker sjokolade- of bronstone (satyn of silwerige stowwe werk pragtig). Mans: 'n pak in sjokoladebruin of kakie, met 'n wit hemp en bruin das. Sien die kleurpalet en inspirasiefoto onder.",
+    "photo": "/img/gallery/attire.png"
   },
   "travel": {
     "heading": "Reis & Verblyf",
@@ -113,11 +113,14 @@
   },
   "registry": {
     "heading": "Geskenklys",
-    "intro": "TODO: bv. 'Jou aanwesigheid is die grootste geskenk, maar as jy iets wil gee...'",
-    "links": [
-      { "name": "TODO: Geskenklys naam", "url": "TODO" },
-      { "name": "TODO: Geskenklys naam", "url": "TODO" }
-    ]
+    "intro": "Jou teenwoordigheid is werklik ons grootste geskenk! Vliegtuigkaartjies, verblyf en om nie eens van petrolpryse te praat nie — ons kan nie genoeg dankie sê nie.",
+    "note": "As jy wel voel dat jy 'n trougeskenk sal wil gee, sal ons nie verder stry nie ;)",
+    "bankDetails": {
+      "bank": "Discovery Bank",
+      "accountName": "A Marx",
+      "accountNumber": "16223059273"
+    },
+    "links": []
   },
   "faq": [
     {

@@ -1,10 +1,12 @@
 :root {
-  --color-bg: #fbf7f2;
-  --color-bg-alt: #ede1d3;
-  --color-text: #2e1f17;
-  --color-muted: #6b574a;
-  --color-accent: #6b3f2a;
-  --color-accent-dark: #3f2415;
+  --color-bg: #241407;
+  --color-bg-alt: #2f1c0d;
+  --color-surface: #3a2412;
+  --color-border: rgba(232, 209, 166, 0.18);
+  --color-text: #f3e6cc;
+  --color-muted: #c7a877;
+  --color-accent: #cda86a;
+  --color-accent-light: #e8cf9d;
   --font-serif: 'Georgia', 'Times New Roman', serif;
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
 }
@@ -31,7 +33,7 @@ h1, h2, h3 {
 }
 
 a {
-  color: var(--color-accent-dark);
+  color: var(--color-accent);
 }
 
 .hero {
@@ -41,8 +43,8 @@ a {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(180deg, var(--color-accent-dark), var(--color-accent));
-  color: #fff;
+  background: linear-gradient(180deg, #1a0d04, var(--color-bg-alt));
+  color: var(--color-text);
   text-align: center;
   padding: 6rem 1rem 4rem;
 }
@@ -58,8 +60,8 @@ a {
   aspect-ratio: 3 / 4;
   object-fit: cover;
   border-radius: 16px;
-  border: 4px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.35);
+  border: 4px solid rgba(232, 209, 166, 0.6);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5);
   margin-bottom: 2rem;
 }
 
@@ -73,11 +75,11 @@ a {
   justify-content: center;
   gap: 1.25rem;
   padding: 1.25rem 1rem;
-  background: rgba(0, 0, 0, 0.18);
+  background: rgba(0, 0, 0, 0.25);
 }
 
 .nav a {
-  color: #fff;
+  color: var(--color-text);
   text-decoration: none;
   font-size: 0.9rem;
   letter-spacing: 0.04em;
@@ -90,14 +92,16 @@ a {
 
 .nav-rsvp {
   font-weight: bold;
-  border: 1px solid #fff;
+  border: 1px solid var(--color-accent);
   padding: 0.25rem 0.75rem;
   border-radius: 999px;
+  color: var(--color-accent-light);
 }
 
 .hero-content h1 {
   font-size: clamp(2.5rem, 6vw, 4.5rem);
   margin: 0 0 0.5rem;
+  color: var(--color-accent-light);
 }
 
 .hero-date {
@@ -122,12 +126,14 @@ a {
 
 .countdown .unit strong {
   font-size: 1.8rem;
+  color: var(--color-accent-light);
 }
 
 .hero-intro {
   max-width: 36rem;
   margin: 0 auto 1.5rem;
   font-size: 1.05rem;
+  color: var(--color-muted);
 }
 
 .btn {
@@ -140,20 +146,22 @@ a {
   text-transform: uppercase;
   cursor: pointer;
   border: none;
+  transition: background 0.2s ease;
 }
 
 .btn-primary {
   background: var(--color-accent);
-  color: #fff;
+  color: var(--color-bg);
+  font-weight: bold;
 }
 
 .btn-primary:hover {
-  background: var(--color-accent-dark);
+  background: var(--color-accent-light);
 }
 
 .btn-link {
   background: none;
-  color: var(--color-accent-dark);
+  color: var(--color-accent);
   text-decoration: underline;
 }
 
@@ -178,7 +186,7 @@ a {
   text-align: center;
   font-size: 2.25rem;
   margin-bottom: 2.5rem;
-  color: var(--color-accent-dark);
+  color: var(--color-accent-light);
 }
 
 .section-intro,
@@ -218,10 +226,11 @@ a {
 }
 
 .card {
-  background: #fff;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 1.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
   text-align: center;
 }
 
@@ -260,25 +269,29 @@ a {
 }
 
 .schedule-day {
-  background: #fff;
+  background: var(--color-surface);
   border-left: 4px solid var(--color-accent);
+  border-top: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
   padding: 1.25rem 1.5rem;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
 }
 
 .schedule-day-heading {
   margin: 0 0 0.5rem;
+  color: var(--color-accent-light);
 }
 
 .schedule-day-venue {
   margin: 0 0 1rem;
-  color: #555;
+  color: var(--color-muted);
 }
 
 .schedule-day-venue a {
   text-decoration: none;
-  color: var(--color-accent-dark);
+  color: var(--color-accent);
 }
 
 .schedule-events {
@@ -295,7 +308,7 @@ a {
 }
 
 .schedule-event .time {
-  color: var(--color-accent-dark);
+  color: var(--color-accent);
   font-weight: bold;
 }
 
@@ -305,7 +318,7 @@ a {
 
 .schedule-event p {
   margin: 0;
-  color: #555;
+  color: var(--color-muted);
 }
 
 .attire-content {
@@ -314,7 +327,7 @@ a {
 
 .attire-content .dress-code {
   font-size: 1.4rem;
-  color: var(--color-accent-dark);
+  color: var(--color-accent-light);
   margin-bottom: 1rem;
 }
 
@@ -329,6 +342,37 @@ a {
   height: 200px;
   object-fit: cover;
   border-radius: 8px;
+}
+
+.bank-card {
+  max-width: 360px;
+  margin: 0 auto 2rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 0.5rem 1.5rem;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+
+.bank-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.bank-row:last-child {
+  border-bottom: none;
+}
+
+.bank-row span {
+  color: var(--color-muted);
+}
+
+.bank-row strong {
+  color: var(--color-accent-light);
+  letter-spacing: 0.02em;
 }
 
 .registry-links {
@@ -347,6 +391,7 @@ a {
 .faq-item h3 {
   margin: 0 0 0.4rem;
   font-size: 1.1rem;
+  color: var(--color-accent-light);
 }
 
 .faq-item p {
@@ -374,10 +419,18 @@ a {
 .rsvp-form select,
 .rsvp-form textarea {
   padding: 0.65rem;
-  border: 1px solid #d9cfc2;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
   font-size: 1rem;
   font-family: inherit;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.rsvp-step input::placeholder,
+.rsvp-form input::placeholder,
+.rsvp-form textarea::placeholder {
+  color: var(--color-muted);
 }
 
 .rsvp-search-results {
@@ -387,8 +440,8 @@ a {
 }
 
 .rsvp-search-result {
-  background: #fff;
-  border: 1px solid #d9cfc2;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   padding: 0.75rem 1rem;
   cursor: pointer;
@@ -400,11 +453,11 @@ a {
 }
 
 .rsvp-guest-row {
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 0.75rem;
-  border: 1px solid #eee0d2;
+  border: 1px solid var(--color-border);
 }
 
 .rsvp-guest-row .guest-name {
@@ -428,7 +481,7 @@ a {
 .rsvp-success {
   text-align: center;
   font-size: 1.1rem;
-  color: var(--color-accent-dark);
+  color: var(--color-accent-light);
 }
 
 .site-footer {
