@@ -78,10 +78,10 @@
     }
     el.innerHTML = party.map((p) => `
       <div class="card">
-        ${p.photo ? `<img src="${escapeHtml(p.photo)}" alt="${escapeHtml(p.name)}" />` : ''}
+        ${p.photo ? `<img src="${escapeHtml(p.photo)}" alt="${escapeHtml(p.name)}" onerror="this.remove()" />` : ''}
         <h3>${escapeHtml(p.name)}</h3>
         <div class="role">${escapeHtml(p.role)}</div>
-        <p>${escapeHtml(p.bio)}</p>
+        ${p.bio ? `<p>${escapeHtml(p.bio)}</p>` : ''}
       </div>
     `).join('');
   }

@@ -30,18 +30,102 @@
   },
   "weddingParty": [
     {
-      "name": "TODO: Naam",
-      "role": "TODO: bv. 'Strooimeisie'",
+      "name": "Marica Marx",
+      "role": "Hoofbruidsmeisie",
       "side": "partnerOne",
-      "bio": "TODO: 'n Paar sinne oor hulle en hoe hulle die paartjie ken.",
-      "photo": "/img/gallery/party-placeholder.jpg"
+      "bio": "",
+      "photo": "/img/gallery/party-marica-marx.jpg"
     },
     {
-      "name": "TODO: Naam",
-      "role": "TODO: bv. 'Strooijonker'",
+      "name": "Nicole Steenkamp",
+      "role": "Strooimeisie",
+      "side": "partnerOne",
+      "bio": "",
+      "photo": "/img/gallery/party-nicole-steenkamp.jpg"
+    },
+    {
+      "name": "Kara Pretorius",
+      "role": "Strooimeisie",
+      "side": "partnerOne",
+      "bio": "",
+      "photo": "/img/gallery/party-kara-pretorius.jpg"
+    },
+    {
+      "name": "Danielle Brink",
+      "role": "Strooimeisie",
+      "side": "partnerOne",
+      "bio": "",
+      "photo": "/img/gallery/party-danielle-brink.jpg"
+    },
+    {
+      "name": "Nicola Gouws",
+      "role": "Strooimeisie",
+      "side": "partnerOne",
+      "bio": "",
+      "photo": "/img/gallery/party-nicola-gouws.jpg"
+    },
+    {
+      "name": "Mila Brooks",
+      "role": "Strooimeisie",
+      "side": "partnerOne",
+      "bio": "",
+      "photo": "/img/gallery/party-mila-brooks.jpg"
+    },
+    {
+      "name": "Jessi Brooks",
+      "role": "Strooimeisie",
+      "side": "partnerOne",
+      "bio": "",
+      "photo": "/img/gallery/party-jessi-brooks.jpg"
+    },
+    {
+      "name": "Matt Brooks",
+      "role": "Beste Man",
       "side": "partnerTwo",
-      "bio": "TODO",
-      "photo": "/img/gallery/party-placeholder.jpg"
+      "bio": "",
+      "photo": "/img/gallery/party-matt-brooks.jpg"
+    },
+    {
+      "name": "Duan Steenkamp",
+      "role": "Strooijonker",
+      "side": "partnerTwo",
+      "bio": "",
+      "photo": "/img/gallery/party-duan-steenkamp.jpg"
+    },
+    {
+      "name": "Marnus Aucamp",
+      "role": "Strooijonker",
+      "side": "partnerTwo",
+      "bio": "",
+      "photo": "/img/gallery/party-marnus-aucamp.jpg"
+    },
+    {
+      "name": "Stefan Pretorius",
+      "role": "Strooijonker",
+      "side": "partnerTwo",
+      "bio": "",
+      "photo": "/img/gallery/party-stefan-pretorius.jpg"
+    },
+    {
+      "name": "PJ Marx",
+      "role": "Strooijonker",
+      "side": "partnerTwo",
+      "bio": "",
+      "photo": "/img/gallery/party-pj-marx.jpg"
+    },
+    {
+      "name": "Evan Roos",
+      "role": "Strooijonker",
+      "side": "partnerTwo",
+      "bio": "",
+      "photo": "/img/gallery/party-evan-roos.jpg"
+    },
+    {
+      "name": "MD Laubscher",
+      "role": "Strooijonker",
+      "side": "partnerTwo",
+      "bio": "",
+      "photo": "/img/gallery/party-md-laubscher.jpg"
     }
   ],
   "schedule": [
