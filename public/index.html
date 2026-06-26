@@ -4,6 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ons Troue</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
@@ -19,7 +22,6 @@
         <a href="#details" data-tab="details">Besonderhede</a>
         <a href="#attire" data-tab="attire">Kleredrag</a>
         <a href="#travel" data-tab="travel">Reis &amp; Verblyf</a>
-        <a href="#gallery" data-tab="gallery">Galery</a>
         <a href="#registry" data-tab="registry">Geskenklys</a>
         <a href="#faq" data-tab="faq">Vrae</a>
         <a href="#rsvp" class="nav-rsvp" data-tab="rsvp">RSVP</a>
@@ -46,11 +48,13 @@
 
     <section class="page section alt" id="wedding-party" data-page="wedding-party" hidden>
       <h2>Bruidsparty</h2>
+      <img class="section-photo lightbox-trigger" tabindex="0" role="button" src="/img/gallery/engagement-03.jpg" alt="Annami en Robin tydens hul verlowingsfotosessie" aria-label="Vergroot foto" />
       <div id="wedding-party-columns" class="wedding-party-columns"></div>
     </section>
 
     <section class="page section" id="details" data-page="details" hidden>
       <h2>Troubesonderhede</h2>
+      <img class="section-photo lightbox-trigger" tabindex="0" role="button" src="/img/gallery/engagement-04.jpg" alt="Annami en Robin tydens hul verlowingsfotosessie" aria-label="Vergroot foto" />
       <div id="schedule-list" class="schedule-list"></div>
     </section>
 
@@ -61,17 +65,13 @@
 
     <section class="page section" id="travel" data-page="travel" hidden>
       <h2 id="travel-heading">Reis &amp; Verblyf</h2>
+      <img class="section-photo lightbox-trigger" tabindex="0" role="button" src="/img/gallery/engagement-05.jpg" alt="Annami en Robin tydens hul verlowingsfotosessie" aria-label="Vergroot foto" />
       <p id="travel-intro" class="section-intro"></p>
       <div id="accommodations-grid" class="card-grid"></div>
       <p id="transport-notes" class="section-note"></p>
     </section>
 
-    <section class="page section alt" id="gallery" data-page="gallery" hidden>
-      <h2 id="gallery-heading">Galery</h2>
-      <div id="gallery-grid" class="gallery-grid"></div>
-    </section>
-
-    <section class="page section" id="registry" data-page="registry" hidden>
+    <section class="page section alt" id="registry" data-page="registry" hidden>
       <h2 id="registry-heading">Geskenklys</h2>
       <p id="registry-intro" class="section-intro"></p>
       <p id="registry-note" class="section-intro"></p>
@@ -79,13 +79,15 @@
       <div id="registry-links" class="registry-links"></div>
     </section>
 
-    <section class="page section alt" id="faq" data-page="faq" hidden>
+    <section class="page section" id="faq" data-page="faq" hidden>
       <h2>Gereelde Vrae</h2>
+      <img class="section-photo lightbox-trigger" tabindex="0" role="button" src="/img/gallery/engagement-06.jpg" alt="Annami en Robin tydens hul verlowingsfotosessie" aria-label="Vergroot foto" />
       <div id="faq-list" class="faq-list"></div>
     </section>
 
-    <section class="page section" id="rsvp" data-page="rsvp" hidden>
+    <section class="page section alt" id="rsvp" data-page="rsvp" hidden>
       <h2 id="rsvp-heading">RSVP</h2>
+      <img class="section-photo lightbox-trigger" tabindex="0" role="button" src="/img/gallery/engagement-07.jpg" alt="Annami en Robin tydens hul verlowingsfotosessie" aria-label="Vergroot foto" />
       <p id="rsvp-intro" class="section-intro"></p>
 
       <div id="rsvp-closed-message" class="rsvp-closed" hidden></div>
@@ -119,6 +121,13 @@
   <footer class="site-footer">
     <p id="footer-hashtag"></p>
   </footer>
+
+  <div id="lightbox" class="lightbox" hidden>
+    <button type="button" id="lightbox-close" class="lightbox-btn lightbox-close" aria-label="Maak foto toe">&times;</button>
+    <button type="button" id="lightbox-prev" class="lightbox-btn lightbox-prev" aria-label="Vorige foto">&#8249;</button>
+    <img id="lightbox-img" class="lightbox-img" src="" alt="" />
+    <button type="button" id="lightbox-next" class="lightbox-btn lightbox-next" aria-label="Volgende foto">&#8250;</button>
+  </div>
 
   <script src="/js/main.js"></script>
 </body>

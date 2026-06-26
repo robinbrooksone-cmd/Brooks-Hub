@@ -2,7 +2,7 @@
   let content = null;
   let selectedParty = null;
 
-  const PAGES = ['home', 'story', 'wedding-party', 'details', 'attire', 'travel', 'gallery', 'registry', 'faq', 'rsvp'];
+  const PAGES = ['home', 'story', 'wedding-party', 'details', 'attire', 'travel', 'registry', 'faq', 'rsvp'];
 
   function getPageFromHash() {
     const page = window.location.hash.replace('#', '');
@@ -43,6 +43,74 @@
     });
   }
 
+  function initReveal() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+  }
+
+  function wirePhotoLightbox() {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    let photos = [];
+    let index = 0;
+
+    function render() {
+      lightboxImg.src = photos[index].src;
+      lightboxImg.alt = photos[index].alt;
+    }
+
+    function open(trigger) {
+      const all = Array.from(document.querySelectorAll('.lightbox-trigger'));
+      photos = all.map((img) => ({ src: img.src, alt: img.alt }));
+      index = all.indexOf(trigger);
+      render();
+      lightbox.hidden = false;
+      document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+      lightbox.hidden = true;
+      document.body.style.overflow = '';
+    }
+
+    function step(delta) {
+      index = (index + delta + photos.length) % photos.length;
+      render();
+    }
+
+    document.addEventListener('click', (e) => {
+      const trigger = e.target.closest('.lightbox-trigger');
+      if (!trigger) return;
+      open(trigger);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      const trigger = e.target.closest && e.target.closest('.lightbox-trigger');
+      if (trigger && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault();
+        open(trigger);
+        return;
+      }
+      if (lightbox.hidden) return;
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') step(-1);
+      if (e.key === 'ArrowRight') step(1);
+    });
+
+    document.getElementById('lightbox-close').addEventListener('click', close);
+    document.getElementById('lightbox-prev').addEventListener('click', () => step(-1));
+    document.getElementById('lightbox-next').addEventListener('click', () => step(1));
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) close(); });
+  }
+
   function escapeHtml(str) {
     return String(str ?? '').replace(/[&<>"']/g, (c) => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
@@ -60,6 +128,7 @@
       heroPhoto.src = wedding.heroPhoto;
       heroPhoto.onerror = () => { heroPhoto.hidden = true; };
       heroPhoto.onload = () => { heroPhoto.hidden = false; };
+      document.querySelector('.hero').style.setProperty('--hero-bg', `url("${wedding.heroPhoto}")`);
     } else {
       heroPhoto.hidden = true;
     }
@@ -99,12 +168,13 @@
       el.innerHTML = '<p class="empty-note">Die storie kom binnekort.</p>';
       return;
     }
-    el.innerHTML = story.timeline.map((item) => `
-      <div class="timeline-item">
+    el.innerHTML = story.timeline.map((item, i) => `
+      <div class="timeline-item reveal" style="transition-delay:${(i % 6) * 0.08}s">
         <div class="date">${escapeHtml(item.date)}</div>
         <div>
           <h3>${escapeHtml(item.title)}</h3>
           <p>${escapeHtml(item.text)}</p>
+          ${item.photo ? `<img class="timeline-photo lightbox-trigger" tabindex="0" role="button" src="${escapeHtml(item.photo)}" alt="${escapeHtml(item.title)}" aria-label="Vergroot foto: ${escapeHtml(item.title)}" onerror="this.remove()" />` : ''}
         </div>
       </div>
     `).join('');
@@ -128,8 +198,8 @@
         <div class="wedding-party-column">
           <h3 class="wedding-party-column-heading">${escapeHtml(col.heading)}</h3>
           <div class="wedding-party-list">
-            ${members.map((p) => `
-              <div class="wedding-party-row">
+            ${members.map((p, i) => `
+              <div class="wedding-party-row reveal" style="transition-delay:${(i % 6) * 0.08}s">
                 ${p.photo ? `<img src="${escapeHtml(p.photo)}" alt="${escapeHtml(p.name)}" onerror="this.remove()" />` : ''}
                 <div>
                   <h4>${escapeHtml(p.name)}</h4>
@@ -151,8 +221,8 @@
       el.innerHTML = '<p class="empty-note">Program kom binnekort.</p>';
       return;
     }
-    el.innerHTML = schedule.map((day) => `
-      <div class="schedule-day">
+    el.innerHTML = schedule.map((day, i) => `
+      <div class="schedule-day reveal" style="transition-delay:${i * 0.1}s">
         <h3 class="schedule-day-heading">${escapeHtml(day.date)}</h3>
         <p class="schedule-day-venue">
           ${day.mapUrl ? `<a href="${escapeHtml(day.mapUrl)}" target="_blank" rel="noopener">${escapeHtml(day.venueName)}</a>` : escapeHtml(day.venueName)}<br/>${escapeHtml(day.address)}
@@ -193,8 +263,8 @@
       el.innerHTML = '<p class="empty-note">Verblyf-voorstelle kom binnekort.</p>';
       return;
     }
-    el.innerHTML = list.map((a) => `
-      <div class="card">
+    el.innerHTML = list.map((a, i) => `
+      <div class="card reveal" style="transition-delay:${(i % 6) * 0.08}s">
         <h3>${escapeHtml(a.name)}</h3>
         <p>${escapeHtml(a.description)}</p>
         <p>${escapeHtml(a.address)}</p>
@@ -204,18 +274,6 @@
         </div>
       </div>
     `).join('');
-  }
-
-  function renderGallery() {
-    const { gallery } = content;
-    document.getElementById('gallery-heading').textContent = gallery.heading || 'Galery';
-    const el = document.getElementById('gallery-grid');
-    const photos = gallery.photos || [];
-    if (!photos.length) {
-      el.innerHTML = '<p class="empty-note">Foto\'s kom binnekort — kom kyk weer na die troue!</p>';
-      return;
-    }
-    el.innerHTML = photos.map((src) => `<img src="${escapeHtml(src)}" alt="Troufoto" loading="lazy" />`).join('');
   }
 
   function renderRegistry() {
@@ -253,8 +311,8 @@
       el.innerHTML = '<p class="empty-note">Vrae kom binnekort.</p>';
       return;
     }
-    el.innerHTML = faq.map((f) => `
-      <div class="faq-item">
+    el.innerHTML = faq.map((f, i) => `
+      <div class="faq-item reveal" style="transition-delay:${(i % 6) * 0.08}s">
         <h3>${escapeHtml(f.question)}</h3>
         <p>${escapeHtml(f.answer)}</p>
       </div>
@@ -402,12 +460,13 @@
     renderSchedule();
     renderAttire();
     renderTravel();
-    renderGallery();
     renderRegistry();
     renderFaq();
     renderRsvpIntro();
     wireRsvp();
     wireNav();
+    wirePhotoLightbox();
+    initReveal();
     showPage(getPageFromHash());
   }
 

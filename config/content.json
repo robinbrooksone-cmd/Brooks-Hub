@@ -18,13 +18,13 @@
         "date": "TODO: bv. 'Maart 2022'",
         "title": "TODO: bv. 'Hoe Ons Ontmoet Het'",
         "text": "TODO: Vertel hierdie deel van die storie in 'n paar sinne.",
-        "photo": "/img/gallery/story-1.jpg"
+        "photo": "/img/gallery/engagement-01.jpg"
       },
       {
         "date": "TODO",
         "title": "TODO: bv. 'Die Aanbod'",
         "text": "TODO",
-        "photo": "/img/gallery/story-2.jpg"
+        "photo": "/img/gallery/engagement-02.jpg"
       }
     ]
   },
@@ -216,18 +216,6 @@
       "answer": "TODO"
     }
   ],
-  "gallery": {
-    "heading": "Galery",
-    "photos": [
-      "/img/gallery/engagement-01.jpg",
-      "/img/gallery/engagement-02.jpg",
-      "/img/gallery/engagement-03.jpg",
-      "/img/gallery/engagement-04.jpg",
-      "/img/gallery/engagement-05.jpg",
-      "/img/gallery/engagement-06.jpg",
-      "/img/gallery/engagement-07.jpg"
-    ]
-  },
   "rsvp": {
     "heading": "RSVP",
     "intro": "TODO: bv. 'Ons sien uit daarna om saam met jou te vier! Dien asseblief jou RSVP hieronder in voor die datum hierbo aangedui.'",
