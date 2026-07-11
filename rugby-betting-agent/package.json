@@ -1,0 +1,23 @@
+{
+  "name": "rugby-betting-agent",
+  "version": "1.0.0",
+  "description": "South African rugby betting analysis agent: ingests odds, models fair value, and flags mispriced lines. Analysis and reporting only — does not place bets.",
+  "main": "src/cli.js",
+  "scripts": {
+    "ingest": "node src/cli.js ingest",
+    "analyze": "node src/cli.js analyze",
+    "report": "node src/cli.js report",
+    "seed-elo": "node src/cli.js seed-elo",
+    "serve": "node src/cli.js serve",
+    "schedule": "node src/cli.js schedule",
+    "selfcheck": "node src/selfcheck.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "better-sqlite3": "^12.11.1",
+    "cheerio": "^1.0.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "node-cron": "^3.0.3"
+  }
+}

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>SA Rugby Betting Agent — Value Report</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+  h1 { font-size: 1.4rem; }
+  .disclaimer { font-size: 0.85rem; opacity: 0.75; margin-bottom: 1.5rem; }
+  .match { border: 1px solid #8884; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+  .match h2 { font-size: 1.05rem; margin: 0 0 0.25rem; }
+  .kickoff { font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.75rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 0.35rem 0.5rem; border-bottom: 1px solid #8882; }
+  .edge { font-weight: 600; color: #1a7f37; }
+  .empty { opacity: 0.7; }
+  .confidence-low { opacity: 0.6; }
+</style>
+</head>
+<body>
+  <h1>South African Rugby Betting Agent — Value Report</h1>
+  <p class="disclaimer">Analysis and reporting only. No bets are placed automatically. Odds move — verify at the bookmaker before acting. Bet within your means, only with licensed operators.</p>
+  <div id="content">Loading…</div>
+
+  <script>
+    async function load() {
+      const res = await fetch('/api/opportunities?days=7');
+      const data = await res.json();
+      const el = document.getElementById('content');
+      if (!data.matchGroups.length) {
+        el.innerHTML = '<p class="empty">No flagged opportunities right now. Run the ingest + analyze pipeline, or check back later.</p>';
+        return;
+      }
+      el.innerHTML = data.matchGroups.map(function (g) {
+        const rows = g.opportunities.map(function (o) {
+          return '<tr class="confidence-' + o.confidence + '">' +
+            '<td>' + o.bookmaker + '</td>' +
+            '<td>' + o.market_type + '</td>' +
+            '<td>' + o.selection + '</td>' +
+            '<td>' + o.price.toFixed(2) + '</td>' +
+            '<td>' + (1 / o.fair_prob).toFixed(2) + '</td>' +
+            '<td class="edge">+' + o.edge_pct.toFixed(1) + '%</td>' +
+            '<td>' + o.confidence + '</td>' +
+          '</tr>';
+        }).join('');
+        return '<div class="match"><h2>' + g.homeTeam + ' vs ' + g.awayTeam + ' — ' + g.competition + '</h2>' +
+          '<div class="kickoff">' + new Date(g.kickoffAt).toLocaleString() + '</div>' +
+          '<table><thead><tr><th>Bookmaker</th><th>Market</th><th>Selection</th><th>Price</th><th>Fair</th><th>Edge</th><th>Confidence</th></tr></thead>' +
+          '<tbody>' + rows + '</tbody></table></div>';
+      }).join('');
+    }
+    load();
+  </script>
+</body>
+</html>

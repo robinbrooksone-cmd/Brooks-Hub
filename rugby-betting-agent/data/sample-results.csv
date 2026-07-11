@@ -1,0 +1,13 @@
+# SAMPLE / FICTIONAL DATA — for demonstrating the CSV format only.
+# These are NOT real historical match results. Replace this file with real
+# results (e.g. exported from a rugby stats provider, ESPN Scrum, or Wikipedia
+# match archives) before trusting the Elo model. Team names should match how
+# you want them to appear in reports (they'll also need to line up with the
+# home_team/away_team names your odds provider uses, for the h2h Elo blend to
+# apply automatically).
+date,competition,home_team,away_team,home_score,away_score
+2025-01-05,Sample Cup,Team A,Team B,24,17
+2025-01-12,Sample Cup,Team B,Team C,13,13
+2025-01-19,Sample Cup,Team C,Team A,20,26
+2025-01-26,Sample Cup,Team A,Team D,31,10
+2025-02-02,Sample Cup,Team D,Team B,15,22
