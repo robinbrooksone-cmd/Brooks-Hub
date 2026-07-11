@@ -6,10 +6,11 @@
  */
 const assert = require('assert');
 const { devigMultiplicative, devigShin, overroundPct } = require('./analysis/devig');
-const { buildConsensus } = require('./analysis/consensus');
+const { buildConsensus, buildSingleSidedConsensus } = require('./analysis/consensus');
 const { updateRatings, matchProbabilities, expectedScore } = require('./analysis/elo');
 const { blendProbabilities } = require('./analysis/fairValue');
 const { kellyFraction, median } = require('./analysis/valueFinder');
+const { fairTryScorerProb } = require('./analysis/propsModel');
 
 function approxEqual(a, b, eps = 1e-6) {
   assert(Math.abs(a - b) < eps, `expected ${a} ~= ${b}`);
@@ -95,9 +96,39 @@ function checkKelly() {
   console.log('kelly/median: OK');
 }
 
+function checkPropsModel() {
+  // Poisson tail: P(>=1) = 1 - e^-lambda. Zero expected tries -> zero chance.
+  approxEqual(fairTryScorerProb(0), 0);
+  // Higher expected tries should give a monotonically higher scoring probability.
+  assert(fairTryScorerProb(2) > fairTryScorerProb(1));
+  assert(fairTryScorerProb(1) > 0 && fairTryScorerProb(1) < 1);
+  approxEqual(fairTryScorerProb(1), 1 - Math.exp(-1));
+
+  console.log('propsModel: OK');
+}
+
+function checkSingleSidedConsensus() {
+  const rows = [
+    { bookmaker: 'BookA', price: 3.0 },
+    { bookmaker: 'BookB', price: 3.1 },
+    { bookmaker: 'BookA', price: 999 }, // duplicate bookmaker should not double-count
+  ];
+  const consensus = buildSingleSidedConsensus(rows, 1);
+  assert(consensus, 'should build consensus from single-sided prop prices');
+  assert.strictEqual(consensus.bookCount, 2, 'duplicate bookmaker entries should collapse to one');
+  approxEqual(consensus.avgProb, (1 / 3.0 + 1 / 3.1) / 2);
+
+  const notEnough = buildSingleSidedConsensus(rows, 5);
+  assert.strictEqual(notEnough, null);
+
+  console.log('buildSingleSidedConsensus: OK');
+}
+
 checkDevig();
 checkConsensus();
 checkElo();
 checkBlend();
 checkKelly();
+checkPropsModel();
+checkSingleSidedConsensus();
 console.log('\nAll self-checks passed.');

@@ -2,6 +2,8 @@
 const path = require('path');
 const { ingestAll } = require('./ingest/ingestOdds');
 const { importResultsFromFile } = require('./ingest/importResults');
+const { importTeamMatchTries, importPlayerTries } = require('./ingest/importTryData');
+const { importPropOddsFromFile } = require('./ingest/importPropOdds');
 const { analyzeAllUpcomingMatches } = require('./analysis/analyze');
 const { generateDailyReport } = require('./reports/dailyReport');
 const { startServer } = require('./server/app');
@@ -32,6 +34,22 @@ async function main() {
       console.log(`Imported ${processed} results from ${file} into the Elo model.`);
       break;
     }
+    case 'seed-tries': {
+      const teamFile = args[0] || path.join(__dirname, '..', 'data', 'sample-team-tries.csv');
+      const playerFile = args[1] || path.join(__dirname, '..', 'data', 'sample-player-tries.csv');
+      const teamResult = importTeamMatchTries(teamFile);
+      const playerResult = importPlayerTries(playerFile);
+      console.log(`Imported ${teamResult.processed} team-match try rows from ${teamFile}.`);
+      console.log(`Imported ${playerResult.processed} player try rows from ${playerFile}.`);
+      break;
+    }
+    case 'ingest-props': {
+      const file = args[0] || path.join(__dirname, '..', 'data', 'sample-prop-odds.csv');
+      const { stored, rejected } = importPropOddsFromFile(file);
+      console.log(`Stored ${stored} prop odds rows from ${file}.`);
+      if (rejected.length) console.log(`Rejected ${rejected.length} rows:`, rejected.slice(0, 5));
+      break;
+    }
     case 'serve': {
       startServer();
       break;
@@ -52,6 +70,8 @@ Commands:
   analyze     Recompute fair values and flag value opportunities for upcoming matches
   report      Write reports/latest.md and reports/latest.json
   seed-elo [csvPath]   Import historical results into the Elo model (defaults to sample data)
+  seed-tries [teamCsvPath] [playerCsvPath]   Import team/player try history for the props model
+  ingest-props [csvPath]   Import manually-collected player prop odds (anytime/first try scorer)
   serve       Start the dashboard web server
   schedule    Start the daily cron scheduler (ingest -> analyze -> report)
   pipeline    Run ingest -> analyze -> report once, immediately

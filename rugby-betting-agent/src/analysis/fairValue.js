@@ -1,7 +1,10 @@
 const config = require('../config');
 const { db } = require('../db');
-const { buildConsensus } = require('./consensus');
+const { buildConsensus, buildSingleSidedConsensus } = require('./consensus');
 const { matchProbabilities } = require('./elo');
+const { estimateAnytimeTryProb } = require('./propsModel');
+
+const PLAYER_MARKET_PREFIX = 'player_';
 
 /**
  * Blends the bookmaker-consensus fair probability with the independent Elo-model
@@ -55,14 +58,27 @@ function computeAndStoreFairValues(matchId) {
   if (!match) return 0;
 
   const rows = db
-    .prepare('SELECT bookmaker, market_type, selection, line, price FROM odds_snapshots WHERE match_id = ?')
+    .prepare('SELECT bookmaker, market_type, selection, player_id, line, price FROM odds_snapshots WHERE match_id = ?')
     .all(matchId);
 
+  const matchRows = rows.filter((r) => !r.market_type.startsWith(PLAYER_MARKET_PREFIX));
+  const propRows = rows.filter((r) => r.market_type.startsWith(PLAYER_MARKET_PREFIX));
+
   const byMarketAndLine = new Map();
-  for (const row of rows) {
+  for (const row of matchRows) {
     const key = `${row.market_type}::${row.line ?? ''}`;
     if (!byMarketAndLine.has(key)) byMarketAndLine.set(key, []);
     byMarketAndLine.get(key).push(row);
+  }
+
+  // Prop rows are independent per-player binary markets, not a partition of
+  // outcomes that sum to 1 — group by market+selection+line+player, not just
+  // market+line, so each player is scored on their own.
+  const byPropKey = new Map();
+  for (const row of propRows) {
+    const key = `${row.market_type}::${row.selection}::${row.line ?? ''}::${row.player_id ?? ''}`;
+    if (!byPropKey.has(key)) byPropKey.set(key, []);
+    byPropKey.get(key).push(row);
   }
 
   let written = 0;
@@ -85,6 +101,24 @@ function computeAndStoreFairValues(matchId) {
         insertFairValue.run(matchId, marketType, selection, line, fairProb, method, consensus.bookCount);
         written += 1;
       }
+    }
+
+    for (const [key, propMarketRows] of byPropKey) {
+      const [marketType, selection, lineStr, playerIdStr] = key.split('::');
+      const line = lineStr === '' ? null : Number(lineStr);
+      const playerId = playerIdStr === '' ? null : Number(playerIdStr);
+
+      const rawConsensus = buildSingleSidedConsensus(propMarketRows, config.analysis.minBookmakersForPropConsensus);
+      if (!rawConsensus) continue;
+
+      const modelProb = playerId != null ? estimateAnytimeTryProb(playerId, matchId) : null;
+      const fairProb = modelProb != null
+        ? rawConsensus.avgProb * config.analysis.propConsensusWeight + modelProb * config.analysis.propModelWeight
+        : rawConsensus.avgProb;
+      const method = modelProb != null ? 'raw_consensus+try_model' : 'raw_consensus_no_devig';
+
+      insertFairValue.run(matchId, marketType, selection, line, fairProb, method, rawConsensus.bookCount);
+      written += 1;
     }
   });
   tx();

@@ -16,7 +16,8 @@
   th, td { text-align: left; padding: 0.35rem 0.5rem; border-bottom: 1px solid #8882; }
   .edge { font-weight: 600; color: #1a7f37; }
   .empty { opacity: 0.7; }
-  .confidence-low { opacity: 0.6; }
+  .type-model_divergence { opacity: 0.75; }
+  .badge { font-size: 0.75rem; padding: 0.1rem 0.4rem; border-radius: 4px; background: #8882; }
 </style>
 </head>
 <body>
@@ -25,6 +26,19 @@
   <div id="content">Loading…</div>
 
   <script>
+    var MARKET_LABELS = {
+      h2h: 'Match winner',
+      spreads: 'Handicap',
+      totals: 'Total points',
+      player_try_scorer_anytime: 'Anytime try scorer',
+      player_try_scorer_first: 'First try scorer',
+      player_try_scorer_last: 'Last try scorer',
+    };
+    var TYPE_LABELS = {
+      book_outlier: 'Single-book mispricing',
+      model_divergence: 'Whole-market disagreement',
+    };
+
     async function load() {
       const res = await fetch('/api/opportunities?days=7');
       const data = await res.json();
@@ -35,19 +49,20 @@
       }
       el.innerHTML = data.matchGroups.map(function (g) {
         const rows = g.opportunities.map(function (o) {
-          return '<tr class="confidence-' + o.confidence + '">' +
+          return '<tr class="type-' + o.opportunity_type + '">' +
             '<td>' + o.bookmaker + '</td>' +
-            '<td>' + o.market_type + '</td>' +
+            '<td>' + (MARKET_LABELS[o.market_type] || o.market_type) + '</td>' +
             '<td>' + o.selection + '</td>' +
             '<td>' + o.price.toFixed(2) + '</td>' +
             '<td>' + (1 / o.fair_prob).toFixed(2) + '</td>' +
             '<td class="edge">+' + o.edge_pct.toFixed(1) + '%</td>' +
             '<td>' + o.confidence + '</td>' +
+            '<td><span class="badge">' + (TYPE_LABELS[o.opportunity_type] || o.opportunity_type) + '</span></td>' +
           '</tr>';
         }).join('');
         return '<div class="match"><h2>' + g.homeTeam + ' vs ' + g.awayTeam + ' — ' + g.competition + '</h2>' +
           '<div class="kickoff">' + new Date(g.kickoffAt).toLocaleString() + '</div>' +
-          '<table><thead><tr><th>Bookmaker</th><th>Market</th><th>Selection</th><th>Price</th><th>Fair</th><th>Edge</th><th>Confidence</th></tr></thead>' +
+          '<table><thead><tr><th>Bookmaker</th><th>Market</th><th>Selection</th><th>Price</th><th>Fair</th><th>Edge</th><th>Confidence</th><th>Type</th></tr></thead>' +
           '<tbody>' + rows + '</tbody></table></div>';
       }).join('');
     }

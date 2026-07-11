@@ -42,6 +42,32 @@ function groupByMatch(rows) {
   return [...groups.values()];
 }
 
+const MARKET_LABELS = {
+  h2h: 'Match winner',
+  spreads: 'Handicap',
+  totals: 'Total points',
+  player_try_scorer_anytime: 'Anytime try scorer',
+  player_try_scorer_first: 'First try scorer',
+  player_try_scorer_last: 'Last try scorer',
+};
+
+function marketLabel(marketType) {
+  return MARKET_LABELS[marketType] || marketType;
+}
+
+function opportunityTable(opportunities) {
+  const lines = [];
+  lines.push('| Bookmaker | Market | Selection | Line | Price | Fair Price | Edge | Confidence | Suggested max stake (fractional Kelly) |');
+  lines.push('|---|---|---|---|---|---|---|---|---|');
+  for (const o of opportunities) {
+    const fairPrice = (1 / o.fair_prob).toFixed(2);
+    lines.push(
+      `| ${o.bookmaker} | ${marketLabel(o.market_type)} | ${o.selection} | ${o.line ?? '-'} | ${o.price.toFixed(2)} | ${fairPrice} | +${o.edge_pct.toFixed(1)}% | ${o.confidence} | ${(o.kelly_fraction * 100).toFixed(1)}% of bankroll |`
+    );
+  }
+  return lines;
+}
+
 function toMarkdown(matchGroups, generatedAt) {
   const lines = [];
   lines.push(`# South African Rugby Betting — Daily Value Report`);
@@ -62,20 +88,29 @@ function toMarkdown(matchGroups, generatedAt) {
     lines.push(`## ${group.homeTeam} vs ${group.awayTeam} — ${group.competition}`);
     lines.push(`Kickoff: ${group.kickoffAt}`);
     lines.push('');
-    lines.push('| Bookmaker | Market | Selection | Line | Price | Fair Price | Edge | Confidence | Suggested max stake (fractional Kelly) |');
-    lines.push('|---|---|---|---|---|---|---|---|---|');
-    for (const o of group.opportunities) {
-      const fairPrice = (1 / o.fair_prob).toFixed(2);
-      lines.push(
-        `| ${o.bookmaker} | ${o.market_type} | ${o.selection} | ${o.line ?? '-'} | ${o.price.toFixed(2)} | ${fairPrice} | +${o.edge_pct.toFixed(1)}% | ${o.confidence} | ${(o.kelly_fraction * 100).toFixed(1)}% of bankroll |`
-      );
+
+    const bookOutliers = group.opportunities.filter((o) => o.opportunity_type !== 'model_divergence');
+    const modelDivergences = group.opportunities.filter((o) => o.opportunity_type === 'model_divergence');
+
+    if (bookOutliers.length) {
+      lines.push('**Single-book mispricing** — this book disagrees with its peers:');
+      lines.push('');
+      lines.push(...opportunityTable(bookOutliers));
+      lines.push('');
+      lines.push('Rationale:');
+      for (const o of bookOutliers) lines.push(`- **${o.bookmaker} / ${o.selection}**: ${o.reason}`);
+      lines.push('');
     }
-    lines.push('');
-    lines.push('Rationale:');
-    for (const o of group.opportunities) {
-      lines.push(`- **${o.bookmaker} / ${o.selection}**: ${o.reason}`);
+
+    if (modelDivergences.length) {
+      lines.push('**Whole-market disagreement** — every book agrees with each other, but our model disagrees with all of them. More speculative — read the rationale before acting:');
+      lines.push('');
+      lines.push(...opportunityTable(modelDivergences));
+      lines.push('');
+      lines.push('Rationale:');
+      for (const o of modelDivergences) lines.push(`- **${o.bookmaker} / ${o.selection}**: ${o.reason}`);
+      lines.push('');
     }
-    lines.push('');
   }
 
   return lines.join('\n');

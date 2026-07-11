@@ -36,11 +36,19 @@ module.exports = {
   analysis: {
     edgeThresholdPct: num(process.env.EDGE_THRESHOLD_PCT, 3),
     outlierThresholdPct: num(process.env.OUTLIER_THRESHOLD_PCT, 5),
+    modelDivergenceThresholdPct: num(process.env.MODEL_DIVERGENCE_THRESHOLD_PCT, 8),
     minBookmakersForConsensus: num(process.env.MIN_BOOKMAKERS_FOR_CONSENSUS, 2),
     consensusWeight: num(process.env.CONSENSUS_WEIGHT, 0.65),
     eloWeight: num(process.env.ELO_WEIGHT, 0.35),
     kellyFractionCap: num(process.env.KELLY_FRACTION_CAP, 0.25),
     defaultDrawProb: num(process.env.DEFAULT_DRAW_PROB, 0.02),
+    minBookmakersForPropConsensus: num(process.env.MIN_BOOKMAKERS_FOR_PROP_CONSENSUS, 1),
+    propConsensusWeight: num(process.env.PROP_CONSENSUS_WEIGHT, 0.5),
+    propModelWeight: num(process.env.PROP_MODEL_WEIGHT, 0.5),
+  },
+  propsModel: {
+    lookbackMatches: num(process.env.TRY_MODEL_LOOKBACK_MATCHES, 12),
+    minMatchesForShare: num(process.env.TRY_MODEL_MIN_MATCHES, 3),
   },
   elo: {
     initialRating: num(process.env.ELO_INITIAL_RATING, 1500),

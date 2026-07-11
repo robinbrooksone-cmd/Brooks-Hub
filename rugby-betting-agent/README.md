@@ -37,6 +37,70 @@ That's a deliberate scope boundary, not a missing feature — see [Responsible u
    served on a small local dashboard, each with a plain-language rationale, a confidence
    label, and a suggested max stake sized by fractional Kelly (capped, informational only).
 
+Two distinct kinds of gap get flagged, and the report keeps them separate because
+they carry very different confidence:
+
+- **Single-book mispricing** — one bookmaker's price stands out from its peers (or it's
+  the only book quoting that selection). Strong signal: it doesn't require trusting any
+  model, just that this book disagrees with the rest of the market.
+- **Whole-market disagreement** — every tracked book agrees with each other, but an
+  independent model (Elo, or the try-scorer model below) disagrees with all of them at
+  once. This is the "market leaning too far under/over" case, and it's a bigger claim —
+  our model vs. the market's collective wisdom — so it needs a higher edge bar
+  (`MODEL_DIVERGENCE_THRESHOLD_PCT`, default 8%) and is always labeled `model-driven`.
+
+## Player props (anytime/first try scorer)
+
+Bookmakers often price a player generically by position rather than by how their team
+actually creates tries — a hooker on a team with a dominant driving maul may get scored
+a disproportionate share of team tries that a flat positional price doesn't reflect.
+The props model is built to surface that pattern from data, not assume it:
+
+1. **Team attack rate** — a team's rolling average tries scored per match
+   (`src/analysis/propsModel.js`).
+2. **Opponent defense factor** — the upcoming opponent's rolling tries *conceded*,
+   relative to the league average (a leaky defense multiplies expected tries up).
+3. **Expected team tries** = attack rate × opponent's defense factor.
+4. **Player try share** — this specific player's historical share of his own team's
+   tries (his tries ÷ his team's tries, over the same rolling window). This is the
+   number that captures a driving-maul hooker's outsized share — if the data shows it,
+   the model reflects it; if it doesn't, the model won't invent an edge.
+5. **Expected player tries** = expected team tries × player's try share, converted to a
+   scoring probability via a Poisson model: `P(scores >= 1) = 1 - e^-λ`.
+6. This model probability is blended with a raw bookmaker consensus (`PROP_CONSENSUS_WEIGHT`
+   / `PROP_MODEL_WEIGHT`, default 50/50). Prop markets are usually one-sided (only a "Yes"
+   price, no "No" line to devig against), so unlike match markets this consensus is *not*
+   de-vigged — it's flagged as `raw_consensus_no_devig` (or `raw_consensus+try_model` once
+   the model contributes) so you know each book's margin is still baked in.
+
+### Feeding it props data
+
+```bash
+npm run seed-tries -- data/your-team-tries.csv data/your-player-tries.csv
+npm run ingest-props -- data/your-prop-odds.csv
+```
+
+`data/sample-team-tries.csv`, `data/sample-player-tries.csv`, and `data/sample-prop-odds.csv`
+are **fictional placeholder data**, same as the Elo sample — they exist to document the
+three CSV formats, not as real results or real odds:
+
+- Team tries: `date,competition,team,opponent,tries_scored` — one row per team per match
+  (a real match needs two rows, one per side).
+- Player tries: `date,competition,team,player,position,tries` — one row per player per
+  match they featured in.
+- Prop odds: `date,home_team,away_team,competition,bookmaker,player,player_team,position,market,price`
+  — `market` is one of `player_try_scorer_anytime` / `player_try_scorer_first` /
+  `player_try_scorer_last`.
+
+Player prop odds are realistically the hardest data source here: many odds-comparison
+APIs have thin or no rugby prop coverage, and even where a bookmaker offers a try-scorer
+market it's usually only readable off their own site — not something you can assume the
+Odds API adapter or the bookmaker scrapers pull automatically. `npm run ingest-props` is
+a manual/CSV entry point for exactly that reason: check a book's try-scorer market
+yourself and log it, or point a scraper you've built at it and have it write this same
+CSV shape. Team and player names must match what you use in the try-log CSVs (and in the
+Elo results) for everything to link up automatically.
+
 ## Setup
 
 ```bash
@@ -97,16 +161,19 @@ SQLite (`better-sqlite3`), file at `DB_PATH` (default `data/rugby-betting-agent.
 gitignored). `odds_snapshots` and `fair_values` are append-only history — every ingest/
 analyze run adds new rows rather than overwriting, so you can see a match's price and
 fair-value history over time, not just the latest snapshot. `value_opportunities` records
-every flag ever raised, with the exact price, fair probability, edge, and rationale that
-triggered it.
+every flag ever raised, with the exact price, fair probability, edge, opportunity type
+(`book_outlier` vs `model_divergence`), and rationale that triggered it. `players`,
+`team_match_tries`, and `player_tries` hold the history that drives the props model.
 
 ## Tuning
 
-All thresholds live in `.env` (see `.env.example`): edge/outlier thresholds, consensus
-vs. Elo weighting, Kelly cap, Elo K-factor and home advantage, minimum bookmakers
-required before a consensus is trusted. Tighten `EDGE_THRESHOLD_PCT` /
-`OUTLIER_THRESHOLD_PCT` if the daily report is too noisy; loosen them if it's too quiet
-during early data collection.
+All thresholds live in `.env` (see `.env.example`): edge/outlier/model-divergence
+thresholds, consensus vs. Elo weighting, prop consensus vs. try-model weighting, Kelly
+cap, Elo K-factor and home advantage, minimum bookmakers required before a consensus is
+trusted (separately for match markets and the thinner prop markets). Tighten
+`EDGE_THRESHOLD_PCT` / `OUTLIER_THRESHOLD_PCT` if the daily report is too noisy; loosen
+them if it's too quiet during early data collection. `MODEL_DIVERGENCE_THRESHOLD_PCT` is
+deliberately a higher bar — it's flagging disagreement with the whole market, not one book.
 
 ## Responsible use
 

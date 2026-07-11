@@ -2,11 +2,19 @@ const config = require('../config');
 const { db } = require('../db');
 
 /**
- * Compares each bookmaker's live price against the blended fair value to find
- * "gaps" — prices that imply a probability meaningfully better than our fair
- * estimate AND that stand out from the rest of the market (so we're flagging a
- * specific bookmaker's mispricing, not just model noise). Both conditions must
- * hold before something gets flagged as an opportunity.
+ * Compares each bookmaker's live price against the blended fair value to find two
+ * distinct kinds of gap:
+ *
+ *  - "book_outlier": one specific bookmaker's price stands out from the rest of the
+ *    market (or it's the only book quoting this selection at all). This is the
+ *    stronger signal — it doesn't require trusting our own model, just that this
+ *    book disagrees with its peers.
+ *  - "model_divergence": every book agrees with each other, but our independent
+ *    model (Elo for match markets, the try-scorer model for props) disagrees with
+ *    all of them — the whole market may be leaning too far one way. This is the
+ *    "gap where the market is under/over" case explicitly, but it's a bigger claim
+ *    (our model vs. the market's collective wisdom) so it needs a higher edge bar
+ *    and is always reported as lower/model-driven confidence.
  */
 
 function latestByKey(rows, keyFn, tieBreakerField) {
@@ -34,7 +42,14 @@ function kellyFraction(price, fairProb, cap) {
   return Math.max(0, Math.min(raw, cap));
 }
 
-function confidenceLabel(bookCount, method) {
+function usesIndependentModel(method) {
+  return method.includes('elo') || method.includes('try_model');
+}
+
+function confidenceLabel(bookCount, method, opportunityType) {
+  if (opportunityType === 'model_divergence') {
+    return bookCount >= 3 ? 'medium (model-driven)' : 'low (model-driven)';
+  }
   if (method === 'consensus+elo' && bookCount >= 4) return 'high';
   if (bookCount >= 3) return 'medium';
   return 'low';
@@ -42,8 +57,8 @@ function confidenceLabel(bookCount, method) {
 
 const insertOpportunity = db.prepare(`
   INSERT INTO value_opportunities
-    (match_id, bookmaker, market_type, selection, line, price, fair_prob, implied_prob, edge_pct, kelly_fraction, confidence, reason)
-  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (match_id, bookmaker, market_type, selection, line, price, fair_prob, implied_prob, edge_pct, kelly_fraction, confidence, opportunity_type, reason)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 `);
 
 /**
@@ -53,6 +68,7 @@ const insertOpportunity = db.prepare(`
 function findValueForMatch(matchId, opts = {}) {
   const edgeThreshold = opts.edgeThresholdPct ?? config.analysis.edgeThresholdPct;
   const outlierThreshold = opts.outlierThresholdPct ?? config.analysis.outlierThresholdPct;
+  const modelDivergenceThreshold = opts.modelDivergenceThresholdPct ?? config.analysis.modelDivergenceThresholdPct;
   const kellyCap = opts.kellyFractionCap ?? config.analysis.kellyFractionCap;
 
   const oddsRows = db
@@ -98,13 +114,29 @@ function findValueForMatch(matchId, opts = {}) {
       const marketPrices = pricesByMarketSelection.get(fairKey) || [oddsRow.price];
       const marketMedian = median(marketPrices);
       const deviationPct = marketMedian > 0 ? ((oddsRow.price - marketMedian) / marketMedian) * 100 : 0;
-      if (marketPrices.length > 1 && deviationPct < outlierThreshold) continue;
+      const isSingleBook = marketPrices.length === 1;
+      const isBookOutlier = isSingleBook || deviationPct >= outlierThreshold;
+
+      let opportunityType;
+      if (isBookOutlier) {
+        opportunityType = 'book_outlier';
+      } else if (usesIndependentModel(fairRow.method) && edgePct >= modelDivergenceThreshold) {
+        opportunityType = 'model_divergence';
+      } else {
+        continue; // agrees with peers, and either no independent model or not enough divergence to trust it
+      }
 
       const kelly = kellyFraction(oddsRow.price, fairRow.fair_prob, kellyCap);
-      const confidence = confidenceLabel(fairRow.contributing_books, fairRow.method);
-      const reason = marketPrices.length > 1
-        ? `${oddsRow.bookmaker} is ${deviationPct.toFixed(1)}% above the ${marketPrices.length}-book median price on this selection, and ${edgePct.toFixed(1)}% above fair value per the ${fairRow.method} model.`
-        : `Only one book (${oddsRow.bookmaker}) priced; ${edgePct.toFixed(1)}% above fair value per the ${fairRow.method} model — treat with lower confidence until more books are ingested.`;
+      const confidence = confidenceLabel(fairRow.contributing_books, fairRow.method, opportunityType);
+
+      let reason;
+      if (opportunityType === 'model_divergence') {
+        reason = `Every tracked book agrees around this price (${oddsRow.bookmaker} is only ${deviationPct.toFixed(1)}% off the ${marketPrices.length}-book median) — but the ${fairRow.method} model puts fair value ${edgePct.toFixed(1)}% below this price. This is the whole market potentially leaning the wrong way, not one book's mistake, so treat it as more speculative and check what the model is seeing before acting.`;
+      } else if (isSingleBook) {
+        reason = `Only one book (${oddsRow.bookmaker}) priced; ${edgePct.toFixed(1)}% above fair value per the ${fairRow.method} model — treat with lower confidence until more books are ingested.`;
+      } else {
+        reason = `${oddsRow.bookmaker} is ${deviationPct.toFixed(1)}% above the ${marketPrices.length}-book median price on this selection, and ${edgePct.toFixed(1)}% above fair value per the ${fairRow.method} model.`;
+      }
 
       insertOpportunity.run(
         matchId,
@@ -118,6 +150,7 @@ function findValueForMatch(matchId, opts = {}) {
         edgePct,
         kelly,
         confidence,
+        opportunityType,
         reason
       );
 
@@ -133,6 +166,7 @@ function findValueForMatch(matchId, opts = {}) {
         edgePct,
         kellyFraction: kelly,
         confidence,
+        opportunityType,
         reason,
       });
     }

@@ -47,4 +47,29 @@ function buildConsensus(oddsRows, minBookmakers = 2) {
   return { probs, bookCount: usableBookCount };
 }
 
-module.exports = { buildConsensus };
+/**
+ * Consensus for one-sided prop markets (e.g. "anytime try scorer: Yes" with no
+ * published "No" price to devig against). Without a complementary outcome there's
+ * no principled way to strip the bookmaker's margin, so this simply averages raw
+ * implied probabilities (1/price) across books. Callers should treat the result as
+ * still containing each book's margin — genuinely lower confidence than a proper
+ * de-vigged consensus, and the method name returned downstream reflects that.
+ *
+ * @param {Array<{bookmaker: string, price: number}>} oddsRows same player/market/line only
+ * @param {number} minBookmakers minimum distinct bookmakers required
+ * @returns {{ avgProb: number, bookCount: number } | null}
+ */
+function buildSingleSidedConsensus(oddsRows, minBookmakers = 1) {
+  const byBookmaker = new Map();
+  for (const row of oddsRows) {
+    if (!byBookmaker.has(row.bookmaker)) byBookmaker.set(row.bookmaker, row.price);
+  }
+  const prices = [...byBookmaker.values()];
+  if (prices.length < minBookmakers) return null;
+
+  const impliedProbs = prices.map((price) => 1 / price);
+  const avgProb = impliedProbs.reduce((a, b) => a + b, 0) / impliedProbs.length;
+  return { avgProb, bookCount: prices.length };
+}
+
+module.exports = { buildConsensus, buildSingleSidedConsensus };
