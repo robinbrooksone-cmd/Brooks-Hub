@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Match Detail — SA Rugby Betting Agent</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+  h1 { font-size: 1.4rem; margin-bottom: 0.2rem; }
+  h2 { font-size: 1.05rem; margin: 2rem 0 0.5rem; }
+  a { color: inherit; }
+  .back { font-size: 0.85rem; }
+  .disclaimer { font-size: 0.85rem; opacity: 0.75; margin: 0.5rem 0 1.5rem; }
+  .meta { opacity: 0.75; font-size: 0.9rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 0.5rem; }
+  th, td { text-align: left; padding: 0.35rem 0.5rem; border-bottom: 1px solid #8882; }
+  .edge { font-weight: 600; color: #1a7f37; }
+  .empty { opacity: 0.7; font-size: 0.9rem; }
+  .badge { font-size: 0.72rem; padding: 0.1rem 0.4rem; border-radius: 4px; background: #8882; }
+  details { margin-top: 0.5rem; }
+  summary { cursor: pointer; font-size: 0.9rem; opacity: 0.85; }
+</style>
+</head>
+<body>
+  <p class="back"><a href="/">&larr; All matches</a></p>
+  <h1 id="title">Loading…</h1>
+  <div class="meta" id="meta"></div>
+  <p class="disclaimer">Analysis only — no bets are placed automatically. Prices move fast; verify at the bookmaker before acting.</p>
+
+  <h2>Flagged opportunities</h2>
+  <div id="opportunities"></div>
+
+  <h2>Full board (every price we have, not just flagged ones)</h2>
+  <div id="board"></div>
+
+  <h2>Fair value by selection</h2>
+  <div id="fairValues"></div>
+
+  <details>
+    <summary>Price history (every snapshot ever ingested for this match)</summary>
+    <div id="history"></div>
+  </details>
+
+  <script>
+    var MARKET_LABELS = {
+      h2h: 'Match winner',
+      spreads: 'Handicap',
+      totals: 'Total points',
+      player_try_scorer_anytime: 'Anytime try scorer',
+      player_try_scorer_first: 'First try scorer',
+      player_try_scorer_last: 'Last try scorer',
+    };
+    var TYPE_LABELS = { book_outlier: 'Single-book mispricing', model_divergence: 'Whole-market disagreement' };
+    function marketLabel(m) { return MARKET_LABELS[m] || m; }
+
+    function table(headers, rowsHtml) {
+      if (!rowsHtml.length) return '<p class="empty">Nothing here yet.</p>';
+      return '<table><thead><tr>' + headers.map(function (h) { return '<th>' + h + '</th>'; }).join('') +
+        '</tr></thead><tbody>' + rowsHtml.join('') + '</tbody></table>';
+    }
+
+    async function load() {
+      var id = new URLSearchParams(location.search).get('id');
+      var res = await fetch('/api/matches/' + id);
+      if (!res.ok) {
+        document.getElementById('title').textContent = 'Match not found';
+        return;
+      }
+      var data = await res.json();
+      var m = data.match;
+
+      document.getElementById('title').textContent = m.home_team + ' vs ' + m.away_team;
+      document.getElementById('meta').textContent = m.competition + ' — kickoff ' + new Date(m.kickoff_at).toLocaleString() + ' — status: ' + m.status;
+
+      document.getElementById('opportunities').innerHTML = table(
+        ['Bookmaker', 'Market', 'Selection', 'Price', 'Fair', 'Edge', 'Confidence', 'Type'],
+        data.opportunities.map(function (o) {
+          return '<tr><td>' + o.bookmaker + '</td><td>' + marketLabel(o.market_type) + '</td><td>' + o.selection +
+            '</td><td>' + o.price.toFixed(2) + '</td><td>' + (1 / o.fair_prob).toFixed(2) +
+            '</td><td class="edge">+' + o.edge_pct.toFixed(1) + '%</td><td>' + o.confidence +
+            '</td><td><span class="badge">' + (TYPE_LABELS[o.opportunity_type] || o.opportunity_type) + '</span></td></tr>';
+        })
+      );
+
+      document.getElementById('board').innerHTML = table(
+        ['Bookmaker', 'Market', 'Selection', 'Line', 'Price', 'As of'],
+        data.board.map(function (o) {
+          return '<tr><td>' + o.bookmaker + '</td><td>' + marketLabel(o.market_type) + '</td><td>' + o.selection +
+            '</td><td>' + (o.line ?? '-') + '</td><td>' + o.price.toFixed(2) + '</td><td>' + o.captured_at + '</td></tr>';
+        })
+      );
+
+      document.getElementById('fairValues').innerHTML = table(
+        ['Market', 'Selection', 'Fair prob', 'Fair price', 'Method', 'Books used'],
+        data.fairValues.map(function (f) {
+          return '<tr><td>' + marketLabel(f.market_type) + '</td><td>' + f.selection + '</td><td>' +
+            (f.fair_prob * 100).toFixed(1) + '%</td><td>' + (1 / f.fair_prob).toFixed(2) + '</td><td>' +
+            f.method + '</td><td>' + f.contributing_books + '</td></tr>';
+        })
+      );
+
+      document.getElementById('history').innerHTML = table(
+        ['Bookmaker', 'Market', 'Selection', 'Line', 'Price', 'Captured at'],
+        data.priceHistory.slice().reverse().map(function (o) {
+          return '<tr><td>' + o.bookmaker + '</td><td>' + marketLabel(o.market_type) + '</td><td>' + o.selection +
+            '</td><td>' + (o.line ?? '-') + '</td><td>' + o.price.toFixed(2) + '</td><td>' + o.captured_at + '</td></tr>';
+        })
+      );
+    }
+    load();
+  </script>
+</body>
+</html>

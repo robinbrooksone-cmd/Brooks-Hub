@@ -3,6 +3,7 @@ const express = require('express');
 const { db } = require('../db');
 const config = require('../config');
 const { generateDailyReport, upcomingOpportunities, groupByMatch } = require('../reports/dailyReport');
+const { getMatchDetail, findMatches } = require('../reports/matchDetail');
 
 function createApp() {
   const app = express();
@@ -31,6 +32,18 @@ function createApp() {
   app.get('/api/reports/latest', (req, res) => {
     const { json } = generateDailyReport();
     res.json(json);
+  });
+
+  // Registered before /api/matches/:id so "search" isn't swallowed as an id param.
+  app.get('/api/matches/search', (req, res) => {
+    const { team, competition } = req.query;
+    res.json({ matches: findMatches({ team, competition }) });
+  });
+
+  app.get('/api/matches/:id', (req, res) => {
+    const detail = getMatchDetail(Number(req.params.id));
+    if (!detail) return res.status(404).json({ error: 'match not found' });
+    res.json(detail);
   });
 
   app.get('/health', (req, res) => res.json({ ok: true }));

@@ -155,6 +155,25 @@ npm run schedule  # run ingest -> analyze -> report daily at REPORT_TIME_CRON
 sanity-check the whole chain, or to call from your own cron/systemd unit instead of the
 built-in scheduler).
 
+### Dashboard: finding and drilling into one match
+
+The dashboard (`npm run serve`, `http://localhost:4100`) has a search box at the top —
+type a team name (e.g. "England" or "Fiji") to find a specific fixture, including one
+that's already kicked off or finished (the main list only shows upcoming matches, but
+search isn't restricted to that). Click any match name to open its detail page
+(`/match.html?id=<id>`), which shows:
+
+- every flagged opportunity for that match (both `book_outlier` and `model_divergence`)
+- the **full board** — every bookmaker's latest price on every market, not just the ones
+  that cleared the flagging thresholds, so you can see why something wasn't flagged
+- the blended fair value behind each selection, with the method used and how many books
+  contributed
+- complete price history (every snapshot ever ingested), for watching how a book's price
+  moved as you re-run `ingest`
+
+The same data is available directly via `GET /api/matches/search?team=...` and
+`GET /api/matches/:id` if you want to script against it.
+
 ### Manual match odds
 
 For fixtures the Odds API adapter and bookmaker scrapers don't reliably cover — smaller

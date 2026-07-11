@@ -18,11 +18,23 @@
   .empty { opacity: 0.7; }
   .type-model_divergence { opacity: 0.75; }
   .badge { font-size: 0.75rem; padding: 0.1rem 0.4rem; border-radius: 4px; background: #8882; }
+  .match h2 a { text-decoration: none; }
+  .match h2 a:hover { text-decoration: underline; }
+  .search { margin-bottom: 1.5rem; }
+  .search input { font-size: 0.95rem; padding: 0.4rem 0.6rem; width: 260px; max-width: 100%; }
+  .search-results { margin-top: 0.5rem; font-size: 0.9rem; }
+  .search-results a { display: block; padding: 0.2rem 0; }
 </style>
 </head>
 <body>
   <h1>South African Rugby Betting Agent — Value Report</h1>
   <p class="disclaimer">Analysis and reporting only. No bets are placed automatically. Odds move — verify at the bookmaker before acting. Bet within your means, only with licensed operators.</p>
+
+  <div class="search">
+    <input type="text" id="searchInput" placeholder="Find a match by team name (e.g. England, Fiji)…" />
+    <div class="search-results" id="searchResults"></div>
+  </div>
+
   <div id="content">Loading…</div>
 
   <script>
@@ -60,12 +72,33 @@
             '<td><span class="badge">' + (TYPE_LABELS[o.opportunity_type] || o.opportunity_type) + '</span></td>' +
           '</tr>';
         }).join('');
-        return '<div class="match"><h2>' + g.homeTeam + ' vs ' + g.awayTeam + ' — ' + g.competition + '</h2>' +
+        return '<div class="match"><h2><a href="/match.html?id=' + g.matchId + '">' + g.homeTeam + ' vs ' + g.awayTeam + ' — ' + g.competition + '</a></h2>' +
           '<div class="kickoff">' + new Date(g.kickoffAt).toLocaleString() + '</div>' +
           '<table><thead><tr><th>Bookmaker</th><th>Market</th><th>Selection</th><th>Price</th><th>Fair</th><th>Edge</th><th>Confidence</th><th>Type</th></tr></thead>' +
           '<tbody>' + rows + '</tbody></table></div>';
       }).join('');
     }
+
+    let searchTimer = null;
+    document.getElementById('searchInput').addEventListener('input', function (e) {
+      clearTimeout(searchTimer);
+      const term = e.target.value.trim();
+      const resultsEl = document.getElementById('searchResults');
+      if (!term) { resultsEl.innerHTML = ''; return; }
+      searchTimer = setTimeout(async function () {
+        const res = await fetch('/api/matches/search?team=' + encodeURIComponent(term));
+        const data = await res.json();
+        if (!data.matches.length) {
+          resultsEl.innerHTML = '<span class="empty">No matches found for "' + term + '". If it just kicked off, make sure odds have been ingested for it yet.</span>';
+          return;
+        }
+        resultsEl.innerHTML = data.matches.map(function (m) {
+          return '<a href="/match.html?id=' + m.id + '">' + m.home_team + ' vs ' + m.away_team + ' — ' + m.competition +
+            ' (' + new Date(m.kickoff_at).toLocaleString() + ')</a>';
+        }).join('');
+      }, 250);
+    });
+
     load();
   </script>
 </body>
