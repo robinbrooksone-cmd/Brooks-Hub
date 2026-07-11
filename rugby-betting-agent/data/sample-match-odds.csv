@@ -1,0 +1,12 @@
+# SAMPLE / FICTIONAL DATA — for demonstrating the CSV format only.
+# These are NOT real odds. Illustrates the U20 Rugby World Cup case: note the
+# "U20" suffix on both team names — that's required, not cosmetic. Team identity
+# in this system is keyed by name alone (src/db.js), so a senior "South Africa"
+# and a junior "South Africa U20" MUST use different names or their Elo ratings
+# and player rosters will get merged into one meaningless team. Use this same
+# suffix consistently in seed-elo / seed-tries / ingest-props data for U20 sides.
+date,home_team,away_team,competition,bookmaker,market,selection,line,price
+2026-08-15T13:00:00Z,South Africa U20,New Zealand U20,U20 Rugby World Cup,BookA,h2h,South Africa U20,,2.10
+2026-08-15T13:00:00Z,South Africa U20,New Zealand U20,U20 Rugby World Cup,BookA,h2h,New Zealand U20,,1.75
+2026-08-15T13:00:00Z,South Africa U20,New Zealand U20,U20 Rugby World Cup,BookB,h2h,South Africa U20,,2.05
+2026-08-15T13:00:00Z,South Africa U20,New Zealand U20,U20 Rugby World Cup,BookB,h2h,New Zealand U20,,1.80

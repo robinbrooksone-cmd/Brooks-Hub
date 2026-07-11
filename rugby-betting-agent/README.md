@@ -155,6 +155,45 @@ npm run schedule  # run ingest -> analyze -> report daily at REPORT_TIME_CRON
 sanity-check the whole chain, or to call from your own cron/systemd unit instead of the
 built-in scheduler).
 
+### Manual match odds
+
+For fixtures the Odds API adapter and bookmaker scrapers don't reliably cover — smaller
+or age-grade tournaments especially (see below) — there's a CSV entry point mirroring
+the props one:
+
+```bash
+npm run ingest-match-odds -- data/your-match-odds.csv
+```
+
+Format: `date,home_team,away_team,competition,bookmaker,market,selection,line,price`
+(`market` is `h2h` / `spreads` / `totals`; `selection` is a team name for h2h/spreads,
+or `Over`/`Under` for totals). `data/sample-match-odds.csv` is fictional placeholder
+data, same as everything else under `data/`.
+
+## Age-grade competitions (U20 Rugby World Cup)
+
+Nothing in the data model is specific to senior rugby — `competition` is just a free-text
+field carried through matches, teams, and odds — so the U20 Rugby World Cup (or Currie
+Cup U20s, Six Nations U20s, etc.) works the same way as any other competition. Two things
+are genuinely different in practice, though:
+
+- **Odds coverage is thin.** Mainstream odds-data APIs mostly don't carry a dedicated
+  sport key for age-grade rugby, and check `/v4/sports` for your provider before assuming
+  otherwise — `ODDS_API_SPORT_KEYS` in `.env.example` doesn't include a U20 key because
+  none could be verified as reliably supported. Bookmakers that do list U20 markets often
+  only have them close to kickoff, and may not offer props at all. `npm run
+  ingest-match-odds` / `npm run ingest-props` (manual CSV) are the realistic path here,
+  more so than for senior tests.
+- **Team naming must disambiguate age grade.** This is the important one: team identity
+  in this system is keyed by name alone (`getOrCreateTeam` in `src/db.js`), and Elo
+  ratings, attack/defense rates, and player try-shares are all tracked per team name. A
+  senior "South Africa" and the U20 "South Africa" are completely different teams with
+  completely different squads — if you import both under the same name, their ratings
+  and rosters get silently merged into one meaningless team. **Always suffix age-grade
+  sides** (e.g. `South Africa U20`) consistently across every CSV you feed in — Elo
+  results, try logs, and odds alike. `data/sample-match-odds.csv` shows this convention
+  with a fictional South Africa U20 vs New Zealand U20 fixture.
+
 ## Data model
 
 SQLite (`better-sqlite3`), file at `DB_PATH` (default `data/rugby-betting-agent.db`,

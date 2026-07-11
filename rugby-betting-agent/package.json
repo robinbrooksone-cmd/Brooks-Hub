@@ -10,6 +10,7 @@
     "seed-elo": "node src/cli.js seed-elo",
     "seed-tries": "node src/cli.js seed-tries",
     "ingest-props": "node src/cli.js ingest-props",
+    "ingest-match-odds": "node src/cli.js ingest-match-odds",
     "serve": "node src/cli.js serve",
     "schedule": "node src/cli.js schedule",
     "selfcheck": "node src/selfcheck.js"

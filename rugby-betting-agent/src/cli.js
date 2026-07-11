@@ -4,6 +4,7 @@ const { ingestAll } = require('./ingest/ingestOdds');
 const { importResultsFromFile } = require('./ingest/importResults');
 const { importTeamMatchTries, importPlayerTries } = require('./ingest/importTryData');
 const { importPropOddsFromFile } = require('./ingest/importPropOdds');
+const { importMatchOddsFromFile } = require('./ingest/importMatchOdds');
 const { analyzeAllUpcomingMatches } = require('./analysis/analyze');
 const { generateDailyReport } = require('./reports/dailyReport');
 const { startServer } = require('./server/app');
@@ -50,6 +51,13 @@ async function main() {
       if (rejected.length) console.log(`Rejected ${rejected.length} rows:`, rejected.slice(0, 5));
       break;
     }
+    case 'ingest-match-odds': {
+      const file = args[0] || path.join(__dirname, '..', 'data', 'sample-match-odds.csv');
+      const { stored, rejected } = importMatchOddsFromFile(file);
+      console.log(`Stored ${stored} match odds rows from ${file}.`);
+      if (rejected.length) console.log(`Rejected ${rejected.length} rows:`, rejected.slice(0, 5));
+      break;
+    }
     case 'serve': {
       startServer();
       break;
@@ -72,6 +80,8 @@ Commands:
   seed-elo [csvPath]   Import historical results into the Elo model (defaults to sample data)
   seed-tries [teamCsvPath] [playerCsvPath]   Import team/player try history for the props model
   ingest-props [csvPath]   Import manually-collected player prop odds (anytime/first try scorer)
+  ingest-match-odds [csvPath]   Import manually-collected match odds (h2h/spreads/totals) — useful for
+                                 fixtures thin on API/scraper coverage, e.g. the U20 World Cup
   serve       Start the dashboard web server
   schedule    Start the daily cron scheduler (ingest -> analyze -> report)
   pipeline    Run ingest -> analyze -> report once, immediately
