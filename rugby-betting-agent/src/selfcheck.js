@@ -11,6 +11,7 @@ const { updateRatings, matchProbabilities, expectedScore } = require('./analysis
 const { blendProbabilities } = require('./analysis/fairValue');
 const { kellyFraction, median } = require('./analysis/valueFinder');
 const { fairTryScorerProb } = require('./analysis/propsModel');
+const { inverseNormalCdf, impliedMarginFromWinProb } = require('./analysis/impliedSpread');
 
 function approxEqual(a, b, eps = 1e-6) {
   assert(Math.abs(a - b) < eps, `expected ${a} ~= ${b}`);
@@ -124,6 +125,20 @@ function checkSingleSidedConsensus() {
   console.log('buildSingleSidedConsensus: OK');
 }
 
+function checkImpliedSpread() {
+  approxEqual(inverseNormalCdf(0.5), 0, 1e-6);
+  // Well-known reference value: the two-tailed 95% z-score.
+  approxEqual(inverseNormalCdf(0.975), 1.959964, 1e-4);
+  // Symmetric around 0.5.
+  approxEqual(inverseNormalCdf(0.25), -inverseNormalCdf(0.75), 1e-6);
+
+  approxEqual(impliedMarginFromWinProb(0.5, 14.5), 0, 1e-6);
+  assert(impliedMarginFromWinProb(0.9, 14.5) > impliedMarginFromWinProb(0.6, 14.5), 'higher win prob should imply a bigger margin');
+  assert(impliedMarginFromWinProb(0.5, 14.5) === -impliedMarginFromWinProb(0.5, 14.5)); // both zero, sanity
+
+  console.log('impliedSpread: OK');
+}
+
 checkDevig();
 checkConsensus();
 checkElo();
@@ -131,4 +146,5 @@ checkBlend();
 checkKelly();
 checkPropsModel();
 checkSingleSidedConsensus();
+checkImpliedSpread();
 console.log('\nAll self-checks passed.');

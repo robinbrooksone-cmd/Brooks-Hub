@@ -37,6 +37,8 @@ module.exports = {
     edgeThresholdPct: num(process.env.EDGE_THRESHOLD_PCT, 3),
     outlierThresholdPct: num(process.env.OUTLIER_THRESHOLD_PCT, 5),
     modelDivergenceThresholdPct: num(process.env.MODEL_DIVERGENCE_THRESHOLD_PCT, 8),
+    // Approximation, not a verified constant — see src/analysis/impliedSpread.js.
+    rugbyMarginStdDev: num(process.env.RUGBY_MARGIN_STD_DEV, 14.5),
     minBookmakersForConsensus: num(process.env.MIN_BOOKMAKERS_FOR_CONSENSUS, 2),
     consensusWeight: num(process.env.CONSENSUS_WEIGHT, 0.65),
     eloWeight: num(process.env.ELO_WEIGHT, 0.35),
