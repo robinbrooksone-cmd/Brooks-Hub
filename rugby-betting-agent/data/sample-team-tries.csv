@@ -1,0 +1,17 @@
+# SAMPLE / FICTIONAL DATA — for demonstrating the CSV format only.
+# These are NOT real historical results. One row per team per match (a real match
+# needs two rows, one per side) — this drives both attack rate (a team's own
+# tries_scored rows) and defense factor (the opponent's tries_scored rows where
+# opponent = this team, i.e. tries conceded). Replace with real try-count data
+# before trusting the props model.
+date,competition,team,opponent,tries_scored
+2025-01-05,Sample Cup,Team A,Team B,3
+2025-01-05,Sample Cup,Team B,Team A,2
+2025-01-12,Sample Cup,Team B,Team C,1
+2025-01-12,Sample Cup,Team C,Team B,4
+2025-01-19,Sample Cup,Team C,Team A,2
+2025-01-19,Sample Cup,Team A,Team C,3
+2025-01-26,Sample Cup,Team A,Team D,4
+2025-01-26,Sample Cup,Team D,Team A,1
+2025-02-02,Sample Cup,Team D,Team B,2
+2025-02-02,Sample Cup,Team B,Team D,2

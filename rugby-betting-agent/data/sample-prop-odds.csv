@@ -1,0 +1,11 @@
+# SAMPLE / FICTIONAL DATA — for demonstrating the CSV format only.
+# These are NOT real odds. date should be an upcoming ISO kickoff time so the
+# match shows up as "scheduled" and in-window for the daily report. home_team/
+# away_team/player_team must match the team names used elsewhere in your data
+# (Elo results, try logs) for the models to link up correctly.
+date,home_team,away_team,competition,bookmaker,player,player_team,position,market,price
+2026-08-01T15:00:00Z,Team A,Team B,Sample Cup,BookA,Player H,Team A,Hooker,player_try_scorer_anytime,3.00
+2026-08-01T15:00:00Z,Team A,Team B,Sample Cup,BookB,Player H,Team A,Hooker,player_try_scorer_anytime,3.10
+2026-08-01T15:00:00Z,Team A,Team B,Sample Cup,BookC,Player H,Team A,Hooker,player_try_scorer_anytime,2.90
+2026-08-01T15:00:00Z,Team A,Team B,Sample Cup,BookA,Player W,Team A,Wing,player_try_scorer_anytime,2.20
+2026-08-01T15:00:00Z,Team A,Team B,Sample Cup,BookB,Player W,Team A,Wing,player_try_scorer_anytime,2.25

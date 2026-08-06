@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>SA Rugby Betting Agent — Value Report</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root { color-scheme: light dark; }
+  body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; max-width: 960px; margin: 2rem auto; padding: 0 1rem; }
+  h1 { font-size: 1.4rem; }
+  .disclaimer { font-size: 0.85rem; opacity: 0.75; margin-bottom: 1.5rem; }
+  .match { border: 1px solid #8884; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+  .match h2 { font-size: 1.05rem; margin: 0 0 0.25rem; }
+  .kickoff { font-size: 0.85rem; opacity: 0.7; margin-bottom: 0.75rem; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 0.35rem 0.5rem; border-bottom: 1px solid #8882; }
+  .edge { font-weight: 600; color: #1a7f37; }
+  .empty { opacity: 0.7; }
+  .type-model_divergence { opacity: 0.75; }
+  .badge { font-size: 0.75rem; padding: 0.1rem 0.4rem; border-radius: 4px; background: #8882; }
+  .match h2 a { text-decoration: none; }
+  .match h2 a:hover { text-decoration: underline; }
+  .search { margin-bottom: 1.5rem; }
+  .search input { font-size: 0.95rem; padding: 0.4rem 0.6rem; width: 260px; max-width: 100%; }
+  .search-results { margin-top: 0.5rem; font-size: 0.9rem; }
+  .search-results a { display: block; padding: 0.2rem 0; }
+</style>
+</head>
+<body>
+  <h1>South African Rugby Betting Agent — Value Report</h1>
+  <p class="disclaimer">Analysis and reporting only. No bets are placed automatically. Odds move — verify at the bookmaker before acting. Bet within your means, only with licensed operators.</p>
+
+  <div class="search">
+    <input type="text" id="searchInput" placeholder="Find a match by team name (e.g. England, Fiji)…" />
+    <div class="search-results" id="searchResults"></div>
+  </div>
+
+  <div id="content">Loading…</div>
+
+  <script>
+    var MARKET_LABELS = {
+      h2h: 'Match winner',
+      spreads: 'Handicap',
+      totals: 'Total points',
+      player_try_scorer_anytime: 'Anytime try scorer',
+      player_try_scorer_first: 'First try scorer',
+      player_try_scorer_last: 'Last try scorer',
+    };
+    var TYPE_LABELS = {
+      book_outlier: 'Single-book mispricing',
+      model_divergence: 'Whole-market disagreement',
+    };
+
+    async function load() {
+      const res = await fetch('/api/opportunities?days=7');
+      const data = await res.json();
+      const el = document.getElementById('content');
+      if (!data.matchGroups.length) {
+        el.innerHTML = '<p class="empty">No flagged opportunities right now. Run the ingest + analyze pipeline, or check back later.</p>';
+        return;
+      }
+      el.innerHTML = data.matchGroups.map(function (g) {
+        const rows = g.opportunities.map(function (o) {
+          return '<tr class="type-' + o.opportunity_type + '">' +
+            '<td>' + o.bookmaker + '</td>' +
+            '<td>' + (MARKET_LABELS[o.market_type] || o.market_type) + '</td>' +
+            '<td>' + o.selection + '</td>' +
+            '<td>' + o.price.toFixed(2) + '</td>' +
+            '<td>' + (1 / o.fair_prob).toFixed(2) + '</td>' +
+            '<td class="edge">+' + o.edge_pct.toFixed(1) + '%</td>' +
+            '<td>' + o.confidence + '</td>' +
+            '<td><span class="badge">' + (TYPE_LABELS[o.opportunity_type] || o.opportunity_type) + '</span></td>' +
+          '</tr>';
+        }).join('');
+        return '<div class="match"><h2><a href="/match.html?id=' + g.matchId + '">' + g.homeTeam + ' vs ' + g.awayTeam + ' — ' + g.competition + '</a></h2>' +
+          '<div class="kickoff">' + new Date(g.kickoffAt).toLocaleString() + '</div>' +
+          '<table><thead><tr><th>Bookmaker</th><th>Market</th><th>Selection</th><th>Price</th><th>Fair</th><th>Edge</th><th>Confidence</th><th>Type</th></tr></thead>' +
+          '<tbody>' + rows + '</tbody></table></div>';
+      }).join('');
+    }
+
+    let searchTimer = null;
+    document.getElementById('searchInput').addEventListener('input', function (e) {
+      clearTimeout(searchTimer);
+      const term = e.target.value.trim();
+      const resultsEl = document.getElementById('searchResults');
+      if (!term) { resultsEl.innerHTML = ''; return; }
+      searchTimer = setTimeout(async function () {
+        const res = await fetch('/api/matches/search?team=' + encodeURIComponent(term));
+        const data = await res.json();
+        if (!data.matches.length) {
+          resultsEl.innerHTML = '<span class="empty">No matches found for "' + term + '". If it just kicked off, make sure odds have been ingested for it yet.</span>';
+          return;
+        }
+        resultsEl.innerHTML = data.matches.map(function (m) {
+          return '<a href="/match.html?id=' + m.id + '">' + m.home_team + ' vs ' + m.away_team + ' — ' + m.competition +
+            ' (' + new Date(m.kickoff_at).toLocaleString() + ')</a>';
+        }).join('');
+      }, 250);
+    });
+
+    load();
+  </script>
+</body>
+</html>

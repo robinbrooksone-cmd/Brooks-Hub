@@ -1,0 +1,80 @@
+{
+  "_comment": "Generic scraper config for SA bookmakers, consumed by src/providers/scraperEngine.js. Every entry ships disabled with placeholder selectors — none of these have been verified against the live site. To activate one: inspect the bookmaker's rugby odds page yourself (browser devtools), fill in real CSS selectors below, set enabled=true, then flip SCRAPERS_ENABLED=true in .env. Always check the bookmaker's terms of service and robots.txt before scraping — this repo does not warrant that scraping any given site is permitted.",
+  "bookmakers": [
+    {
+      "key": "betway",
+      "label": "Betway",
+      "enabled": false,
+      "oddsUrl": "https://www.betway.co.za/sport/rugby-union",
+      "selectors": {
+        "eventRow": "REPLACE_WITH_REAL_SELECTOR",
+        "homeTeam": "REPLACE_WITH_REAL_SELECTOR",
+        "awayTeam": "REPLACE_WITH_REAL_SELECTOR",
+        "kickoffTime": "REPLACE_WITH_REAL_SELECTOR",
+        "homePrice": "REPLACE_WITH_REAL_SELECTOR",
+        "awayPrice": "REPLACE_WITH_REAL_SELECTOR",
+        "drawPrice": "REPLACE_WITH_REAL_SELECTOR"
+      }
+    },
+    {
+      "key": "sunbet",
+      "label": "Sunbet",
+      "enabled": false,
+      "oddsUrl": "https://www.sunbet.co.za/sport/rugby-union",
+      "selectors": {
+        "eventRow": "REPLACE_WITH_REAL_SELECTOR",
+        "homeTeam": "REPLACE_WITH_REAL_SELECTOR",
+        "awayTeam": "REPLACE_WITH_REAL_SELECTOR",
+        "kickoffTime": "REPLACE_WITH_REAL_SELECTOR",
+        "homePrice": "REPLACE_WITH_REAL_SELECTOR",
+        "awayPrice": "REPLACE_WITH_REAL_SELECTOR",
+        "drawPrice": "REPLACE_WITH_REAL_SELECTOR"
+      }
+    },
+    {
+      "key": "hollywoodbets",
+      "label": "Hollywoodbets",
+      "enabled": false,
+      "oddsUrl": "https://www.hollywoodbets.net/sport/rugby",
+      "selectors": {
+        "eventRow": "REPLACE_WITH_REAL_SELECTOR",
+        "homeTeam": "REPLACE_WITH_REAL_SELECTOR",
+        "awayTeam": "REPLACE_WITH_REAL_SELECTOR",
+        "kickoffTime": "REPLACE_WITH_REAL_SELECTOR",
+        "homePrice": "REPLACE_WITH_REAL_SELECTOR",
+        "awayPrice": "REPLACE_WITH_REAL_SELECTOR",
+        "drawPrice": "REPLACE_WITH_REAL_SELECTOR"
+      }
+    },
+    {
+      "key": "worldsportsbetting",
+      "label": "World Sports Betting",
+      "enabled": false,
+      "oddsUrl": "https://www.worldsportsbetting.co.za/sport/rugby-union",
+      "selectors": {
+        "eventRow": "REPLACE_WITH_REAL_SELECTOR",
+        "homeTeam": "REPLACE_WITH_REAL_SELECTOR",
+        "awayTeam": "REPLACE_WITH_REAL_SELECTOR",
+        "kickoffTime": "REPLACE_WITH_REAL_SELECTOR",
+        "homePrice": "REPLACE_WITH_REAL_SELECTOR",
+        "awayPrice": "REPLACE_WITH_REAL_SELECTOR",
+        "drawPrice": "REPLACE_WITH_REAL_SELECTOR"
+      }
+    },
+    {
+      "key": "supabets",
+      "label": "Supabets",
+      "enabled": false,
+      "oddsUrl": "https://www.supabets.co.za/sport/rugby-union",
+      "selectors": {
+        "eventRow": "REPLACE_WITH_REAL_SELECTOR",
+        "homeTeam": "REPLACE_WITH_REAL_SELECTOR",
+        "awayTeam": "REPLACE_WITH_REAL_SELECTOR",
+        "kickoffTime": "REPLACE_WITH_REAL_SELECTOR",
+        "homePrice": "REPLACE_WITH_REAL_SELECTOR",
+        "awayPrice": "REPLACE_WITH_REAL_SELECTOR",
+        "drawPrice": "REPLACE_WITH_REAL_SELECTOR"
+      }
+    }
+  ]
+}

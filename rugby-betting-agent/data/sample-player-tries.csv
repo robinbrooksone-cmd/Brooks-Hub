@@ -1,0 +1,14 @@
+# SAMPLE / FICTIONAL DATA — for demonstrating the CSV format only.
+# These are NOT real players or results. One row per player per match they
+# featured in (tries can be 0). Player H below is a deliberately illustrative
+# example: a hooker who takes an outsized share of Team A's tries (driving-maul
+# archetype) — that's the exact pattern the try-scorer model is built to surface
+# from real data, not to assume. Replace with real player try-count data before
+# trusting the props model.
+date,competition,team,player,position,tries
+2025-01-05,Sample Cup,Team A,Player H,Hooker,1
+2025-01-05,Sample Cup,Team A,Player W,Wing,2
+2025-01-19,Sample Cup,Team A,Player H,Hooker,1
+2025-01-19,Sample Cup,Team A,Player W,Wing,2
+2025-01-26,Sample Cup,Team A,Player H,Hooker,2
+2025-01-26,Sample Cup,Team A,Player W,Wing,2
