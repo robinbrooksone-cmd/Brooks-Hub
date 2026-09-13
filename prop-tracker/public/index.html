@@ -15,9 +15,10 @@
     --ink-dim: #8da2bb;
     --ink-faint: #5d7392;
     --hit: #2fd07a;
-    --live: #f2b544;
+    --live: #5aa9ff;   /* blue, not amber: amber vs green fails CVD separation */
     --miss: #f2555a;
     --pending: #4a5c76;
+    --warn: #f2b544;   /* banners only, never a leg status */
     --accent: #5aa9ff;
     --radius: 12px;
   }
@@ -64,7 +65,7 @@
   button.ghost { background: transparent; }
 
   .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--hit); display: inline-block; }
-  .dot.stale { background: var(--live); }
+  .dot.stale { background: var(--warn); }
   .dot.down { background: var(--miss); }
 
   .banner {
@@ -91,7 +92,7 @@
     font-size: 11px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase;
     padding: 4px 10px; border-radius: 999px; border: 1px solid;
   }
-  .pill.alive { color: var(--live); border-color: rgba(242,181,68,.4); background: rgba(242,181,68,.10); }
+  .pill.alive { color: var(--live); border-color: rgba(90,169,255,.4); background: rgba(90,169,255,.10); }
   .pill.won   { color: var(--hit);  border-color: rgba(47,208,122,.4); background: rgba(47,208,122,.10); }
   .pill.dead  { color: var(--miss); border-color: rgba(242,85,90,.4);  background: rgba(242,85,90,.10); }
 
@@ -119,6 +120,7 @@
   }
   .leg:first-of-type { border-top: none; }
   .leg.hit { background: rgba(47,208,122,.055); }
+  .leg.live { background: rgba(90,169,255,.05); }
   .leg.miss { background: rgba(242,85,90,.05); }
   .leg.unset { background: rgba(255,255,255,.02); }
 
@@ -133,15 +135,19 @@
   .val { text-align: right; white-space: nowrap; }
   .val .cur { font-size: 20px; font-weight: 680; letter-spacing: -.4px; }
   .val .of { color: var(--ink-faint); font-size: 13px; }
-  .leg.hit .val .cur { color: var(--hit); }
-  .leg.miss .val .cur { color: var(--miss); }
-  .leg.pending .val .cur, .leg.unset .val .cur { color: var(--ink-faint); }
+  .leg.hit .val .cur,  .p-prop.hit .val .cur  { color: var(--hit); }
+  .leg.miss .val .cur, .p-prop.miss .val .cur { color: var(--miss); }
+  .leg.pending .val .cur, .leg.unset .val .cur,
+  .p-prop.pending .val .cur { color: var(--ink-faint); }
+  .p-prop.hit { background: rgba(47,208,122,.05); }
+  .p-prop.miss { background: rgba(242,85,90,.045); }
 
   .bar { height: 7px; background: #1b2534; border-radius: 4px; overflow: hidden; position: relative; }
   .bar i { display: block; height: 100%; border-radius: 4px; background: var(--live); transition: width .5s ease; }
-  .leg.hit  .bar i { background: var(--hit); }
-  .leg.miss .bar i { background: var(--miss); }
-  .leg.pending .bar i { background: var(--pending); }
+  .leg.hit .bar i,     .p-prop.hit .bar i     { background: var(--hit); }
+  .leg.miss .bar i,    .p-prop.miss .bar i    { background: var(--miss); }
+  .leg.live .bar i,    .p-prop.live .bar i    { background: var(--live); }
+  .leg.pending .bar i, .p-prop.pending .bar i { background: var(--pending); }
   .game { color: var(--ink-faint); font-size: 11.5px; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   .stat { text-align: right; font-size: 12px; font-weight: 600; white-space: nowrap; }
@@ -150,7 +156,7 @@
   .stat.miss { color: var(--miss); }
   .stat.pending, .stat.unset { color: var(--ink-faint); font-weight: 500; }
 
-  .warn { color: var(--live); font-size: 11.5px; margin-top: 3px; }
+  .warn { color: var(--warn); font-size: 11.5px; margin-top: 3px; }
 
   /* ---------- games ---------- */
 
@@ -209,6 +215,92 @@
   }
   .x:hover { color: var(--miss); background: rgba(242,85,90,.12); }
 
+
+  /* ---------- summary row ---------- */
+
+  .summary {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px; margin-top: 18px;
+  }
+  .tile {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 13px 15px;
+  }
+  .tile .n { font-size: 26px; font-weight: 680; letter-spacing: -.6px; line-height: 1.1; }
+  .tile .k { color: var(--ink-faint); font-size: 11.5px; margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
+  .tile.hit .n { color: var(--hit); }
+  .tile.live .n { color: var(--live); }
+  .tile.miss .n { color: var(--miss); }
+
+  /* ---------- view toggle ---------- */
+
+  .views { display: flex; gap: 2px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 9px; padding: 3px; }
+  .views button {
+    border: none; background: none; border-radius: 6px; padding: 6px 13px;
+    font-size: 13px; font-weight: 550; color: var(--ink-dim);
+  }
+  .views button[aria-pressed="true"] { background: #22304a; color: #fff; }
+  .views button:hover:not([aria-pressed="true"]) { color: var(--ink); }
+
+  /* ---------- stat lines ---------- */
+
+  .statline {
+    display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;
+    font-size: 12.5px; margin-top: 4px;
+  }
+  .statline .cat {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .6px;
+    color: var(--ink-faint); min-width: 58px;
+  }
+  .statline .vals { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .statline.none { color: var(--ink-faint); font-style: italic; }
+
+  /* ---------- players view ---------- */
+
+  .player {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: var(--radius); margin-top: 12px; overflow: hidden;
+  }
+  .player.in { border-color: rgba(90,169,255,.3); }
+  .p-head { display: flex; gap: 13px; align-items: flex-start; padding: 14px 16px; }
+  .p-head img {
+    width: 46px; height: 46px; border-radius: 50%; background: var(--panel-2);
+    object-fit: cover; flex: none;
+  }
+  .p-id { flex: 1 1 auto; min-width: 0; }
+  .p-id .nm { font-size: 16px; font-weight: 650; }
+  .p-id .tm { color: var(--ink-faint); font-size: 12px; margin-top: 2px; }
+  .p-game { text-align: right; font-size: 12.5px; white-space: nowrap; }
+  .p-game .sc { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .p-game .cl { color: var(--ink-faint); font-size: 11.5px; margin-top: 2px; }
+  .player.in .p-game .cl { color: var(--live); }
+
+  .p-stats { padding: 0 16px 14px; }
+  .p-props { border-top: 1px solid rgba(34,48,68,.55); }
+  .p-prop {
+    display: grid; grid-template-columns: minmax(90px,1fr) 110px 96px 1fr 84px;
+    gap: 12px; align-items: center; padding: 10px 16px;
+    border-top: 1px solid rgba(34,48,68,.35); font-size: 13px;
+  }
+  .p-prop:first-child { border-top: none; }
+  .p-prop .slipname { color: var(--ink-faint); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .p-prop .pr { color: var(--ink-dim); }
+
+  @media (max-width: 700px) {
+    /* Three tiles per row instead of two, so the summary stays one glance. */
+    .summary { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .tile { padding: 10px 11px; }
+    .tile .n { font-size: 21px; }
+    .tile .k { font-size: 10px; letter-spacing: .3px; }
+
+    .p-prop { grid-template-columns: 1fr 92px; grid-template-areas: "s v" "p t" "b b"; row-gap: 6px; }
+    .p-prop .slipname { grid-area: s; } .p-prop .val { grid-area: v; }
+    .p-prop .pr { grid-area: p; } .p-prop .stat { grid-area: t; text-align: left; }
+    .p-prop .bar-wrap { grid-area: b; }
+    .p-head { flex-wrap: wrap; }
+    .p-game { text-align: left; width: 100%; }
+  }
+
   .empty { color: var(--ink-faint); padding: 40px 0; text-align: center; }
 
   @media (max-width: 860px) {
@@ -233,6 +325,10 @@
       </div>
     </div>
     <div class="spacer"></div>
+    <div class="views" role="group" aria-label="View">
+      <button id="viewPlayers" aria-pressed="true">Players</button>
+      <button id="viewSlips" aria-pressed="false">Slips</button>
+    </div>
     <button class="ghost" id="sortBtn">Sort: slip order</button>
     <button id="refreshBtn">Refresh</button>
   </div>
@@ -240,6 +336,11 @@
 
 <div class="wrap">
   <div id="banner"></div>
+  <div class="summary" id="summary"></div>
+  <div id="players"></div>
+  <div id="slips"><div class="empty">Loading…</div></div>
+  <div id="games"></div>
+
   <details class="add" id="addPanel">
     <summary>+ Add a betslip</summary>
     <div class="add-body">
@@ -270,8 +371,6 @@ New York Giants - Dallas Cowboys"></textarea>
     </div>
   </details>
 
-  <div id="slips"><div class="empty">Loading slips…</div></div>
-  <div id="games"></div>
 </div>
 
 <script>
@@ -284,7 +383,14 @@ New York Giants - Dallas Cowboys"></textarea>
   let tickTimer = null;
   let nextPollAt = 0;
   let sortMode = 'slip';          // 'slip' | 'closest'
+  let view = 'players';           // 'players' | 'slips'
+
+  try {
+    const saved = localStorage.getItem('propTrackerView');
+    if (saved === 'players' || saved === 'slips') view = saved;
+  } catch { /* private window or blocked storage — the default is fine */ }
   let inFlight = false;
+  let lastData = null;
 
   const $ = (id) => document.getElementById(id);
 
@@ -370,6 +476,9 @@ New York Giants - Dallas Cowboys"></textarea>
           <div class="bar"><i style="width:${pct}%"></i></div>
           <div class="game">${gameLine}</div>
           ${noLineNote ? `<div class="warn">${esc(noLineNote)}</div>` : ''}
+          ${leg.statLines && leg.statLines.length
+            ? `<div class="statline"><span class="vals">${esc(leg.statLines.map((l) => l.text).join('  ·  '))}</span></div>`
+            : ''}
         </div>
         <div class="stat ${leg.status} num">${esc(legStatusText(leg))}</div>
       </div>`;
@@ -418,6 +527,82 @@ New York Giants - Dallas Cowboys"></textarea>
         </div>
         ${sortLegs(slip.legs).map(renderLeg).join('')}
       </section>`;
+  }
+
+  /* ---------- stat lines & players ---------- */
+
+  function renderStatLines(lines, emptyText) {
+    if (!lines || !lines.length) {
+      return `<div class="statline none">${esc(emptyText)}</div>`;
+    }
+    return lines
+      .map(
+        (l) =>
+          `<div class="statline"><span class="cat">${esc(l.category)}</span><span class="vals">${esc(l.text)}</span></div>`
+      )
+      .join('');
+  }
+
+  function statLineEmptyText(game) {
+    if (!game) return 'game not on this week\u2019s scoreboard';
+    if (game.state === 'pre') return `hasn\u2019t kicked off \u2014 ${game.detail}`;
+    if (game.state === 'post') return 'no stats recorded';
+    return 'no box-score line yet';
+  }
+
+  function renderProp(p) {
+    const pct = Math.round((p.pct || 0) * 100);
+    return `
+      <div class="p-prop ${p.status}">
+        <div class="slipname">${esc(p.slip)}</div>
+        <div class="pr">${esc(p.prop)}</div>
+        <div class="val num">
+          <span class="cur">${p.value === null ? '—' : p.value}</span>
+          <span class="of"> / ${p.line}</span>
+        </div>
+        <div class="bar-wrap"><div class="bar"><i style="width:${pct}%"></i></div></div>
+        <div class="stat ${p.status} num">${esc(legStatusText(p))}</div>
+      </div>`;
+  }
+
+  function renderPlayer(pl) {
+    const game = pl.game;
+    const state = game ? game.state : 'none';
+    const teamLine = [pl.team, pl.position].filter(Boolean).join(' · ');
+
+    return `
+      <section class="player ${state}">
+        <div class="p-head">
+          ${pl.headshot ? `<img src="${esc(pl.headshot)}" alt="" loading="lazy" onerror="this.removeAttribute('src')">` : '<img alt="">'}
+          <div class="p-id">
+            <div class="nm">${esc(pl.name)}</div>
+            <div class="tm">${esc(teamLine)}</div>
+          </div>
+          ${game
+            ? `<div class="p-game"><div class="sc">${esc(game.score)}</div><div class="cl">${esc(game.detail)}</div></div>`
+            : ''}
+        </div>
+        <div class="p-stats">${renderStatLines(pl.statLines, statLineEmptyText(game))}</div>
+        <div class="p-props">${pl.props.map(renderProp).join('')}</div>
+      </section>`;
+  }
+
+  function renderSummary(data) {
+    const legs = (data.slips || []).flatMap((s) => s.legs).filter((l) => !l.placeholder);
+    const count = (st) => legs.filter((l) => l.status === st).length;
+    const liveGames = (data.games || []).filter((g) => g.state === 'in').length;
+
+    const tiles = [
+      { n: count('live'), k: 'in play', cls: 'live' },
+      { n: count('hit'), k: 'hit', cls: 'hit' },
+      { n: count('miss'), k: 'missed', cls: 'miss' },
+      { n: count('pending'), k: 'not started', cls: '' },
+      { n: liveGames, k: 'live games', cls: '' },
+    ];
+
+    $('summary').innerHTML = tiles
+      .map((t) => `<div class="tile ${t.cls}"><div class="n num">${t.n}</div><div class="k">${esc(t.k)}</div></div>`)
+      .join('');
   }
 
   function renderGames(games) {
@@ -486,9 +671,24 @@ New York Giants - Dallas Cowboys"></textarea>
     }
     $('banner').innerHTML = banners.join('');
 
-    $('slips').innerHTML = (data.slips || []).length
-      ? data.slips.map((s) => renderSlip(s, data.currency || 'R')).join('')
-      : '<div class="empty">No slips configured. Add one to slips.json.</div>';
+    renderSummary(data);
+
+    const hasSlips = (data.slips || []).length > 0;
+    const showPlayers = view === 'players';
+
+    $('players').hidden = !showPlayers;
+    $('slips').hidden = showPlayers;
+    $('sortBtn').hidden = showPlayers;
+
+    if (showPlayers) {
+      $('players').innerHTML = (data.players || []).length
+        ? data.players.map(renderPlayer).join('')
+        : '<div class="empty">No players yet. Add a betslip below.</div>';
+    } else {
+      $('slips').innerHTML = hasSlips
+        ? data.slips.map((s) => renderSlip(s, data.currency || 'R')).join('')
+        : '<div class="empty">No slips yet. Add a betslip below.</div>';
+    }
 
     $('games').innerHTML = renderGames(data.games);
   }
@@ -505,6 +705,7 @@ New York Giants - Dallas Cowboys"></textarea>
       const res = await fetch('/api/state', { cache: 'no-store' });
       const data = await res.json();
       if (data.pollMs) pollMs = data.pollMs;
+      lastData = data;
       render(data);
     } catch (err) {
       // The server is the thing that caches ESPN; if the server itself is
@@ -533,10 +734,21 @@ New York Giants - Dallas Cowboys"></textarea>
 
   $('refreshBtn').addEventListener('click', load);
 
+  function setView(next) {
+    view = next;
+    $('viewPlayers').setAttribute('aria-pressed', String(next === 'players'));
+    $('viewSlips').setAttribute('aria-pressed', String(next === 'slips'));
+    try { localStorage.setItem('propTrackerView', next); } catch { /* non-fatal */ }
+    if (lastData) render(lastData);
+  }
+
+  $('viewPlayers').addEventListener('click', () => setView('players'));
+  $('viewSlips').addEventListener('click', () => setView('slips'));
+
   $('sortBtn').addEventListener('click', () => {
     sortMode = sortMode === 'slip' ? 'closest' : 'slip';
     $('sortBtn').textContent = 'Sort: ' + (sortMode === 'slip' ? 'slip order' : 'closest first');
-    load();
+    if (lastData) render(lastData);
   });
 
   // Catch up immediately when the tab comes back rather than waiting out the timer.
@@ -647,6 +859,7 @@ New York Giants - Dallas Cowboys"></textarea>
     await load();
   });
 
+  setView(view);
   tickTimer = setInterval(tick, 1000);
   load();
 })();

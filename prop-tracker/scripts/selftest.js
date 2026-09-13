@@ -284,6 +284,38 @@ async function main() {
   assert.strictEqual(recovered.stale, false);
   pass('recovers to fresh on the next successful poll');
 
+  console.log('\nStat lines and the players view');
+  const withLines = await get('/api/state');
+
+  const allen = withLines.players.find((p) => p.name === 'Josh Allen');
+  assert.deepStrictEqual(
+    allen.statLines.map((l) => `${l.category}: ${l.text}`),
+    ['passing: 18/25, 210 yds, 2 TD', 'rushing: 6 car, 42 yds, 1 TD'],
+    'both category lines, in broadcast order, with zeroes suppressed'
+  );
+  pass('Josh Allen reads as "18/25, 210 yds, 2 TD" and "6 car, 42 yds, 1 TD"');
+
+  const burrow = withLines.players.find((p) => p.name === 'Joe Burrow');
+  assert.strictEqual(burrow.statLines[0].text, '24/38, 240 yds, 1 TD, 1 INT', 'a real INT is shown');
+  const gibbs = withLines.players.find((p) => p.name === 'Jahmyr Gibbs');
+  assert.strictEqual(gibbs.statLines[0].text, '12 car, 55 yds, 1 TD');
+  const arsb = withLines.players.find((p) => p.name === 'Amon-Ra St. Brown');
+  assert.strictEqual(arsb.statLines[0].text, '7 rec, 70 yds, 9 tgt', '0 TD is suppressed, targets are not');
+  pass('zero TDs are suppressed; a real INT and targets are kept');
+
+  const cookPlayer = withLines.players.find((p) => p.name === 'James Cook');
+  assert.deepStrictEqual(cookPlayer.statLines, [], 'no line yet means no line, not a row of zeroes');
+  assert.strictEqual(cookPlayer.props.length, 2, 'both slips riding on him are listed under one player');
+  assert.deepStrictEqual(cookPlayer.props.map((p) => p.slip).sort(), ['Eighteenfold', 'Eightfold']);
+  pass('a player carrying props on two slips appears once, with both listed');
+
+  const liveFirst = withLines.players.findIndex((p) => !p.game || p.game.state !== 'in');
+  const withStats = withLines.players.findIndex((p) => !p.statLines.length);
+  assert.ok(withStats > 0, 'players with a stat line sort above those without');
+  assert.ok(liveFirst === -1 || withStats < liveFirst + 1, 'live games lead the list');
+  assert.strictEqual(withLines.players[0].name, 'Derrick Henry');
+  pass('live games lead, and within them the players who have actually done something');
+
   console.log('\nBetslip parsing');
   const { parseSlipText, parseLegLine } = require('../slip-parser');
 

@@ -145,15 +145,18 @@ const shapeReport = { resolvedAt: null, categories: {} };
  * Work out which index in `athlete.stats[]` holds each stat we want.
  * Returns { pass_yds: 1, pass_td: 3, ... } plus a note on how each was found.
  */
+/** The display labels for a category, however ESPN happened to supply them. */
+function categoryLabels(category) {
+  if (Array.isArray(category.labels) && category.labels.length) return category.labels;
+  return String(category.text || '')
+    .split(/\s*,\s*/)
+    .filter(Boolean);
+}
+
 function resolveColumnIndices(category, categoryName) {
   const wanted = STAT_MAP[categoryName];
   const keys = Array.isArray(category.keys) ? category.keys : [];
-  const labels =
-    Array.isArray(category.labels) && category.labels.length
-      ? category.labels
-      : String(category.text || '')
-          .split(/\s*,\s*/)
-          .filter(Boolean);
+  const labels = categoryLabels(category);
 
   const indices = {};
   const how = {};
@@ -236,8 +239,18 @@ function buildPlayerIndex(summaries) {
               team: teamAbbr,
               eventId: event.id,
               stats: {},
+              // Raw label/value pairs per category, so the page can show the
+              // player's whole line and not only the one number we score.
+              lines: {},
             };
             byId.set(id, record);
+          }
+
+          if (Array.isArray(row.stats)) {
+            record.lines[categoryName] = {
+              labels: categoryLabels(category),
+              stats: row.stats.map((v) => (v == null ? '' : String(v))),
+            };
           }
 
           for (const statKey of Object.keys(STAT_MAP[categoryName])) {
@@ -264,6 +277,7 @@ function buildPlayerIndex(summaries) {
       continue;
     }
     Object.assign(existing.stats, record.stats);
+    Object.assign(existing.lines, record.lines);
     existing.headshot = existing.headshot || record.headshot;
     existing.position = existing.position || record.position;
     existing.shortName = existing.shortName || record.shortName;
@@ -480,6 +494,7 @@ module.exports = {
   initialLastKey,
   parseStatCell,
   resolveColumnIndices,
+  categoryLabels,
   buildPlayerIndex,
   lookupPlayer,
   parseScoreboard,

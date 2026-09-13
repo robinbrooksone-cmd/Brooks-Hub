@@ -98,6 +98,8 @@ function evaluateLeg(leg, position, live, eventsById) {
     positionAbbr: record?.position || roster?.position || '',
     stat: leg.stat,
     prop: describeLine(leg),
+    statLines: formatStatLines(record),
+    headshot: record?.headshot || null,
     noLine: !record, // no box-score entry for this player at all
     finished,
     value,
@@ -114,6 +116,125 @@ function evaluateLeg(leg, position, live, eventsById) {
         }
       : null,
   };
+}
+
+
+/* ------------------------------------------------------------------ */
+/* Stat lines                                                          */
+/* ------------------------------------------------------------------ */
+
+/**
+ * How to read a category's raw row back as the line you'd see on a broadcast
+ * graphic. `hideZero` keeps "0 TD" and "0 INT" out of the way without hiding
+ * the counting stats that are the point of the line.
+ */
+const LINE_FORMAT = {
+  passing: [
+    { label: 'C/ATT', render: (v) => v },
+    { label: 'YDS', render: (v) => `${v} yds` },
+    { label: 'TD', render: (v) => `${v} TD`, hideZero: true },
+    { label: 'INT', render: (v) => `${v} INT`, hideZero: true },
+  ],
+  rushing: [
+    { label: 'CAR', render: (v) => `${v} car` },
+    { label: 'YDS', render: (v) => `${v} yds` },
+    { label: 'TD', render: (v) => `${v} TD`, hideZero: true },
+  ],
+  receiving: [
+    { label: 'REC', render: (v) => `${v} rec` },
+    { label: 'YDS', render: (v) => `${v} yds` },
+    { label: 'TD', render: (v) => `${v} TD`, hideZero: true },
+    { label: 'TGTS', render: (v) => `${v} tgt`, hideZero: true },
+  ],
+};
+
+const CATEGORY_ORDER = ['passing', 'rushing', 'receiving'];
+
+/** "24/38, 240 yds, 1 TD, 1 INT" for each category the player figures in. */
+function formatStatLines(record) {
+  if (!record?.lines) return [];
+
+  const out = [];
+  for (const category of CATEGORY_ORDER) {
+    const line = record.lines[category];
+    if (!line) continue;
+
+    const parts = [];
+    for (const field of LINE_FORMAT[category] || []) {
+      const index = line.labels.findIndex(
+        (l) => String(l).trim().toUpperCase() === field.label
+      );
+      if (index < 0) continue;
+
+      const raw = line.stats[index];
+      if (raw == null || raw === '' || raw === '--') continue;
+      if (field.hideZero && Number(raw) === 0) continue;
+
+      parts.push(field.render(raw));
+    }
+    if (parts.length) out.push({ category, text: parts.join(', ') });
+  }
+  return out;
+}
+
+/**
+ * One entry per player rather than per leg, so a player carrying props on
+ * several slips is read once. Live games first — that's what's worth watching.
+ */
+function buildPlayers(slips) {
+  const byPlayer = new Map();
+
+  for (const slip of slips) {
+    for (const leg of slip.legs) {
+      if (leg.placeholder) continue;
+
+      const key = leg.player.toLowerCase();
+      let entry = byPlayer.get(key);
+      if (!entry) {
+        entry = {
+          key,
+          name: leg.player,
+          team: leg.team,
+          position: leg.positionAbbr,
+          headshot: leg.headshot || null,
+          game: leg.game,
+          statLines: leg.statLines || [],
+          props: [],
+        };
+        byPlayer.set(key, entry);
+      }
+
+      if (!entry.statLines.length && leg.statLines?.length) entry.statLines = leg.statLines;
+      if (!entry.game && leg.game) entry.game = leg.game;
+
+      entry.props.push({
+        slip: slip.name,
+        slipId: slip.id,
+        prop: leg.prop,
+        stat: leg.stat,
+        value: leg.value,
+        line: leg.line,
+        toGo: leg.toGo,
+        pct: leg.pct,
+        status: leg.status,
+      });
+    }
+  }
+
+  const gameRank = (g) => (g?.state === 'in' ? 0 : g?.state === 'pre' ? 1 : 2);
+
+  return [...byPlayer.values()].sort((a, b) => {
+    // Live games first, and within them the players who have actually done
+    // something — a stat line is the thing worth looking at.
+    const byGame = gameRank(a.game) - gameRank(b.game);
+    if (byGame) return byGame;
+
+    const byLine = (b.statLines.length ? 1 : 0) - (a.statLines.length ? 1 : 0);
+    if (byLine) return byLine;
+
+    if (b.props.length !== a.props.length) return b.props.length - a.props.length;
+    return a.name.localeCompare(b.name);
+  });
 }
 
 function evaluateSlip(slip, live, eventsById) {
@@ -147,6 +268,7 @@ function evaluateSlip(slip, live, eventsById) {
 
 function buildPayload(config, live) {
   const eventsById = new Map(live.games.map((g) => [g.id, g]));
+  const slips = config.slips.map((slip) => evaluateSlip(slip, live, eventsById));
   return {
     currency: config.currency || 'R',
     season: live.season,
@@ -155,8 +277,12 @@ function buildPayload(config, live) {
     boxScoresLoaded: live.boxScoresLoaded,
     fetchErrors: live.errors,
     rosters: rosterSummary(),
-    slips: config.slips.map((slip) => evaluateSlip(slip, live, eventsById)),
+    slips,
+    players: buildPlayers(slips),
   };
 }
 
-module.exports = { findGameByTeam, describeLine, evaluateLeg, evaluateSlip, buildPayload };
+module.exports = {
+  findGameByTeam, describeLine, evaluateLeg, evaluateSlip, buildPayload,
+  formatStatLines, buildPlayers,
+};

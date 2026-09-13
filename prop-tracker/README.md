@@ -49,13 +49,36 @@ The **×** on a slip header removes it.
 
 ## What you're looking at
 
+Two views, switched at the top right.
+
+**Players** (the default) is one card per player — his photo, team, the score and
+clock of his game, and his **full live stat line** straight off the box score:
+
+```
+Josh Allen            BUF · QB           HOU 14 – BUF 17 · 2nd 4:04
+  PASSING   18/25, 210 yds, 2 TD
+  RUSHING   6 car, 42 yds, 1 TD
+  Thirteenfold   30+ rush yds    42 / 30  ██████████  HIT
+```
+
+So you see what he's actually doing, not just the one number your bet needs.
+A player carrying props on more than one slip appears once, with every prop
+listed under him. Players in live games come first, and within those, the ones
+who've actually done something.
+
+**Slips** is the same data grouped by betslip, with the payout and how many legs
+are still alive.
+
+Across the top, a count of legs in play, hit, missed and not started, and how
+many of your games are live right now.
+
 Each leg shows the live number against your line, how far there is to go, and
 the score and clock of the game it's in.
 
 | | |
 |---|---|
-| **HIT** | Reached your number. Stays hit. |
-| **live** | Game in progress, still short — shows how much is left. |
+| **HIT** | Reached your number (green). Stays hit. |
+| **live** | Game in progress, still short (blue) — shows how much is left. |
 | **missed** | Game **finished** short of the number. |
 | **not started** | Kickoff hasn't happened, or he has no box-score line yet. |
 
@@ -213,6 +236,15 @@ overriding a stale hint, betslip parsing of all three slips verbatim, rejection
 of unsupported markets, and that a failed poll serves the last good data with
 `stale: true`.
 
+
+### Colour
+
+Status colours are green (hit), blue (in play), red (missed), grey (not started).
+Blue rather than the obvious amber for "in play": amber against the green sits at
+ΔE 5.4 under protanopia, which is below the readable floor for red-green
+colourblind viewers. The current three pass at 8.4. Every status also carries a
+text label — HIT, "15 to go", "missed by 10" — so nothing is carried by colour
+alone.
 
 ### If the numbers look wrong
 
