@@ -1,0 +1,88 @@
+{
+  "currency": "R",
+  "_help": {
+    "stat": "One of: pass_yds, pass_td, rush_yds, rush_td, rec_yds, rec, rec_td, any_td",
+    "line": "The number to reach. A '30+' prop is line: 30 and hits at >= 30. An 'Over 9.5' prop is line: 9.5.",
+    "label": "Optional display override, for props the 'N+ stat' phrasing doesn't fit.",
+    "team": "Display hint only — it links a leg to its game before kickoff. One abbreviation ('BAL'), or both sides of the matchup (['MIN','GB']) when you can't be sure which side the player is on. The real team comes from the box score once the game is live, so a wrong hint here cannot break matching.",
+    "aliases": "Optional extra spellings to match against ESPN's athlete names.",
+    "placeholder": "Set true for a leg you haven't filled in yet. It is never scored, and the slip can't read as WON while one is present."
+  },
+  "slips": [
+    {
+      "id": "thirteenfold",
+      "name": "Thirteenfold",
+      "book": "Sunbet",
+      "coupon": "13082243446",
+      "placedAt": "2026-09-06T19:48:00",
+      "stake": 100,
+      "odds": 589.0,
+      "payout": 58899.59,
+      "legs": [
+        { "player": "Ja'Marr Chase",      "team": "CIN", "stat": "rec_yds",  "line": 80 },
+        { "player": "Joe Burrow",         "team": "CIN", "stat": "pass_yds", "line": 250 },
+        { "player": "Derrick Henry",      "team": "BAL", "stat": "rush_yds", "line": 80 },
+        { "player": "Amon-Ra St. Brown",  "team": "DET", "stat": "rec_yds",  "line": 70 },
+        { "player": "Jahmyr Gibbs",       "team": "DET", "stat": "rush_yds", "line": 70 },
+        { "player": "Tetairoa McMillan",  "team": "CAR", "stat": "rec_yds",  "line": 60 },
+        { "player": "Tony Pollard",       "team": "TEN", "stat": "rush_yds", "line": 50 },
+        { "player": "George Pickens",     "team": "DAL", "stat": "rec_yds",  "line": 70 },
+        { "player": "DeVonta Smith",      "team": "PHI", "stat": "rec",      "line": 4 },
+        { "player": "Saquon Barkley",     "team": "PHI", "stat": "any_td",   "line": 1, "label": "anytime TD" },
+        { "player": "Parker Washington",  "team": "JAX", "stat": "rec_yds",  "line": 50 },
+        { "player": "De'Von Achane",      "team": "MIA", "stat": "rush_yds", "line": 60 },
+        { "player": "Josh Allen",         "team": "BUF", "stat": "rush_yds", "line": 30 }
+      ]
+    },
+    {
+      "id": "eightfold",
+      "name": "Eightfold",
+      "book": "Sunbet",
+      "coupon": "13106780082",
+      "placedAt": "2026-09-12T18:52:00",
+      "stake": 100,
+      "odds": null,
+      "payout": null,
+      "legs": [
+        { "player": "James Cook",       "team": "BUF", "stat": "rec",      "line": 3 },
+        { "player": "C.J. Stroud",      "team": "HOU", "stat": "rush_yds", "line": 9.5, "label": "over 9.5 rush yds" },
+        { "player": "Bijan Robinson",   "team": "ATL", "stat": "rec",      "line": 4 },
+        { "player": "Daniel Jones",     "team": "IND", "stat": "rush_yds", "line": 20 },
+        { "player": "Zay Flowers",      "team": "BAL", "stat": "rec",      "line": 5 },
+        { "player": "Jerry Jeudy",      "team": "CLE", "stat": "rec",      "line": 3 },
+        { "player": "Sam LaPorta",      "team": "DET", "stat": "rec",      "line": 4 },
+        { "player": "Tony Pollard",     "team": "TEN", "stat": "rush_yds", "line": 50 }
+      ]
+    },
+    {
+      "id": "eighteenfold",
+      "name": "Eighteenfold",
+      "book": "Sunbet",
+      "coupon": "13106847752",
+      "placedAt": "2026-09-12T19:05:00",
+      "stake": 100,
+      "odds": null,
+      "payout": null,
+      "legs": [
+        { "player": "James Cook",         "team": "BUF",          "stat": "rec",      "line": 2 },
+        { "player": "Garrett Wilson",     "team": "NYJ",          "stat": "rec_yds",  "line": 50 },
+        { "player": "Jared Goff",         "team": "DET",          "stat": "pass_td",  "line": 2 },
+        { "player": "Baker Mayfield",     "team": "TB",           "stat": "pass_yds", "line": 200 },
+        { "player": "Lamar Jackson",      "team": "BAL",          "stat": "rush_yds", "line": 20 },
+        { "player": "Ja'Kobi Lane",       "team": "BAL",          "stat": "rec",      "line": 2 },
+        { "player": "Keenan Allen",       "team": "IND",          "stat": "rec_yds",  "line": 20 },
+        { "player": "Tetairoa McMillan",  "team": "CAR",          "stat": "rec_yds",  "line": 40 },
+        { "player": "Bijan Robinson",     "team": "ATL",          "stat": "rush_yds", "line": 60 },
+        { "player": "Harold Fannin Jr.",  "team": "CLE",          "stat": "rec",      "line": 3 },
+        { "player": "Stefon Diggs",       "team": "WAS",          "stat": "rec",      "line": 3 },
+        { "player": "Stefon Diggs",       "team": "WAS",          "stat": "rec_yds",  "line": 40 },
+        { "player": "Justin Jefferson",   "team": "MIN",          "stat": "rec_yds",  "line": 50 },
+        { "player": "Kyler Murray",       "team": "MIN",          "stat": "rush_yds", "line": 20 },
+        { "player": "De'Von Achane",      "team": "MIA",          "stat": "rush_yds", "line": 50 },
+        { "player": "Ladd McConkey",      "team": "LAC",          "stat": "rec_yds",  "line": 40 },
+        { "player": "George Pickens",     "team": "DAL",          "stat": "rec_yds",  "line": 50 },
+        { "player": "Isaiah Likely",      "team": "NYG",          "stat": "rec_yds",  "line": 30 }
+      ]
+    }
+  ]
+}

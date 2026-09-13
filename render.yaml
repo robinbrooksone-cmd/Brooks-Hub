@@ -17,3 +17,26 @@ services:
       name: wedding-data
       mountPath: /var/data
       sizeGB: 1
+
+  - type: web
+    name: brooks-hub-props
+    runtime: node
+    plan: starter
+    region: oregon
+    rootDir: prop-tracker
+    buildCommand: echo "no dependencies to install"
+    startCommand: node server.js
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      # Set this at deploy time. Without it, anyone with the URL can read
+      # and edit your slips.
+      - key: ACCESS_PASSWORD
+        sync: false
+      # Keeps slips added from the page across redeploys.
+      - key: SLIPS_PATH
+        value: /var/data/slips.json
+    disk:
+      name: props-data
+      mountPath: /var/data
+      sizeGB: 1

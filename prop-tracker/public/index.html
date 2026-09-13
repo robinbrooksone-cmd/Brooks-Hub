@@ -1,0 +1,868 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NFL Prop Tracker</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b0f14'/%3E%3Cpath d='M8 21V11l8 10V11' stroke='%232fd07a' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='23' cy='19' r='2.4' fill='%23f2b544'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #0b0f14;
+    --panel: #121821;
+    --panel-2: #172030;
+    --line: #223044;
+    --ink: #e8eef6;
+    --ink-dim: #8da2bb;
+    --ink-faint: #5d7392;
+    --hit: #2fd07a;
+    --live: #5aa9ff;   /* blue, not amber: amber vs green fails CVD separation */
+    --miss: #f2555a;
+    --pending: #4a5c76;
+    --warn: #f2b544;   /* banners only, never a leg status */
+    --accent: #5aa9ff;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.45 ui-sans-serif, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px 64px; }
+
+  /* ---------- header ---------- */
+
+  header {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(11,15,20,.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .head-inner {
+    max-width: 1080px; margin: 0 auto; padding: 14px 16px;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  }
+  h1 { margin: 0; font-size: 17px; letter-spacing: .2px; font-weight: 650; }
+  h1 span { color: var(--ink-faint); font-weight: 400; }
+  .meta { color: var(--ink-dim); font-size: 12.5px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .spacer { flex: 1 1 auto; }
+
+  button {
+    font: inherit; font-size: 13px; font-weight: 550;
+    color: var(--ink); background: var(--panel-2);
+    border: 1px solid var(--line); border-radius: 8px;
+    padding: 7px 13px; cursor: pointer;
+  }
+  button:hover:not(:disabled) { border-color: var(--accent); color: #fff; }
+  button:disabled { opacity: .5; cursor: default; }
+  button.ghost { background: transparent; }
+
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--hit); display: inline-block; }
+  .dot.stale { background: var(--warn); }
+  .dot.down { background: var(--miss); }
+
+  .banner {
+    margin: 12px 0 0; padding: 10px 13px; border-radius: 10px;
+    font-size: 13px; border: 1px solid;
+    background: rgba(242,181,68,.10); border-color: rgba(242,181,68,.35); color: #f6cf87;
+  }
+  .banner.err { background: rgba(242,85,90,.10); border-color: rgba(242,85,90,.35); color: #ffb3b6; }
+
+  /* ---------- slip card ---------- */
+
+  .slip {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: var(--radius); margin-top: 18px; overflow: hidden;
+  }
+  .slip-head {
+    padding: 16px 18px; border-bottom: 1px solid var(--line);
+    display: flex; gap: 16px; align-items: center; flex-wrap: wrap;
+  }
+  .slip-title { font-size: 16px; font-weight: 650; }
+  .slip-sub { color: var(--ink-faint); font-size: 12.5px; margin-top: 3px; }
+
+  .pill {
+    font-size: 11px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 999px; border: 1px solid;
+  }
+  .pill.alive { color: var(--live); border-color: rgba(90,169,255,.4); background: rgba(90,169,255,.10); }
+  .pill.won   { color: var(--hit);  border-color: rgba(47,208,122,.4); background: rgba(47,208,122,.10); }
+  .pill.dead  { color: var(--miss); border-color: rgba(242,85,90,.4);  background: rgba(242,85,90,.10); }
+
+  .payout { text-align: right; }
+  .payout .big { font-size: 21px; font-weight: 680; letter-spacing: -.3px; }
+  .payout .small { color: var(--ink-faint); font-size: 12px; }
+
+  .pips { display: flex; gap: 4px; flex-wrap: wrap; }
+  .pip { width: 20px; height: 5px; border-radius: 3px; background: var(--pending); }
+  .pip.hit { background: var(--hit); }
+  .pip.live { background: var(--live); }
+  .pip.miss { background: var(--miss); }
+  .pip.unset { background: repeating-linear-gradient(45deg,#3a4a63,#3a4a63 3px,#22303f 3px,#22303f 6px); }
+
+  .tally { font-size: 13px; color: var(--ink-dim); }
+  .tally b { color: var(--ink); font-size: 15px; }
+
+  /* ---------- legs ---------- */
+
+  .leg {
+    display: grid;
+    grid-template-columns: 26px minmax(150px,1.5fr) minmax(96px,.9fr) 118px 1fr 86px;
+    gap: 14px; align-items: center;
+    padding: 12px 18px; border-top: 1px solid rgba(34,48,68,.55);
+  }
+  .leg:first-of-type { border-top: none; }
+  .leg.hit { background: rgba(47,208,122,.055); }
+  .leg.live { background: rgba(90,169,255,.05); }
+  .leg.miss { background: rgba(242,85,90,.05); }
+  .leg.unset { background: rgba(255,255,255,.02); }
+
+  .idx { color: var(--ink-faint); font-size: 12px; text-align: right; }
+
+  .who { min-width: 0; }
+  .who .nm { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .who .tm { color: var(--ink-faint); font-size: 11.5px; margin-top: 2px; }
+
+  .prop { color: var(--ink-dim); font-size: 13px; }
+
+  .val { text-align: right; white-space: nowrap; }
+  .val .cur { font-size: 20px; font-weight: 680; letter-spacing: -.4px; }
+  .val .of { color: var(--ink-faint); font-size: 13px; }
+  .leg.hit .val .cur,  .p-prop.hit .val .cur  { color: var(--hit); }
+  .leg.miss .val .cur, .p-prop.miss .val .cur { color: var(--miss); }
+  .leg.pending .val .cur, .leg.unset .val .cur,
+  .p-prop.pending .val .cur { color: var(--ink-faint); }
+  .p-prop.hit { background: rgba(47,208,122,.05); }
+  .p-prop.miss { background: rgba(242,85,90,.045); }
+
+  .bar { height: 7px; background: #1b2534; border-radius: 4px; overflow: hidden; position: relative; }
+  .bar i { display: block; height: 100%; border-radius: 4px; background: var(--live); transition: width .5s ease; }
+  .leg.hit .bar i,     .p-prop.hit .bar i     { background: var(--hit); }
+  .leg.miss .bar i,    .p-prop.miss .bar i    { background: var(--miss); }
+  .leg.live .bar i,    .p-prop.live .bar i    { background: var(--live); }
+  .leg.pending .bar i, .p-prop.pending .bar i { background: var(--pending); }
+  .game { color: var(--ink-faint); font-size: 11.5px; margin-top: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .stat { text-align: right; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .stat.hit { color: var(--hit); }
+  .stat.live { color: var(--live); }
+  .stat.miss { color: var(--miss); }
+  .stat.pending, .stat.unset { color: var(--ink-faint); font-weight: 500; }
+
+  .warn { color: var(--warn); font-size: 11.5px; margin-top: 3px; }
+
+  /* ---------- games ---------- */
+
+  details.games {
+    margin-top: 22px; background: var(--panel);
+    border: 1px solid var(--line); border-radius: var(--radius);
+  }
+  details.games summary {
+    padding: 13px 18px; cursor: pointer; font-size: 13.5px; font-weight: 600; color: var(--ink-dim);
+  }
+  details.games summary::marker { color: var(--ink-faint); }
+  .game-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px; padding: 4px 18px 18px;
+  }
+  .game-card { background: var(--panel-2); border: 1px solid var(--line); border-radius: 9px; padding: 11px 13px; }
+  .game-card .row { display: flex; justify-content: space-between; font-size: 13.5px; }
+  .game-card .row + .row { margin-top: 3px; }
+  .game-card .st { color: var(--ink-faint); font-size: 11.5px; margin-top: 7px; }
+  .game-card.in .st { color: var(--live); }
+
+
+  /* ---------- add slip ---------- */
+
+  details.add {
+    margin-top: 18px; background: var(--panel);
+    border: 1px solid var(--line); border-radius: var(--radius);
+  }
+  details.add summary {
+    padding: 13px 18px; cursor: pointer; font-size: 13.5px; font-weight: 600; color: var(--ink-dim);
+  }
+  details.add[open] summary { border-bottom: 1px solid var(--line); }
+  .add-body { padding: 16px 18px; display: grid; gap: 14px; }
+  .add-body label { display: block; font-size: 12px; color: var(--ink-dim); margin-bottom: 5px; line-height: 1.5; }
+  .add-body label code { background: #0d131c; border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; color: var(--ink); font-size: 11.5px; }
+  .add-body textarea, .add-body input {
+    width: 100%; font: inherit; font-size: 13px;
+    color: var(--ink); background: #0d131c;
+    border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+  }
+  .add-body textarea { min-height: 150px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; line-height: 1.5; }
+  .add-body textarea:focus, .add-body input:focus { outline: none; border-color: var(--accent); }
+  .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+  .hint { color: var(--ink-faint); font-size: 12px; }
+  .preview { border: 1px solid var(--line); border-radius: 8px; padding: 11px 13px; background: #0d131c; font-size: 12.5px; }
+  .preview ol { margin: 0; padding-left: 20px; }
+  .preview li { margin: 3px 0; color: var(--ink-dim); }
+  .preview li b { color: var(--ink); font-weight: 600; }
+  .preview .bad { color: #ffb3b6; }
+  .actions { display: flex; gap: 10px; align-items: center; }
+  button.primary { background: #16324f; border-color: #2b5f93; }
+  button.danger:hover { border-color: var(--miss); color: var(--miss); }
+  .x {
+    background: none; border: none; color: var(--ink-faint);
+    font-size: 17px; line-height: 1; padding: 3px 7px; cursor: pointer; border-radius: 6px;
+  }
+  .x:hover { color: var(--miss); background: rgba(242,85,90,.12); }
+
+
+  /* ---------- summary row ---------- */
+
+  .summary {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px; margin-top: 18px;
+  }
+  .tile {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 13px 15px;
+  }
+  .tile .n { font-size: 26px; font-weight: 680; letter-spacing: -.6px; line-height: 1.1; }
+  .tile .k { color: var(--ink-faint); font-size: 11.5px; margin-top: 4px; text-transform: uppercase; letter-spacing: .5px; }
+  .tile.hit .n { color: var(--hit); }
+  .tile.live .n { color: var(--live); }
+  .tile.miss .n { color: var(--miss); }
+
+  /* ---------- view toggle ---------- */
+
+  .views { display: flex; gap: 2px; background: var(--panel-2); border: 1px solid var(--line); border-radius: 9px; padding: 3px; }
+  .views button {
+    border: none; background: none; border-radius: 6px; padding: 6px 13px;
+    font-size: 13px; font-weight: 550; color: var(--ink-dim);
+  }
+  .views button[aria-pressed="true"] { background: #22304a; color: #fff; }
+  .views button:hover:not([aria-pressed="true"]) { color: var(--ink); }
+
+  /* ---------- stat lines ---------- */
+
+  .statline {
+    display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap;
+    font-size: 12.5px; margin-top: 4px;
+  }
+  .statline .cat {
+    font-size: 10px; text-transform: uppercase; letter-spacing: .6px;
+    color: var(--ink-faint); min-width: 58px;
+  }
+  .statline .vals { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .statline.none { color: var(--ink-faint); font-style: italic; }
+
+  /* ---------- players view ---------- */
+
+  .player {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: var(--radius); margin-top: 12px; overflow: hidden;
+  }
+  .player.in { border-color: rgba(90,169,255,.3); }
+  .p-head { display: flex; gap: 13px; align-items: flex-start; padding: 14px 16px; }
+  .p-head img {
+    width: 46px; height: 46px; border-radius: 50%; background: var(--panel-2);
+    object-fit: cover; flex: none;
+  }
+  .p-id { flex: 1 1 auto; min-width: 0; }
+  .p-id .nm { font-size: 16px; font-weight: 650; }
+  .p-id .tm { color: var(--ink-faint); font-size: 12px; margin-top: 2px; }
+  .p-game { text-align: right; font-size: 12.5px; white-space: nowrap; }
+  .p-game .sc { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .p-game .cl { color: var(--ink-faint); font-size: 11.5px; margin-top: 2px; }
+  .player.in .p-game .cl { color: var(--live); }
+
+  .p-stats { padding: 0 16px 14px; }
+  .p-props { border-top: 1px solid rgba(34,48,68,.55); }
+  .p-prop {
+    display: grid; grid-template-columns: minmax(90px,1fr) 110px 96px 1fr 84px;
+    gap: 12px; align-items: center; padding: 10px 16px;
+    border-top: 1px solid rgba(34,48,68,.35); font-size: 13px;
+  }
+  .p-prop:first-child { border-top: none; }
+  .p-prop .slipname { color: var(--ink-faint); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .p-prop .pr { color: var(--ink-dim); }
+
+  @media (max-width: 700px) {
+    /* Three tiles per row instead of two, so the summary stays one glance. */
+    .summary { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .tile { padding: 10px 11px; }
+    .tile .n { font-size: 21px; }
+    .tile .k { font-size: 10px; letter-spacing: .3px; }
+
+    .p-prop { grid-template-columns: 1fr 92px; grid-template-areas: "s v" "p t" "b b"; row-gap: 6px; }
+    .p-prop .slipname { grid-area: s; } .p-prop .val { grid-area: v; }
+    .p-prop .pr { grid-area: p; } .p-prop .stat { grid-area: t; text-align: left; }
+    .p-prop .bar-wrap { grid-area: b; }
+    .p-head { flex-wrap: wrap; }
+    .p-game { text-align: left; width: 100%; }
+  }
+
+  .empty { color: var(--ink-faint); padding: 40px 0; text-align: center; }
+
+  @media (max-width: 860px) {
+    .leg { grid-template-columns: 22px 1fr 108px; grid-template-areas: "i w v" ". p s" ". b b"; row-gap: 8px; }
+    .idx { grid-area: i; } .who { grid-area: w; } .val { grid-area: v; }
+    .prop { grid-area: p; } .stat { grid-area: s; text-align: left; } .bar-wrap { grid-area: b; }
+    .payout { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-inner">
+    <div>
+      <h1>NFL Prop Tracker <span id="weekLabel"></span></h1>
+      <div class="meta">
+        <span><span class="dot" id="healthDot"></span> <span id="updated">loading…</span></span>
+        <span id="countdown"></span>
+        <span id="loaded"></span>
+        <span id="rosters"></span>
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="views" role="group" aria-label="View">
+      <button id="viewPlayers" aria-pressed="true">Players</button>
+      <button id="viewSlips" aria-pressed="false">Slips</button>
+    </div>
+    <button class="ghost" id="sortBtn">Sort: slip order</button>
+    <button id="refreshBtn">Refresh</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="banner"></div>
+  <div class="summary" id="summary"></div>
+  <div id="players"></div>
+  <div id="slips"><div class="empty">Loading…</div></div>
+  <div id="games"></div>
+
+  <details class="add" id="addPanel">
+    <summary>+ Add a betslip</summary>
+    <div class="add-body">
+      <div>
+        <label for="slipText">One leg per line — type it however you'd say it (<code>Josh Allen 35 rush yards</code>), or paste straight off the slip. Either works, and you'll see what was read below before you save.</label>
+        <textarea id="slipText" spellcheck="false" placeholder="Josh Allen 35 rush yards
+Ja'Marr Chase 80 rec yards
+DeVonta Smith 4 catches
+Saquon Barkley anytime td
+C.J. Stroud over 9.5 rushing yards
+
+...or paste the slip itself:
+80+ Receiving Yards By The Player - Including Overtime: George Pickens - Yes
+New York Giants - Dallas Cowboys"></textarea>
+      </div>
+      <div class="fields">
+        <div><label for="slipName">Name</label><input id="slipName" placeholder="Fourfold"></div>
+        <div><label for="slipCoupon">Coupon ID</label><input id="slipCoupon" placeholder="optional"></div>
+        <div><label for="slipStake">Stake</label><input id="slipStake" inputmode="decimal" placeholder="100"></div>
+        <div><label for="slipOdds">Odds</label><input id="slipOdds" inputmode="decimal" placeholder="589.0"></div>
+        <div><label for="slipPayout">Payout</label><input id="slipPayout" inputmode="decimal" placeholder="58899.59"></div>
+      </div>
+      <div class="preview" id="preview"><span class="hint">Paste some legs and they'll be read back here before you save.</span></div>
+      <div class="actions">
+        <button class="primary" id="saveSlip">Save slip</button>
+        <span class="hint" id="saveMsg"></span>
+      </div>
+    </div>
+  </details>
+
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  const POLL_FALLBACK = 30000;
+  let pollMs = POLL_FALLBACK;
+  let timer = null;
+  let tickTimer = null;
+  let nextPollAt = 0;
+  let sortMode = 'slip';          // 'slip' | 'closest'
+  let view = 'players';           // 'players' | 'slips'
+
+  try {
+    const saved = localStorage.getItem('propTrackerView');
+    if (saved === 'players' || saved === 'slips') view = saved;
+  } catch { /* private window or blocked storage — the default is fine */ }
+  let inFlight = false;
+  let lastData = null;
+
+  const $ = (id) => document.getElementById(id);
+
+  const fmtMoney = (n, cur) =>
+    n == null ? '—' : cur + Number(n).toLocaleString('en-ZA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  const fmtTime = (iso) => {
+    if (!iso) return 'never';
+    const d = new Date(iso);
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  };
+
+  const esc = (s) =>
+    String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // Mirrors STAT_LABELS on the server, for the add-slip preview.
+  const STAT_NAMES = {
+    pass_yds: 'pass yds', pass_td: 'pass TDs',
+    rush_yds: 'rush yds', rush_td: 'rush TDs',
+    rec_yds: 'rec yds', rec: 'receptions', rec_td: 'rec TDs',
+    any_td: 'TDs',
+  };
+
+  const STATUS_TEXT = {
+    hit: 'HIT',
+    live: 'live',
+    miss: 'missed',
+    pending: 'not started',
+    unset: 'add leg',
+  };
+
+  /* ---------- rendering ---------- */
+
+  function legStatusText(leg) {
+    if (leg.status === 'hit') return 'HIT';
+    if (leg.status === 'miss') return 'missed by ' + (leg.toGo ?? 0);
+    if (leg.status === 'live') return leg.toGo + ' to go';
+    if (leg.status === 'pending') return 'not started';
+    return 'add leg';
+  }
+
+  function renderLeg(leg) {
+    if (leg.placeholder) {
+      return `
+        <div class="leg unset">
+          <div class="idx num">${leg.position}</div>
+          <div class="who"><div class="nm">Leg ${leg.position} — not supplied</div>
+            <div class="tm">${esc(leg.player)}</div></div>
+          <div class="prop">—</div>
+          <div class="val"><span class="cur">—</span></div>
+          <div class="bar-wrap"><div class="bar"><i style="width:0%"></i></div></div>
+          <div class="stat unset">add leg</div>
+        </div>`;
+    }
+
+    const pct = Math.round((leg.pct || 0) * 100);
+    const teamLine = [leg.team, leg.positionAbbr].filter(Boolean).join(' · ');
+    const gameLine = leg.game
+      ? `${esc(leg.game.score)} · ${esc(leg.game.detail)}`
+      : 'game not found on this week’s scoreboard';
+    // Distinguish "hasn't shown up yet" from "game over, never showed up".
+    const noLineNote = !leg.noLine
+      ? ''
+      : leg.finished
+        ? 'no stats recorded — inactive, or never touched the ball'
+        : leg.status === 'live'
+          ? 'no box-score line yet'
+          : '';
+
+    return `
+      <div class="leg ${leg.status}">
+        <div class="idx num">${leg.position}</div>
+        <div class="who">
+          <div class="nm">${esc(leg.player)}</div>
+          <div class="tm">${esc(teamLine)}</div>
+        </div>
+        <div class="prop">${esc(leg.prop)}</div>
+        <div class="val num">
+          <span class="cur">${leg.value === null ? '—' : leg.value}</span>
+          <span class="of"> / ${leg.line}</span>
+        </div>
+        <div class="bar-wrap">
+          <div class="bar"><i style="width:${pct}%"></i></div>
+          <div class="game">${gameLine}</div>
+          ${noLineNote ? `<div class="warn">${esc(noLineNote)}</div>` : ''}
+          ${leg.statLines && leg.statLines.length
+            ? `<div class="statline"><span class="vals">${esc(leg.statLines.map((l) => l.text).join('  ·  '))}</span></div>`
+            : ''}
+        </div>
+        <div class="stat ${leg.status} num">${esc(legStatusText(leg))}</div>
+      </div>`;
+  }
+
+  function sortLegs(legs) {
+    if (sortMode === 'slip') return legs;
+    const rank = { live: 0, pending: 1, hit: 2, unset: 3, miss: 4 };
+    return [...legs].sort((a, b) => {
+      const r = (rank[a.status] ?? 9) - (rank[b.status] ?? 9);
+      if (r !== 0) return r;
+      return (b.pct ?? 0) - (a.pct ?? 0);
+    });
+  }
+
+  function renderSlip(slip, currency) {
+    const pips = slip.legs
+      .map((l) => `<span class="pip ${l.placeholder ? 'unset' : l.status}" title="${esc(l.player)}"></span>`)
+      .join('');
+
+    const subBits = [
+      slip.book,
+      slip.stake != null ? fmtMoney(slip.stake, currency) + ' stake' : null,
+      slip.odds != null ? slip.odds.toFixed(1) + ' odds' : null,
+      slip.total + ' legs',
+    ].filter(Boolean);
+
+    return `
+      <section class="slip">
+        <div class="slip-head">
+          <div>
+            <div class="slip-title">${esc(slip.name)}</div>
+            <div class="slip-sub">${esc(subBits.join(' · '))}</div>
+          </div>
+          <span class="pill ${slip.status}">${slip.status}</span>
+          <button class="x" data-remove="${esc(slip.id)}" title="Remove this slip">&times;</button>
+          <div class="spacer"></div>
+          <div>
+            <div class="pips">${pips}</div>
+            <div class="tally num" style="margin-top:7px"><b>${slip.hits}</b> / ${slip.total} legs hit${slip.misses ? ` · <span style="color:var(--miss)">${slip.misses} missed</span>` : ''}</div>
+          </div>
+          <div class="payout">
+            <div class="big num">${slip.payout == null ? '—' : fmtMoney(slip.payout, currency)}</div>
+            <div class="small">${slip.payout == null ? 'payout not recorded' : 'to pay'}</div>
+          </div>
+        </div>
+        ${sortLegs(slip.legs).map(renderLeg).join('')}
+      </section>`;
+  }
+
+  /* ---------- stat lines & players ---------- */
+
+  function renderStatLines(lines, emptyText) {
+    if (!lines || !lines.length) {
+      return `<div class="statline none">${esc(emptyText)}</div>`;
+    }
+    return lines
+      .map(
+        (l) =>
+          `<div class="statline"><span class="cat">${esc(l.category)}</span><span class="vals">${esc(l.text)}</span></div>`
+      )
+      .join('');
+  }
+
+  function statLineEmptyText(game) {
+    if (!game) return 'game not on this week\u2019s scoreboard';
+    if (game.state === 'pre') return `hasn\u2019t kicked off \u2014 ${game.detail}`;
+    if (game.state === 'post') return 'no stats recorded';
+    return 'no box-score line yet';
+  }
+
+  function renderProp(p) {
+    const pct = Math.round((p.pct || 0) * 100);
+    return `
+      <div class="p-prop ${p.status}">
+        <div class="slipname">${esc(p.slip)}</div>
+        <div class="pr">${esc(p.prop)}</div>
+        <div class="val num">
+          <span class="cur">${p.value === null ? '—' : p.value}</span>
+          <span class="of"> / ${p.line}</span>
+        </div>
+        <div class="bar-wrap"><div class="bar"><i style="width:${pct}%"></i></div></div>
+        <div class="stat ${p.status} num">${esc(legStatusText(p))}</div>
+      </div>`;
+  }
+
+  function renderPlayer(pl) {
+    const game = pl.game;
+    const state = game ? game.state : 'none';
+    const teamLine = [pl.team, pl.position].filter(Boolean).join(' · ');
+
+    return `
+      <section class="player ${state}">
+        <div class="p-head">
+          ${pl.headshot ? `<img src="${esc(pl.headshot)}" alt="" loading="lazy" onerror="this.removeAttribute('src')">` : '<img alt="">'}
+          <div class="p-id">
+            <div class="nm">${esc(pl.name)}</div>
+            <div class="tm">${esc(teamLine)}</div>
+          </div>
+          ${game
+            ? `<div class="p-game"><div class="sc">${esc(game.score)}</div><div class="cl">${esc(game.detail)}</div></div>`
+            : ''}
+        </div>
+        <div class="p-stats">${renderStatLines(pl.statLines, statLineEmptyText(game))}</div>
+        <div class="p-props">${pl.props.map(renderProp).join('')}</div>
+      </section>`;
+  }
+
+  function renderSummary(data) {
+    const legs = (data.slips || []).flatMap((s) => s.legs).filter((l) => !l.placeholder);
+    const count = (st) => legs.filter((l) => l.status === st).length;
+    const liveGames = (data.games || []).filter((g) => g.state === 'in').length;
+
+    const tiles = [
+      { n: count('live'), k: 'in play', cls: 'live' },
+      { n: count('hit'), k: 'hit', cls: 'hit' },
+      { n: count('miss'), k: 'missed', cls: 'miss' },
+      { n: count('pending'), k: 'not started', cls: '' },
+      { n: liveGames, k: 'live games', cls: '' },
+    ];
+
+    $('summary').innerHTML = tiles
+      .map((t) => `<div class="tile ${t.cls}"><div class="n num">${t.n}</div><div class="k">${esc(t.k)}</div></div>`)
+      .join('');
+  }
+
+  function renderGames(games) {
+    if (!games || !games.length) return '';
+    const cards = games
+      .map((g) => `
+        <div class="game-card ${g.state}">
+          <div class="row"><span>${esc(g.away.abbr)}</span><span class="num">${g.away.score ?? ''}</span></div>
+          <div class="row"><span>${esc(g.home.abbr)}</span><span class="num">${g.home.score ?? ''}</span></div>
+          <div class="st">${esc(g.detail)}</div>
+        </div>`)
+      .join('');
+    return `
+      <details class="games">
+        <summary>All games (${games.length})</summary>
+        <div class="game-grid">${cards}</div>
+      </details>`;
+  }
+
+  function render(data) {
+    $('weekLabel').textContent =
+      data.season && data.week ? `— ${data.season} week ${data.week}` : '';
+
+    $('updated').textContent = 'updated ' + fmtTime(data.fetchedAt);
+    $('loaded').textContent = data.boxScoresLoaded != null ? `${data.boxScoresLoaded} box scores` : '';
+
+    const r = data.rosters;
+    $('rosters').textContent =
+      r && r.players ? `${r.players} players on ${r.teams} rosters` : r && r.error ? 'rosters unavailable' : '';
+
+    const dot = $('healthDot');
+    dot.className = 'dot' + (data.stale ? ' stale' : data.ok === false ? ' down' : '');
+
+    const banners = [];
+    if (data.stale) {
+      banners.push(
+        `<div class="banner">Showing last good data from ${fmtTime(data.fetchedAt)} — the most recent poll failed (${esc(data.error)}). Retrying.</div>`
+      );
+    }
+    if (data.ok === false) {
+      banners.push(`<div class="banner err">Couldn’t reach ESPN and there’s no cached data yet: ${esc(data.error)}</div>`);
+    }
+    const conflicts = (data.slips || [])
+      .flatMap((s) => s.legs)
+      .filter((l) => l.hintConflict);
+
+    if (conflicts.length) {
+      const listed = conflicts
+        .map((l) => `${esc(l.player)} (slip says ${esc(l.hintTeam)}, ESPN roster says ${esc(l.rosterTeam)})`)
+        .join('; ');
+      banners.push(
+        `<div class="banner">${conflicts.length} team hint${conflicts.length > 1 ? 's are' : ' is'} out of date: ${listed}. The roster wins — these legs are tracking the right game. Update slips.json when convenient.</div>`
+      );
+    }
+
+    if (data.rosters && data.rosters.error) {
+      banners.push(
+        `<div class="banner">Couldn’t load ESPN rosters (${esc(data.rosters.error)}), so legs are falling back to the team hints in slips.json. Live stats are unaffected.</div>`
+      );
+    }
+
+    if (data.fetchErrors && data.fetchErrors.length) {
+      banners.push(
+        `<div class="banner">Box score unavailable for ${data.fetchErrors.length} game(s): ${esc(data.fetchErrors.map((e) => e.game || e.eventId).join(', '))}</div>`
+      );
+    }
+    $('banner').innerHTML = banners.join('');
+
+    renderSummary(data);
+
+    const hasSlips = (data.slips || []).length > 0;
+    const showPlayers = view === 'players';
+
+    $('players').hidden = !showPlayers;
+    $('slips').hidden = showPlayers;
+    $('sortBtn').hidden = showPlayers;
+
+    if (showPlayers) {
+      $('players').innerHTML = (data.players || []).length
+        ? data.players.map(renderPlayer).join('')
+        : '<div class="empty">No players yet. Add a betslip below.</div>';
+    } else {
+      $('slips').innerHTML = hasSlips
+        ? data.slips.map((s) => renderSlip(s, data.currency || 'R')).join('')
+        : '<div class="empty">No slips yet. Add a betslip below.</div>';
+    }
+
+    $('games').innerHTML = renderGames(data.games);
+  }
+
+  /* ---------- polling ---------- */
+
+  async function load() {
+    if (inFlight) return;
+    inFlight = true;
+    $('refreshBtn').disabled = true;
+    $('refreshBtn').textContent = 'Refreshing…';
+
+    try {
+      const res = await fetch('/api/state', { cache: 'no-store' });
+      const data = await res.json();
+      if (data.pollMs) pollMs = data.pollMs;
+      lastData = data;
+      render(data);
+    } catch (err) {
+      // The server is the thing that caches ESPN; if the server itself is
+      // unreachable, leave whatever is on screen and just flag it.
+      $('healthDot').className = 'dot down';
+      $('banner').innerHTML =
+        `<div class="banner err">Can’t reach the local server — is it still running? (${esc(err.message)})</div>`;
+    } finally {
+      inFlight = false;
+      $('refreshBtn').disabled = false;
+      $('refreshBtn').textContent = 'Refresh';
+      schedule();
+    }
+  }
+
+  function schedule() {
+    clearTimeout(timer);
+    nextPollAt = Date.now() + pollMs;
+    timer = setTimeout(load, pollMs);
+  }
+
+  function tick() {
+    const left = Math.max(0, Math.round((nextPollAt - Date.now()) / 1000));
+    $('countdown').textContent = nextPollAt ? `next in ${left}s` : '';
+  }
+
+  $('refreshBtn').addEventListener('click', load);
+
+  function setView(next) {
+    view = next;
+    $('viewPlayers').setAttribute('aria-pressed', String(next === 'players'));
+    $('viewSlips').setAttribute('aria-pressed', String(next === 'slips'));
+    try { localStorage.setItem('propTrackerView', next); } catch { /* non-fatal */ }
+    if (lastData) render(lastData);
+  }
+
+  $('viewPlayers').addEventListener('click', () => setView('players'));
+  $('viewSlips').addEventListener('click', () => setView('slips'));
+
+  $('sortBtn').addEventListener('click', () => {
+    sortMode = sortMode === 'slip' ? 'closest' : 'slip';
+    $('sortBtn').textContent = 'Sort: ' + (sortMode === 'slip' ? 'slip order' : 'closest first');
+    if (lastData) render(lastData);
+  });
+
+  // Catch up immediately when the tab comes back rather than waiting out the timer.
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && Date.now() > nextPollAt) load();
+  });
+
+
+  /* ---------- adding a slip ---------- */
+
+  const debounce = (fn, ms) => {
+    let t;
+    return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+  };
+
+  function renderPreview({ legs, problems }) {
+    const parts = [];
+
+    if (legs.length) {
+      parts.push(
+        `<ol>${legs.map((l) => {
+          const line = l.label || `${l.line}+ ${STAT_NAMES[l.stat] || l.stat}`;
+          const team = Array.isArray(l.team) ? l.team.join(' / ') : l.team || '—';
+          return `<li><b>${esc(l.player)}</b> — ${esc(line)} <span class="hint">(${esc(team)})</span></li>`;
+        }).join('')}</ol>`
+      );
+    }
+
+    if (problems.length) {
+      parts.push(
+        `<div class="bad" style="margin-top:${legs.length ? 9 : 0}px">Couldn't read ${problems.length} line${problems.length > 1 ? 's' : ''}:<ul style="margin:4px 0 0;padding-left:18px">${problems
+          .map((p) => `<li>${esc(p.line)} <span class="hint">— ${esc(p.error)}</span></li>`)
+          .join('')}</ul></div>`
+      );
+    }
+
+    if (!parts.length) parts.push('<span class="hint">Nothing recognised yet.</span>');
+    $('preview').innerHTML = parts.join('');
+  }
+
+  const doPreview = debounce(async () => {
+    const text = $('slipText').value;
+    if (!text.trim()) {
+      $('preview').innerHTML = '<span class="hint">Paste some legs and they\u2019ll be read back here before you save.</span>';
+      return;
+    }
+    try {
+      const res = await fetch('/api/slips/parse', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+      renderPreview(await res.json());
+    } catch (err) {
+      $('preview').innerHTML = `<span class="bad">${esc(err.message)}</span>`;
+    }
+  }, 250);
+
+  $('slipText').addEventListener('input', doPreview);
+
+  $('saveSlip').addEventListener('click', async () => {
+    const btn = $('saveSlip');
+    const msg = $('saveMsg');
+    btn.disabled = true;
+    msg.textContent = 'Saving…';
+
+    try {
+      const res = await fetch('/api/slips', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          text: $('slipText').value,
+          name: $('slipName').value,
+          coupon: $('slipCoupon').value,
+          stake: $('slipStake').value,
+          odds: $('slipOdds').value,
+          payout: $('slipPayout').value,
+        }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        msg.innerHTML = `<span style="color:var(--miss)">${esc(data.error || 'Save failed')}</span>`;
+        return;
+      }
+
+      msg.innerHTML = `<span style="color:var(--hit)">Added ${esc(data.slip.name)} (${data.slip.legs.length} legs)</span>`;
+      ['slipText', 'slipName', 'slipCoupon', 'slipStake', 'slipOdds', 'slipPayout']
+        .forEach((id) => { $(id).value = ''; });
+      $('preview').innerHTML = '<span class="hint">Saved.</span>';
+      $('addPanel').open = false;
+      await load();
+    } catch (err) {
+      msg.innerHTML = `<span style="color:var(--miss)">${esc(err.message)}</span>`;
+    } finally {
+      btn.disabled = false;
+      setTimeout(() => { msg.textContent = ''; }, 6000);
+    }
+  });
+
+  // Slip cards are re-rendered on every poll, so listen on the container.
+  $('slips').addEventListener('click', async (event) => {
+    const id = event.target?.dataset?.remove;
+    if (!id) return;
+    if (!confirm('Remove this slip from the tracker?')) return;
+
+    await fetch(`/api/slips/${encodeURIComponent(id)}`, { method: 'DELETE' });
+    await load();
+  });
+
+  setView(view);
+  tickTimer = setInterval(tick, 1000);
+  load();
+})();
+</script>
+</body>
+</html>

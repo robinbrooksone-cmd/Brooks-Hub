@@ -1,0 +1,13 @@
+{
+  "name": "nfl-prop-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Live NFL prop-bet slip tracker. No dependencies \u2014 needs only Node 18+.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "demo": "node scripts/demo.js",
+    "inspect": "node scripts/inspect.js",
+    "test": "node scripts/selftest.js"
+  }
+}
