@@ -55,6 +55,17 @@ you can see the UI mid-week or off-season without a live game.
 
 ## Your slips
 
+Three Sunbet parlays are loaded, R100 stake each:
+
+| slip | legs | coupon | placed |
+|---|---|---|---|
+| Thirteenfold | 13 | 13082243446 | 06 Sep 2026 19:48 |
+| Eightfold | 8 | 13106780082 | 12 Sep 2026 18:52 |
+| Eighteenfold | 18 | 13106847752 | 12 Sep 2026 19:05 |
+
+Odds and payout are recorded for the Thirteenfold (589.0, R58,899.59). The other
+two show "payout not recorded" until you fill in `odds` and `payout`.
+
 Everything lives in **`slips.json`**, re-read on every request — edit it and hit
 Refresh, no restart needed.
 
@@ -64,15 +75,25 @@ Refresh, no restart needed.
 
 | field | meaning |
 |---|---|
-| `player` | Matched against ESPN's athlete names. Apostrophes, periods, hyphens, accents and Jr./Sr./III are all normalised away, so `Ja'Marr Chase`, `Amon-Ra St. Brown` and `De'Von Achane` match as written. |
-| `stat` | One of `pass_yds`, `pass_td`, `rush_yds`, `rec_yds`, `rec`. |
-| `line` | The number to reach. A `30+` prop is `"line": 30` and hits at **>= 30**. |
-| `team` | Display hint only — it links a leg to its game before kickoff so you get a start time. The real team comes from the box score once the game is live, so a stale hint here can't break matching. |
+| `player` | Matched against ESPN's athlete names. Apostrophes, periods, hyphens, accents and Jr./Sr./III are all normalised away, so `Ja'Marr Chase`, `C.J. Stroud`, `Harold Fannin Jr.` and `Amon-Ra St. Brown` match as written. |
+| `stat` | One of `pass_yds`, `pass_td`, `rush_yds`, `rush_td`, `rec_yds`, `rec`, `rec_td`, `any_td`. |
+| `line` | The number to reach. A `30+` prop is `"line": 30` and hits at **>= 30**. An `Over 9.5` prop is `"line": 9.5`. |
+| `label` | Optional display override, for props the "N+ stat" phrasing doesn't fit — `"anytime TD"`, `"over 9.5 rush yds"`. |
+| `team` | Display hint only — it links a leg to its game before kickoff so you get a start time. One abbreviation (`"BAL"`), or **both sides of the matchup** (`["MIN","GB"]`) when you know the game but not which side the player is on. The real team comes from the box score once the game is live, so a stale hint here can't break matching. |
 | `aliases` | Optional extra spellings, if ESPN lists someone unusually. |
 | `placeholder` | `true` for a leg you haven't filled in. Never scored; a slip can't read as WON while one is present. |
 
 Add more slips by appending to the `slips` array — the page renders each as its
-own card.
+own card. The same player can carry two different props on one slip (the
+Eighteenfold has Stefon Diggs twice) and legs can repeat across slips.
+
+### Anytime touchdown scorer
+
+`any_td` is derived, not read from a column: it's rushing + receiving + kick
+return + punt return touchdowns. A **passing** touchdown belongs to the receiver,
+not the thrower, so it's deliberately excluded — use `pass_td` for a "2+ TD
+passes" prop. Defensive and fumble-recovery touchdowns aren't counted, which is
+a real if unlikely gap for a skill-position player.
 
 ## How a leg is scored
 
@@ -83,9 +104,12 @@ own card.
 | **miss** | game **final** and short of the line. |
 | **not started** | game hasn't kicked off, or the player has no box-score line yet. |
 
-A player who appears in a box score but not in a given category has a genuine
-zero for it (a QB with no carries). A player absent from every box score has no
-value at all, and is never scored as a miss while his game is unfinished.
+Zeroes are handled deliberately. A player who appears in a box score but not in a
+given category has a genuine zero for it (a QB with no carries). A player absent
+from *every* box score has no value yet while his game is unfinished — he is
+never scored as a miss on that basis. Once his game is **final**, never having
+appeared really does mean zero, whether he was inactive or simply never touched
+the ball, and the leg says which it can't distinguish.
 
 A slip is **dead** as soon as any leg misses, **won** when every leg hits, and
 **alive** otherwise.
@@ -122,6 +146,8 @@ npm test
 
 Boots the server against a stubbed ESPN and checks parsing and scoring
 end-to-end: column resolution via both `keys[]` and `labels[]`, a player split
-across category blocks merging into one line, the `>=` boundary, final-vs-live
-miss logic, players absent from the slate, and that a failed poll serves the
-last good data with `stale: true`.
+across category blocks merging into one line, the `>=` boundary, a decimal
+`Over 9.5` line, anytime-TD derivation, receptions vs yards column separation,
+final-vs-live miss logic, matchup-level team hints, players absent from the
+slate, the one-scoreboard-plus-live-games request budget, and that a failed poll
+serves the last good data with `stale: true`.

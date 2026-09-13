@@ -45,64 +45,109 @@ async function main() {
   assert.strictEqual(state.ok, true);
   assert.strictEqual(state.stale, false);
   assert.strictEqual(state.week, 2);
-  assert.strictEqual(state.season, 2026);
-  assert.strictEqual(state.games.length, 3);
-  assert.strictEqual(state.boxScoresLoaded, 2, 'pre-game events must not be fetched');
-  pass('scoreboard parsed; only the 2 games with box scores were fetched');
+  assert.strictEqual(state.games.length, 5);
+  assert.strictEqual(state.boxScoresLoaded, 4, 'pre-game events must not be fetched');
+  assert.strictEqual(state.slips.length, 3);
+  assert.deepStrictEqual(state.slips.map((s) => s.legs.length), [13, 8, 18]);
+  pass('3 slips parsed (13 / 8 / 18 legs); only games with box scores were fetched');
 
   const slip = state.slips[0];
-  const byName = (n) => slip.legs.find((l) => l.configuredPlayer === n);
+  const leg = (name, stat) =>
+    slip.legs.find((l) => l.configuredPlayer === name && (!stat || l.stat === stat));
 
-  const allen = byName('Josh Allen');
-  assert.strictEqual(allen.value, 42, 'rushing YDS is column 1, not CAR');
-  assert.strictEqual(allen.status, 'hit');
+  assert.strictEqual(leg('Josh Allen').value, 42, 'rushing YDS is column 1, not CAR');
+  assert.strictEqual(leg('Josh Allen').status, 'hit');
   pass('Josh Allen 42 rush yds vs 30 -> hit (merged across passing + rushing blocks)');
 
-  const henry = byName('Derrick Henry');
-  assert.strictEqual(henry.value, 65);
-  assert.strictEqual(henry.status, 'live');
-  assert.strictEqual(henry.toGo, 15);
+  assert.strictEqual(leg('Derrick Henry').status, 'live');
+  assert.strictEqual(leg('Derrick Henry').toGo, 15);
   pass('Derrick Henry 65/80 in a live game -> live, 15 to go');
 
-  const chase = byName("Ja'Marr Chase");
-  assert.strictEqual(chase.value, 95, 'receiving YDS resolved without a keys[] array');
-  assert.strictEqual(chase.status, 'hit');
+  assert.strictEqual(leg("Ja'Marr Chase").value, 95, 'receiving YDS resolved without a keys[] array');
+  assert.strictEqual(leg("Ja'Marr Chase").status, 'hit');
   pass("Ja'Marr Chase 95 rec yds via the labels[] fallback -> hit");
 
-  const burrow = byName('Joe Burrow');
-  assert.strictEqual(burrow.value, 240);
-  assert.strictEqual(burrow.status, 'miss', 'final game under the line is a miss');
+  assert.strictEqual(leg('Joe Burrow').status, 'miss');
   pass('Joe Burrow 240/250 at Final -> miss');
 
-  const arsb = byName('Amon-Ra St. Brown');
-  assert.strictEqual(arsb.value, 70);
-  assert.strictEqual(arsb.status, 'hit', 'a prop of 70+ hits exactly at 70');
+  assert.strictEqual(leg('Amon-Ra St. Brown').value, 70);
+  assert.strictEqual(leg('Amon-Ra St. Brown').status, 'hit', 'a 70+ prop hits exactly at 70');
   pass('Amon-Ra St. Brown 70/70 -> hit (>= boundary, punctuated name matched)');
 
-  const gibbs = byName('Jahmyr Gibbs');
-  assert.strictEqual(gibbs.status, 'miss');
+  assert.strictEqual(leg('Jahmyr Gibbs').status, 'miss');
   pass('Jahmyr Gibbs 55/70 at Final -> miss');
 
-  const mcmillan = byName('Tetairoa McMillan');
-  assert.strictEqual(mcmillan.value, null);
-  assert.strictEqual(mcmillan.status, 'pending');
-  assert.ok(mcmillan.game && mcmillan.game.state === 'pre', 'team hint links a pre-game leg to its game');
+  const smith = leg('DeVonta Smith');
+  assert.strictEqual(smith.value, 5);
+  assert.strictEqual(smith.status, 'hit');
+  pass('DeVonta Smith 5 receptions vs 4+ -> hit (REC is column 0, not YDS)');
+
+  const saquon = leg('Saquon Barkley');
+  assert.strictEqual(saquon.value, 1, 'anytime TD derived from the rushing TD column');
+  assert.strictEqual(saquon.status, 'hit');
+  assert.strictEqual(saquon.prop, 'anytime TD', 'label override replaces the "N+ stat" phrasing');
+  pass('Saquon Barkley rushing TD -> anytime TD hit');
+
+  assert.strictEqual(leg('Tetairoa McMillan').status, 'pending');
+  assert.ok(leg('Tetairoa McMillan').game.state === 'pre', 'team hint links a pre-game leg to its game');
   pass('Tetairoa McMillan -> pending, linked to CAR @ TEN via the team hint');
 
-  const achane = byName("De'Von Achane");
-  assert.strictEqual(achane.status, 'pending');
-  assert.strictEqual(achane.game, null);
+  assert.strictEqual(leg("De'Von Achane").status, 'pending');
+  assert.strictEqual(leg("De'Von Achane").game, null);
   pass("De'Von Achane -> pending, no game on this slate (never scored as a miss)");
 
-  const placeholder = slip.legs.find((l) => l.placeholder);
-  assert.strictEqual(placeholder.status, 'unset');
-  pass('the unsupplied 12th leg is carried as unset, never scored');
-
-  assert.strictEqual(slip.total, 12);
-  assert.strictEqual(slip.hits, 3);
+  assert.strictEqual(slip.total, 13);
+  assert.strictEqual(slip.hits, 5);
   assert.strictEqual(slip.misses, 2);
   assert.strictEqual(slip.status, 'dead');
-  pass('slip tally 3 hit / 2 missed of 12 -> dead');
+  pass('Thirteenfold tally 5 hit / 2 missed of 13 -> dead');
+
+  const eight = state.slips[1];
+  const eleg = (name) => eight.legs.find((l) => l.configuredPlayer === name);
+
+  const stroud = eleg('C.J. Stroud');
+  assert.strictEqual(stroud.value, 12);
+  assert.strictEqual(stroud.line, 9.5);
+  assert.strictEqual(stroud.status, 'hit', 'Over 9.5 clears at 12');
+  pass('C.J. Stroud 12 rush yds vs Over 9.5 -> hit (decimal line, periods in name)');
+
+  assert.strictEqual(eleg('Jerry Jeudy').status, 'miss');
+  pass('Jerry Jeudy 2 receptions vs 3+ at Final -> miss');
+
+  const laporta = eleg('Sam LaPorta');
+  assert.strictEqual(laporta.value, 0, 'never appearing in a finished game really is zero');
+  assert.strictEqual(laporta.status, 'miss');
+  assert.strictEqual(laporta.noLine, true);
+  assert.strictEqual(laporta.finished, true);
+  pass('Sam LaPorta absent from a completed game -> 0, miss, flagged as having no line');
+
+  const cook = eleg('James Cook');
+  assert.strictEqual(cook.value, null, 'a live game with no line yet has no value, not a zero');
+  assert.strictEqual(cook.status, 'live', 'absent from a live box score is not yet a miss');
+  assert.strictEqual(cook.noLine, true);
+  assert.strictEqual(cook.finished, false);
+  pass('James Cook no line yet in a live game -> live, not miss, value still unknown');
+
+  const eighteen = state.slips[2];
+
+  // team: ["IND","BAL"] — BAL is playing, so the leg links to that game even
+  // though we never said which side the player is on.
+  const keenan = eighteen.legs.find((l) => l.configuredPlayer === 'Keenan Allen');
+  assert.ok(keenan.game, 'a matchup hint should resolve if either side is playing');
+  assert.strictEqual(keenan.game.shortName, 'BUF @ BAL');
+  assert.strictEqual(keenan.status, 'live');
+  pass('a matchup-level team hint (["IND","BAL"]) resolves to the game being played');
+
+  // team: ["NYG","DAL"] — neither side is on this slate.
+  const likely = eighteen.legs.find((l) => l.configuredPlayer === 'Isaiah Likely');
+  assert.strictEqual(likely.game, null);
+  assert.strictEqual(likely.status, 'pending');
+  pass('a matchup hint with neither side on the slate stays pending');
+
+  const diggs = eighteen.legs.filter((l) => l.configuredPlayer === 'Stefon Diggs');
+  assert.strictEqual(diggs.length, 2, 'the same player can carry two different props');
+  assert.deepStrictEqual(diggs.map((l) => l.stat), ['rec', 'rec_yds']);
+  pass('one player can carry two separate props on the same slip');
 
   console.log('\nStat isolation');
   const { fetchLiveData } = require('../espn');
@@ -139,17 +184,22 @@ async function main() {
   pass('shape report records keys[] vs labels[] resolution per stat');
 
   console.log('\nFailure handling');
-  const finalsBefore = stub.upstreamCalls;
+  const liveGames = state.games.filter((g) => g.state === 'in').length;
+  await get('/api/state'); // warm the cache first so the count isn't timing-dependent
+  const before = stub.upstreamCalls;
   await get('/api/state');
-  assert.ok(stub.upstreamCalls - finalsBefore < 3, 'final games are cached, not refetched');
-  pass('completed games are not refetched');
+  const calls = stub.upstreamCalls - before;
+  // One scoreboard call plus one per in-progress game. Finals are cached and
+  // pre-game events have no box score, so neither costs a request.
+  assert.strictEqual(calls, 1 + liveGames, `expected ${1 + liveGames} upstream calls, got ${calls}`);
+  pass(`a poll costs 1 scoreboard + ${liveGames} live games; finals and pre-game cost nothing`);
 
   stub.failUpstream = true;
   const stale = await get('/api/state');
   assert.strictEqual(stale.ok, true);
   assert.strictEqual(stale.stale, true);
   assert.match(stale.error, /simulated ESPN outage/);
-  assert.strictEqual(stale.slips[0].hits, 3, 'stale response still carries the last good slip data');
+  assert.strictEqual(stale.slips[0].hits, slip.hits, 'stale response still carries the last good slip data');
   assert.ok(stale.fetchedAt, 'stale response carries the timestamp of the data it is showing');
   pass('a failed poll serves last-good data with stale:true and its own timestamp');
 

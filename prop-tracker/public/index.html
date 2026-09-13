@@ -269,7 +269,14 @@
     const gameLine = leg.game
       ? `${esc(leg.game.score)} · ${esc(leg.game.detail)}`
       : 'game not found on this week’s scoreboard';
-    const notFound = leg.value === null && leg.status !== 'pending';
+    // Distinguish "hasn't shown up yet" from "game over, never showed up".
+    const noLineNote = !leg.noLine
+      ? ''
+      : leg.finished
+        ? 'no stats recorded — inactive, or never touched the ball'
+        : leg.status === 'live'
+          ? 'no box-score line yet'
+          : '';
 
     return `
       <div class="leg ${leg.status}">
@@ -286,7 +293,7 @@
         <div class="bar-wrap">
           <div class="bar"><i style="width:${pct}%"></i></div>
           <div class="game">${gameLine}</div>
-          ${notFound ? '<div class="warn">no box-score line yet</div>' : ''}
+          ${noLineNote ? `<div class="warn">${esc(noLineNote)}</div>` : ''}
         </div>
         <div class="stat ${leg.status} num">${esc(legStatusText(leg))}</div>
       </div>`;
@@ -328,8 +335,8 @@
             <div class="tally num" style="margin-top:7px"><b>${slip.hits}</b> / ${slip.total} legs hit${slip.misses ? ` · <span style="color:var(--miss)">${slip.misses} missed</span>` : ''}</div>
           </div>
           <div class="payout">
-            <div class="big num">${fmtMoney(slip.payout, currency)}</div>
-            <div class="small">to pay</div>
+            <div class="big num">${slip.payout == null ? '—' : fmtMoney(slip.payout, currency)}</div>
+            <div class="small">${slip.payout == null ? 'payout not recorded' : 'to pay'}</div>
           </div>
         </div>
         ${sortLegs(slip.legs).map(renderLeg).join('')}

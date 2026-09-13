@@ -64,6 +64,31 @@ const SUMMARIES = {
       ],
     },
   },
+  // PHI @ WAS, in progress — anytime-TD and receptions coverage
+  '401700004': {
+    boxscore: {
+      players: [
+        { team: { abbreviation: 'PHI' }, statistics: [
+          cat(RUSHING, [athlete('Saquon Barkley', 'RB', ['15', '88', '5.9', '1', '22'])]),
+          cat(RECEIVING_NO_KEYS, [athlete('DeVonta Smith', 'WR', ['5', '62', '12.4', '0', '18', '7'])]),
+        ] },
+      ],
+    },
+  },
+  // HOU @ CLE, final — decimal line and a receiving TD
+  '401700005': {
+    boxscore: {
+      players: [
+        { team: { abbreviation: 'HOU' }, statistics: [
+          cat(PASSING, [athlete('C.J. Stroud', 'QB', ['22/31', '245', '7.9', '2', '0', '1-8', '70.1', '105.2'])]),
+          cat(RUSHING, [athlete('C.J. Stroud', 'QB', ['3', '12', '4.0', '0', '7'])]),
+        ] },
+        { team: { abbreviation: 'CLE' }, statistics: [
+          cat(RECEIVING_NO_KEYS, [athlete('Jerry Jeudy', 'WR', ['2', '28', '14.0', '1', '15', '5'])]),
+        ] },
+      ],
+    },
+  },
   // CIN @ DET, final
   '401700002': {
     boxscore: {
@@ -97,6 +122,16 @@ const SCOREBOARD = {
       competitions: [{ competitors: [
         { ...team('DET', '31'), homeAway: 'home' },
         { ...team('CIN', '24'), homeAway: 'away' }] }] },
+    { id: '401700004', shortName: 'PHI @ WAS', name: 'Eagles at Commanders',
+      status: { type: { state: 'in', completed: false, shortDetail: '2:20 - 2nd' }, period: 2, displayClock: '2:20' },
+      competitions: [{ competitors: [
+        { ...team('WAS', '10'), homeAway: 'home' },
+        { ...team('PHI', '14'), homeAway: 'away' }] }] },
+    { id: '401700005', shortName: 'HOU @ CLE', name: 'Texans at Browns',
+      status: { type: { state: 'post', completed: true, shortDetail: 'Final' } },
+      competitions: [{ competitors: [
+        { ...team('CLE', '13'), homeAway: 'home' },
+        { ...team('HOU', '27'), homeAway: 'away' }] }] },
     { id: '401700003', shortName: 'CAR @ TEN', name: 'Panthers at Titans',
       status: { type: { state: 'pre', completed: false, shortDetail: '9/13 - 1:00 PM EDT' } },
       competitions: [{ competitors: [

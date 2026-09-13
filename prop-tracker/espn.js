@@ -46,19 +46,34 @@ const STAT_MAP = {
   },
   rushing: {
     rush_yds: { key: 'rushingYards', label: 'YDS' },
+    rush_td: { key: 'rushingTouchdowns', label: 'TD' },
   },
   receiving: {
     rec_yds: { key: 'receivingYards', label: 'YDS' },
     rec: { key: 'receptions', label: 'REC' },
+    rec_td: { key: 'receivingTouchdowns', label: 'TD' },
+  },
+  kickReturns: {
+    kr_td: { key: 'kickReturnTouchdowns', label: 'TD' },
+  },
+  puntReturns: {
+    pr_td: { key: 'puntReturnTouchdowns', label: 'TD' },
   },
 };
+
+/** Components of an "anytime touchdown scorer" prop. A passing TD is the
+ *  thrower's, not the scorer's, so it is deliberately not in this list. */
+const TD_COMPONENTS = ['rush_td', 'rec_td', 'kr_td', 'pr_td'];
 
 const STAT_LABELS = {
   pass_yds: 'pass yds',
   pass_td: 'pass TDs',
   rush_yds: 'rush yds',
+  rush_td: 'rush TDs',
   rec_yds: 'rec yds',
   rec: 'receptions',
+  rec_td: 'rec TDs',
+  any_td: 'TDs',
 };
 
 /* ------------------------------------------------------------------ */
@@ -252,6 +267,15 @@ function buildPlayerIndex(summaries) {
     existing.headshot = existing.headshot || record.headshot;
     existing.position = existing.position || record.position;
     existing.shortName = existing.shortName || record.shortName;
+  }
+
+  // Anytime-TD is a derived stat: it only makes sense once a player's
+  // rushing, receiving and return lines have been folded together.
+  for (const record of merged.values()) {
+    record.stats.any_td = TD_COMPONENTS.reduce(
+      (total, key) => total + (record.stats[key] ?? 0),
+      0
+    );
   }
 
   // Name -> player records. Both the full normalized name and the
@@ -450,6 +474,7 @@ module.exports = {
   SUMMARY_URL,
   STAT_MAP,
   STAT_LABELS,
+  TD_COMPONENTS,
   normalizeName,
   initialLastKey,
   parseStatCell,

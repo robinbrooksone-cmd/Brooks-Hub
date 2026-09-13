@@ -2,17 +2,28 @@
 
 const { STAT_LABELS, lookupPlayer } = require('./espn');
 
-function findGameByTeam(games, teamAbbr) {
-  if (!teamAbbr) return null;
-  const wanted = String(teamAbbr).toUpperCase();
+/**
+ * `team` may be one abbreviation ("BAL") or both sides of the matchup
+ * (["MIN","GB"]) — useful when the slip shows the game but you can't be sure
+ * which side the player is on. Either way it only supplies pre-kickoff
+ * context; the live team comes from the box score.
+ */
+function findGameByTeam(games, team) {
+  if (!team) return null;
+  const wanted = (Array.isArray(team) ? team : [team]).map((t) => String(t).toUpperCase());
   return (
     games.find(
-      (g) => g.home.abbr.toUpperCase() === wanted || g.away.abbr.toUpperCase() === wanted
+      (g) =>
+        wanted.includes(g.home.abbr.toUpperCase()) ||
+        wanted.includes(g.away.abbr.toUpperCase())
     ) || null
   );
 }
 
 function describeLine(leg) {
+  // An explicit label wins, for props the "N+ stat" phrasing doesn't fit
+  // ("anytime TD", "over 9.5 rush yds").
+  if (leg.label) return leg.label;
   return `${leg.line}+ ${STAT_LABELS[leg.stat] || leg.stat}`;
 }
 
@@ -41,13 +52,20 @@ function evaluateLeg(leg, position, live, eventsById) {
     : findGameByTeam(live.games, leg.team);
 
   // In a box score but absent from this category means a genuine zero
-  // (a QB with no carries). Absent from every box score means no value yet.
-  const value = record ? record.stats[leg.stat] ?? 0 : null;
+  // (a QB with no carries). Absent from every box score means no value yet —
+  // except once the game is final, where never appearing really does mean
+  // zero, whether he was inactive or just never touched the ball.
+  const finished = Boolean(game && game.state === 'post');
+  let value;
+  if (record) value = record.stats[leg.stat] ?? 0;
+  else if (finished) value = 0;
+  else value = null;
+
   const line = Number(leg.line);
 
   let status;
   if (value != null && value >= line) status = 'hit';
-  else if (game && game.state === 'post') status = 'miss';
+  else if (finished) status = 'miss';
   else if (game && game.state === 'in') status = 'live';
   else status = 'pending';
 
@@ -62,6 +80,8 @@ function evaluateLeg(leg, position, live, eventsById) {
     positionAbbr: record?.position || '',
     stat: leg.stat,
     prop: describeLine(leg),
+    noLine: !record, // no box-score entry for this player at all
+    finished,
     value,
     line,
     toGo: Math.max(0, line - (value ?? 0)),
