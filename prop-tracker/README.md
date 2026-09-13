@@ -87,6 +87,38 @@ Add more slips by appending to the `slips` array — the page renders each as it
 own card. The same player can carry two different props on one slip (the
 Eighteenfold has Stefon Diggs twice) and legs can repeat across slips.
 
+### Off-season moves and roster resolution
+
+Hand-written `team` hints rot. A player changes teams and the hint quietly
+points at the wrong game — which is exactly what happened here: five of these
+players moved in the 2026 off-season.
+
+So the app doesn't trust the hints. On startup it pulls ESPN's team list and all
+32 rosters, builds a name-to-team index, and caches it for 12 hours. A player's
+team is then resolved from three sources, most authoritative first:
+
+1. **the box score** he actually appears in (once his game is live),
+2. **ESPN's current roster**,
+3. the **hint** in `slips.json`.
+
+When the hint disagrees with the roster, the roster wins and the page says so in
+an amber banner naming the player and both teams — so a stale hint is visible
+rather than silently misleading. If the roster fetch fails, legs fall back to the
+hints and nothing else is affected; live stats never depend on it.
+
+The header shows the index size (`32 players on 20 rosters`) so you can see it
+loaded.
+
+The hints in `slips.json` are already corrected for the 2026 moves:
+
+| player | was | now |
+|---|---|---|
+| Kyler Murray | ARI | MIN |
+| Isaiah Likely | BAL | NYG |
+| Stefon Diggs | NE | WAS |
+| Ja'Kobi Lane | — | BAL (2026 draft, R3 #80) |
+| Keenan Allen | LAC | IND |
+
 ### Anytime touchdown scorer
 
 `any_td` is derived, not read from a column: it's rushing + receiving + kick
@@ -137,6 +169,9 @@ scoreboard call plus one call per in-progress game.
 | `GET /api/debug/shape` | How each stat column resolved on the last parse. |
 | `GET /api/debug/scoreboard` | Raw ESPN scoreboard passthrough. |
 | `GET /api/debug/summary/:eventId` | Raw ESPN summary passthrough. |
+
+Roster resolution costs 33 requests once every 12 hours. A poll costs one
+scoreboard request plus one per in-progress game.
 
 ## Tests
 

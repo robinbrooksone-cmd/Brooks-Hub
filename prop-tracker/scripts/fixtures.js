@@ -166,6 +166,60 @@ globalThis.fetch = async (url, opts) => {
 };
 
 
+
+/* ------------------------------ rosters ------------------------------ */
+
+/** Every player across the three slips, on the team ESPN would report. */
+const ROSTER_PLAYERS = {
+  BUF: [['Josh Allen', 'QB'], ['James Cook', 'RB']],
+  BAL: [['Derrick Henry', 'RB'], ['Lamar Jackson', 'QB'], ['Zay Flowers', 'WR'], ["Ja'Kobi Lane", 'WR']],
+  CIN: [["Ja'Marr Chase", 'WR'], ['Joe Burrow', 'QB']],
+  DET: [['Amon-Ra St. Brown', 'WR'], ['Jahmyr Gibbs', 'RB'], ['Jared Goff', 'QB'], ['Sam LaPorta', 'TE']],
+  CAR: [['Tetairoa McMillan', 'WR']],
+  TEN: [['Tony Pollard', 'RB']],
+  DAL: [['George Pickens', 'WR']],
+  PHI: [['DeVonta Smith', 'WR'], ['Saquon Barkley', 'RB']],
+  JAX: [['Parker Washington', 'WR']],
+  MIA: [["De'Von Achane", 'RB']],
+  HOU: [['C.J. Stroud', 'QB']],
+  ATL: [['Bijan Robinson', 'RB']],
+  IND: [['Daniel Jones', 'QB'], ['Keenan Allen', 'WR']],
+  CLE: [['Jerry Jeudy', 'WR'], ['Harold Fannin Jr.', 'TE']],
+  NYJ: [['Garrett Wilson', 'WR']],
+  TB: [['Baker Mayfield', 'QB']],
+  WAS: [['Stefon Diggs', 'WR']],
+  MIN: [['Justin Jefferson', 'WR'], ['Kyler Murray', 'QB']],
+  LAC: [['Ladd McConkey', 'WR']],
+  NYG: [['Isaiah Likely', 'TE']],
+};
+
+const TEAM_IDS = Object.keys(ROSTER_PLAYERS);
+
+const TEAMS_PAYLOAD = {
+  sports: [{ leagues: [{ teams: TEAM_IDS.map((abbr, i) => ({
+    team: { id: String(i + 1), abbreviation: abbr, displayName: abbr },
+  })) }] }],
+};
+
+/** ESPN nests roster athletes under position groups — mirror that here. */
+const rosterPayloadFor = (teamId) => {
+  const abbr = TEAM_IDS[Number(teamId) - 1];
+  const players = ROSTER_PLAYERS[abbr] || [];
+  return {
+    athletes: [
+      {
+        position: 'offense',
+        items: players.map(([name, pos], i) => ({
+          id: `${teamId}-${i}`,
+          displayName: name,
+          jersey: String(10 + i),
+          position: { abbreviation: pos },
+        })),
+      },
+    ],
+  };
+};
+
 const state = { failUpstream: false, upstreamCalls: 0 };
 
 /** Swap global fetch for one that serves the fixtures above. */
@@ -185,6 +239,10 @@ function installStub() {
 
     if (href.includes('/scoreboard')) return ok(SCOREBOARD);
 
+    const roster = href.match(/\/teams\/(\d+)\/roster/);
+    if (roster) return ok(rosterPayloadFor(roster[1]));
+    if (href.includes('/nfl/teams')) return ok(TEAMS_PAYLOAD);
+
     const m = href.match(/event=(\d+)/);
     if (m && SUMMARIES[m[1]]) return ok(SUMMARIES[m[1]]);
 
@@ -192,4 +250,8 @@ function installStub() {
   };
 }
 
-module.exports = { SCOREBOARD, SUMMARIES, PASSING, RUSHING, RECEIVING_NO_KEYS, installStub, state };
+module.exports = {
+  SCOREBOARD, SUMMARIES, PASSING, RUSHING, RECEIVING_NO_KEYS,
+  ROSTER_PLAYERS, TEAMS_PAYLOAD, rosterPayloadFor,
+  installStub, state,
+};

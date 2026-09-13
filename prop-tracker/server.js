@@ -12,6 +12,7 @@ const {
   shapeReport,
 } = require('./espn');
 const { buildPayload } = require('./evaluate');
+const { getRosterIndex } = require('./rosters');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3100;
@@ -47,7 +48,10 @@ async function refresh({ date } = {}) {
   inFlight = (async () => {
     try {
       const config = readSlips();
-      const live = await fetchLiveData({ date });
+      // Rosters are cached for hours and never fatal, so this is nearly always
+      // a no-op that just hands back the existing index.
+      const rosters = await getRosterIndex();
+      const live = await fetchLiveData({ date, rosters });
       lastGood = { payload: buildPayload(config, live), fetchedAt: Date.now() };
       lastError = null;
       return lastGood;

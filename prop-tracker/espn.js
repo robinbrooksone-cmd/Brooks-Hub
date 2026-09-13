@@ -430,7 +430,7 @@ async function fetchSummary(event) {
  * A single failed summary doesn't sink the poll — the other games still
  * report, and the leg for the missing game just shows as unresolved.
  */
-async function fetchLiveData({ date } = {}) {
+async function fetchLiveData({ date, rosters = null } = {}) {
   const url = date
     ? `${SCOREBOARD_URL}?dates=${encodeURIComponent(date)}`
     : SCOREBOARD_URL;
@@ -460,6 +460,7 @@ async function fetchLiveData({ date } = {}) {
 
   return {
     games,
+    rosters,
     index: buildPlayerIndex(summaries),
     boxScoresLoaded: summaries.length,
     errors,

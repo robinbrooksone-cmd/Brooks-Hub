@@ -130,24 +130,64 @@ async function main() {
 
   const eighteen = state.slips[2];
 
-  // team: ["IND","BAL"] — BAL is playing, so the leg links to that game even
-  // though we never said which side the player is on.
-  const keenan = eighteen.legs.find((l) => l.configuredPlayer === 'Keenan Allen');
-  assert.ok(keenan.game, 'a matchup hint should resolve if either side is playing');
-  assert.strictEqual(keenan.game.shortName, 'BUF @ BAL');
-  assert.strictEqual(keenan.status, 'live');
-  pass('a matchup-level team hint (["IND","BAL"]) resolves to the game being played');
+  {
+    // A leg can name both sides of a matchup when you know the game but not
+    // which side the player is on. Either side playing resolves it.
+    const { evaluateLeg } = require('../evaluate');
+    const live = { index: { byFullName: new Map(), byInitialLast: new Map() }, games: state.games, rosters: null };
+    const byId = new Map(state.games.map((g) => [g.id, g]));
 
-  // team: ["NYG","DAL"] — neither side is on this slate.
-  const likely = eighteen.legs.find((l) => l.configuredPlayer === 'Isaiah Likely');
-  assert.strictEqual(likely.game, null);
-  assert.strictEqual(likely.status, 'pending');
-  pass('a matchup hint with neither side on the slate stays pending');
+    const either = evaluateLeg({ player: 'Nobody At All', team: ['IND', 'BAL'], stat: 'rec', line: 2 }, 1, live, byId);
+    assert.ok(either.game, 'BAL is playing, so the matchup hint resolves');
+    assert.strictEqual(either.game.shortName, 'BUF @ BAL');
+    assert.strictEqual(either.status, 'live');
+
+    const neither = evaluateLeg({ player: 'Nobody At All', team: ['SEA', 'SF'], stat: 'rec', line: 2 }, 1, live, byId);
+    assert.strictEqual(neither.game, null);
+    assert.strictEqual(neither.status, 'pending');
+    pass('a matchup hint resolves if either side is playing, and stays pending if neither is');
+  }
 
   const diggs = eighteen.legs.filter((l) => l.configuredPlayer === 'Stefon Diggs');
   assert.strictEqual(diggs.length, 2, 'the same player can carry two different props');
   assert.deepStrictEqual(diggs.map((l) => l.stat), ['rec', 'rec_yds']);
-  pass('one player can carry two separate props on the same slip');
+  assert.strictEqual(diggs[0].rosterTeam, 'WAS');
+  pass('one player can carry two separate props, both resolving to the same roster team');
+
+  console.log('\nRoster resolution');
+  assert.ok(state.rosters, 'payload reports roster index status');
+  assert.strictEqual(state.rosters.error, null);
+  assert.strictEqual(state.rosters.teams, 20);
+  pass(`roster index built from ${state.rosters.teams} teams, ${state.rosters.players} players`);
+
+  // Not on this slate at all, so only the roster can say who he plays for.
+  const murray = eighteen.legs.find((l) => l.configuredPlayer === 'Kyler Murray');
+  assert.strictEqual(murray.rosterTeam, 'MIN');
+  assert.strictEqual(murray.teamSource, 'roster');
+  assert.strictEqual(murray.hintConflict, false, 'hint and roster agree after the correction');
+  pass('Kyler Murray resolves to MIN from the roster, not from the hint');
+
+  // The box score outranks both, for a player who has actually played.
+  assert.strictEqual(leg('Josh Allen').teamSource, 'boxscore');
+  pass('a player in a box score takes his team from the box score');
+
+  {
+    // A hint left over from before an off-season move must be overridden and
+    // flagged, not silently trusted.
+    const { evaluateLeg } = require('../evaluate');
+    const rosters = await require('../rosters').getRosterIndex();
+    const stale = evaluateLeg(
+      { player: 'Kyler Murray', team: 'ARI', stat: 'rush_yds', line: 20 },
+      1,
+      { index: { byFullName: new Map(), byInitialLast: new Map() }, games: [], rosters },
+      new Map()
+    );
+    assert.strictEqual(stale.rosterTeam, 'MIN');
+    assert.strictEqual(stale.team, 'MIN', 'roster beats a stale hint');
+    assert.strictEqual(stale.teamSource, 'roster');
+    assert.strictEqual(stale.hintConflict, true, 'the disagreement is surfaced');
+    pass('a stale "ARI" hint for Kyler Murray is overridden by the roster and flagged');
+  }
 
   console.log('\nStat isolation');
   const { fetchLiveData } = require('../espn');

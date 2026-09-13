@@ -192,6 +192,7 @@
         <span><span class="dot" id="healthDot"></span> <span id="updated">loading…</span></span>
         <span id="countdown"></span>
         <span id="loaded"></span>
+        <span id="rosters"></span>
       </div>
     </div>
     <div class="spacer"></div>
@@ -367,6 +368,10 @@
     $('updated').textContent = 'updated ' + fmtTime(data.fetchedAt);
     $('loaded').textContent = data.boxScoresLoaded != null ? `${data.boxScoresLoaded} box scores` : '';
 
+    const r = data.rosters;
+    $('rosters').textContent =
+      r && r.players ? `${r.players} players on ${r.teams} rosters` : r && r.error ? 'rosters unavailable' : '';
+
     const dot = $('healthDot');
     dot.className = 'dot' + (data.stale ? ' stale' : data.ok === false ? ' down' : '');
 
@@ -379,6 +384,25 @@
     if (data.ok === false) {
       banners.push(`<div class="banner err">Couldn’t reach ESPN and there’s no cached data yet: ${esc(data.error)}</div>`);
     }
+    const conflicts = (data.slips || [])
+      .flatMap((s) => s.legs)
+      .filter((l) => l.hintConflict);
+
+    if (conflicts.length) {
+      const listed = conflicts
+        .map((l) => `${esc(l.player)} (slip says ${esc(l.hintTeam)}, ESPN roster says ${esc(l.rosterTeam)})`)
+        .join('; ');
+      banners.push(
+        `<div class="banner">${conflicts.length} team hint${conflicts.length > 1 ? 's are' : ' is'} out of date: ${listed}. The roster wins — these legs are tracking the right game. Update slips.json when convenient.</div>`
+      );
+    }
+
+    if (data.rosters && data.rosters.error) {
+      banners.push(
+        `<div class="banner">Couldn’t load ESPN rosters (${esc(data.rosters.error)}), so legs are falling back to the team hints in slips.json. Live stats are unaffected.</div>`
+      );
+    }
+
     if (data.fetchErrors && data.fetchErrors.length) {
       banners.push(
         `<div class="banner">Box score unavailable for ${data.fetchErrors.length} game(s): ${esc(data.fetchErrors.map((e) => e.game || e.eventId).join(', '))}</div>`

@@ -69,19 +69,19 @@
         { "player": "Jared Goff",         "team": "DET",          "stat": "pass_td",  "line": 2 },
         { "player": "Baker Mayfield",     "team": "TB",           "stat": "pass_yds", "line": 200 },
         { "player": "Lamar Jackson",      "team": "BAL",          "stat": "rush_yds", "line": 20 },
-        { "player": "Ja'Kobi Lane",       "team": ["IND","BAL"],  "stat": "rec",      "line": 2 },
-        { "player": "Keenan Allen",       "team": ["IND","BAL"],  "stat": "rec_yds",  "line": 20 },
+        { "player": "Ja'Kobi Lane",       "team": "BAL",          "stat": "rec",      "line": 2 },
+        { "player": "Keenan Allen",       "team": "IND",          "stat": "rec_yds",  "line": 20 },
         { "player": "Tetairoa McMillan",  "team": "CAR",          "stat": "rec_yds",  "line": 40 },
         { "player": "Bijan Robinson",     "team": "ATL",          "stat": "rush_yds", "line": 60 },
         { "player": "Harold Fannin Jr.",  "team": "CLE",          "stat": "rec",      "line": 3 },
-        { "player": "Stefon Diggs",       "team": ["PHI","WAS"],  "stat": "rec",      "line": 3 },
-        { "player": "Stefon Diggs",       "team": ["PHI","WAS"],  "stat": "rec_yds",  "line": 40 },
+        { "player": "Stefon Diggs",       "team": "WAS",          "stat": "rec",      "line": 3 },
+        { "player": "Stefon Diggs",       "team": "WAS",          "stat": "rec_yds",  "line": 40 },
         { "player": "Justin Jefferson",   "team": "MIN",          "stat": "rec_yds",  "line": 50 },
-        { "player": "Kyler Murray",       "team": ["MIN","GB"],   "stat": "rush_yds", "line": 20 },
+        { "player": "Kyler Murray",       "team": "MIN",          "stat": "rush_yds", "line": 20 },
         { "player": "De'Von Achane",      "team": "MIA",          "stat": "rush_yds", "line": 50 },
         { "player": "Ladd McConkey",      "team": "LAC",          "stat": "rec_yds",  "line": 40 },
         { "player": "George Pickens",     "team": "DAL",          "stat": "rec_yds",  "line": 50 },
-        { "player": "Isaiah Likely",      "team": ["NYG","DAL"],  "stat": "rec_yds",  "line": 30 }
+        { "player": "Isaiah Likely",      "team": "NYG",          "stat": "rec_yds",  "line": 30 }
       ]
     }
   ]

@@ -1,6 +1,7 @@
 'use strict';
 
 const { STAT_LABELS, lookupPlayer } = require('./espn');
+const { lookupRoster, summary: rosterSummary } = require('./rosters');
 
 /**
  * `team` may be one abbreviation ("BAL") or both sides of the matchup
@@ -45,11 +46,22 @@ function evaluateLeg(leg, position, live, eventsById) {
 
   const { record, match } = lookupPlayer(live.index, leg.player, leg.aliases);
 
-  // Prefer the game the player actually turned up in; fall back to the
-  // team hint in slips.json so a leg still shows a kickoff before the game.
+  // Three sources for a player's team, most authoritative first: the box score
+  // he actually appears in, ESPN's current roster, and finally the hand-written
+  // hint in slips.json. The roster lookup is what survives an off-season move —
+  // a hint written before a trade is the one thing here that can be out of date.
+  const roster = live.rosters ? lookupRoster(live.rosters, leg.player, leg.aliases) : null;
+  const hint = leg.team;
+  const hintTeam = Array.isArray(hint) ? null : hint || null;
+
+  const teamSource = record ? 'boxscore' : roster ? 'roster' : hintTeam ? 'hint' : null;
+  const team = record?.team || roster?.team || hintTeam || '';
+
+  // Prefer the game the player actually turned up in; otherwise look him up by
+  // his roster team, falling back to the hint.
   const game = record
     ? eventsById.get(record.eventId) || null
-    : findGameByTeam(live.games, leg.team);
+    : findGameByTeam(live.games, roster?.team || hint);
 
   // In a box score but absent from this category means a genuine zero
   // (a QB with no carries). Absent from every box score means no value yet —
@@ -73,11 +85,17 @@ function evaluateLeg(leg, position, live, eventsById) {
     position,
     placeholder: false,
     status,
-    player: record?.name || leg.player,
+    player: record?.name || roster?.name || leg.player,
     configuredPlayer: leg.player,
     matchedBy: match,
-    team: record?.team || leg.team || '',
-    positionAbbr: record?.position || '',
+    team,
+    teamSource,
+    rosterTeam: roster?.team || null,
+    hintTeam,
+    // The hint disagrees with ESPN's current roster — almost always an
+    // off-season move the slip file hasn't caught up with.
+    hintConflict: Boolean(hintTeam && roster && hintTeam !== roster.team),
+    positionAbbr: record?.position || roster?.position || '',
     stat: leg.stat,
     prop: describeLine(leg),
     noLine: !record, // no box-score entry for this player at all
@@ -136,6 +154,7 @@ function buildPayload(config, live) {
     games: live.games,
     boxScoresLoaded: live.boxScoresLoaded,
     fetchErrors: live.errors,
+    rosters: rosterSummary(),
     slips: config.slips.map((slip) => evaluateSlip(slip, live, eventsById)),
   };
 }
