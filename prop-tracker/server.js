@@ -13,12 +13,16 @@ const {
 } = require('./espn');
 const { buildPayload } = require('./evaluate');
 const { getRosterIndex } = require('./rosters');
+const { parseSlipText } = require('./slip-parser');
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3100;
 const POLL_MS = Number(process.env.POLL_MS) || 30000;
+// Local app that accepts writes, so don't listen on every interface by default.
+const HOST = process.env.HOST || '127.0.0.1';
 const SLIPS_PATH = path.join(__dirname, 'slips.json');
 
+app.use(express.json({ limit: '256kb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 /* ------------------------------------------------------------------ */
@@ -110,6 +114,102 @@ app.get('/api/state', async (req, res) => {
   }
 });
 
+/* ------------------------------------------------------------------ */
+/* Adding and removing slips                                           */
+/* ------------------------------------------------------------------ */
+
+function writeSlips(config) {
+  // Write via a temp file so an interrupted save can't truncate slips.json.
+  const tmp = `${SLIPS_PATH}.tmp`;
+  fs.writeFileSync(tmp, `${JSON.stringify(config, null, 2)}\n`);
+  fs.renameSync(tmp, SLIPS_PATH);
+}
+
+function makeSlipId(name, existing) {
+  const base =
+    String(name || 'slip')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '') || 'slip';
+
+  if (!existing.has(base)) return base;
+  let n = 2;
+  while (existing.has(`${base}-${n}`)) n += 1;
+  return `${base}-${n}`;
+}
+
+const numberOrNull = (value) => {
+  if (value === '' || value == null) return null;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
+};
+
+/** Parse pasted betslip text without saving anything — drives the preview. */
+app.post('/api/slips/parse', (req, res) => {
+  const { legs, problems } = parseSlipText(req.body?.text || '');
+  res.json({ legs, problems });
+});
+
+/** Parse pasted betslip text and append it to slips.json. */
+app.post('/api/slips', (req, res) => {
+  try {
+    const body = req.body || {};
+    const { legs, problems } = parseSlipText(body.text || '');
+
+    if (!legs.length) {
+      res.status(400).json({
+        error: 'No legs could be read from that text.',
+        problems,
+      });
+      return;
+    }
+
+    const config = readSlips();
+    const existing = new Set(config.slips.map((s) => s.id));
+
+    const slip = {
+      id: makeSlipId(body.name, existing),
+      name: String(body.name || '').trim() || `Slip (${legs.length} legs)`,
+      book: String(body.book || 'Sunbet').trim(),
+      coupon: String(body.coupon || '').trim() || undefined,
+      placedAt: new Date().toISOString(),
+      stake: numberOrNull(body.stake),
+      odds: numberOrNull(body.odds),
+      payout: numberOrNull(body.payout),
+      legs,
+    };
+
+    config.slips.push(slip);
+    writeSlips(config);
+    lastGood = null; // force the next poll to rebuild against the new slip
+
+    console.log(`[slips] added "${slip.name}" with ${legs.length} legs`);
+    res.json({ slip, problems });
+  } catch (err) {
+    res.status(500).json({ error: String(err?.message || err) });
+  }
+});
+
+app.delete('/api/slips/:id', (req, res) => {
+  try {
+    const config = readSlips();
+    const before = config.slips.length;
+    config.slips = config.slips.filter((s) => s.id !== req.params.id);
+
+    if (config.slips.length === before) {
+      res.status(404).json({ error: `no slip with id "${req.params.id}"` });
+      return;
+    }
+
+    writeSlips(config);
+    lastGood = null;
+    console.log(`[slips] removed "${req.params.id}"`);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: String(err?.message || err) });
+  }
+});
+
 /** How each stat column was resolved on the last parse — audit the shape. */
 app.get('/api/debug/shape', (req, res) => res.json(shapeReport));
 
@@ -130,8 +230,8 @@ app.get('/api/debug/summary/:eventId', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`NFL prop tracker listening on http://localhost:${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`NFL prop tracker listening on http://${HOST}:${PORT}`);
   console.log(`Polling every ${POLL_MS / 1000}s. Slips: ${SLIPS_PATH}`);
   refresh().catch(() => {
     /* first poll failure is already logged; the page will retry */

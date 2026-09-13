@@ -12,7 +12,14 @@
 const assert = require('assert');
 const http = require('http');
 
-const { RUSHING, RECEIVING_NO_KEYS, installStub, state: stub } = require('./fixtures');
+const fs = require('fs');
+const path = require('path');
+
+const { RUSHING, RECEIVING_NO_KEYS, BETSLIP_TEXT, installStub, state: stub } = require('./fixtures');
+
+const SLIPS_PATH = path.join(__dirname, '..', 'slips.json');
+const SLIPS_BACKUP = fs.readFileSync(SLIPS_PATH, 'utf8');
+const restoreSlips = () => fs.writeFileSync(SLIPS_PATH, SLIPS_BACKUP);
 
 installStub();
 
@@ -32,6 +39,35 @@ const get = (path) =>
       });
     }).on('error', reject);
   });
+
+const send = (method, path, body) =>
+  new Promise((resolve, reject) => {
+    const payload = body == null ? null : JSON.stringify(body);
+    const req = http.request(
+      {
+        host: '127.0.0.1',
+        port: PORT,
+        path,
+        method,
+        headers: payload
+          ? { 'content-type': 'application/json', 'content-length': Buffer.byteLength(payload) }
+          : {},
+      },
+      (res) => {
+        let buf = '';
+        res.on('data', (c) => (buf += c));
+        res.on('end', () => {
+          try { resolve(JSON.parse(buf)); } catch (e) { reject(e); }
+        });
+      }
+    );
+    req.on('error', reject);
+    if (payload) req.write(payload);
+    req.end();
+  });
+
+const post = (path, body) => send('POST', path, body);
+const del = (path) => send('DELETE', path);
 
 const pass = (msg) => console.log(`  ok  ${msg}`);
 
@@ -248,11 +284,93 @@ async function main() {
   assert.strictEqual(recovered.stale, false);
   pass('recovers to fresh on the next successful poll');
 
+  console.log('\nBetslip parsing');
+  const { parseSlipText, parseLegLine } = require('../slip-parser');
+
+  const eightParsed = parseSlipText(BETSLIP_TEXT.eight);
+  assert.strictEqual(eightParsed.problems.length, 0);
+  assert.strictEqual(eightParsed.legs.length, 8);
+  const eighteenParsed = parseSlipText(BETSLIP_TEXT.eighteen);
+  assert.strictEqual(eighteenParsed.problems.length, 0);
+  assert.strictEqual(eighteenParsed.legs.length, 18);
+  pass('the Eightfold and Eighteenfold slips parse verbatim, 26 legs, no problems');
+
+  const stroudLeg = eightParsed.legs.find((l) => l.player === 'C.J. Stroud');
+  assert.deepStrictEqual(
+    { stat: stroudLeg.stat, line: stroudLeg.line, label: stroudLeg.label },
+    { stat: 'rush_yds', line: 9.5, label: 'over 9.5 rush yds' }
+  );
+  pass('"Total Rushing Yards ... - Over 9.5" -> rush_yds, line 9.5');
+
+  const goffLeg = eighteenParsed.legs.find((l) => l.player === 'Jared Goff');
+  assert.strictEqual(goffLeg.stat, 'pass_td', '"Touchdown Passes" must not match "passing yards"');
+  assert.strictEqual(goffLeg.line, 2);
+  pass('"2+ Touchdown Passes" -> pass_td 2, not pass_yds');
+
+  const scorer = parseLegLine('Touchdown Scorer: Saquon Barkley - Yes').leg;
+  assert.deepStrictEqual(scorer, { player: 'Saquon Barkley', stat: 'any_td', line: 1, label: 'anytime TD' });
+  pass('"Touchdown Scorer" with no number -> any_td, line 1');
+
+  const fannin = eighteenParsed.legs.find((l) => l.player === 'Harold Fannin Jr.');
+  assert.ok(fannin, 'a name ending in a suffix survives the player/selection split');
+  assert.deepStrictEqual(fannin.team, ['JAX', 'CLE'], 'game line becomes a matchup hint');
+  pass('"Harold Fannin Jr. - Yes" splits correctly and picks up its matchup');
+
+  assert.strictEqual(
+    parseSlipText('14-17   2nd Quarter 4:04\nLive HOU Texans - Buffalo Bills').legs.length,
+    0,
+    'score and game lines alone produce no legs'
+  );
+  pass('score lines are ignored and a game line alone creates no leg');
+
+  const junk = parseSlipText([
+    '80+ Receiving Yards By The Player: Real Player - Yes',
+    'Under 40.5 Receiving Yards By The Player: Someone - Under 40.5',
+    'First Basket Scorer: Wrong Sport - Yes',
+    'total nonsense with no colon',
+  ].join('\n'));
+  assert.strictEqual(junk.legs.length, 1, 'the good leg still parses');
+  assert.strictEqual(junk.problems.length, 3, 'every bad line is reported, not dropped');
+  assert.match(junk.problems[0].error, /Under/);
+  assert.match(junk.problems[1].error, /unrecognised market/);
+  pass('unsupported and malformed lines are reported individually, never silently dropped');
+
+  console.log('\nAdding and removing slips');
+  const added = await post('/api/slips', {
+    text: BETSLIP_TEXT.eight,
+    name: 'Test Eightfold',
+    stake: '100',
+    odds: '42.5',
+    payout: '4250',
+  });
+  assert.strictEqual(added.slip.id, 'test-eightfold');
+  assert.strictEqual(added.slip.legs.length, 8);
+  assert.strictEqual(added.slip.odds, 42.5);
+  pass('POST /api/slips parses pasted text and appends a slip');
+
+  const withNew = await get('/api/state');
+  assert.strictEqual(withNew.slips.length, 4);
+  const testSlip = withNew.slips.find((s) => s.id === 'test-eightfold');
+  assert.strictEqual(testSlip.legs.length, 8);
+  assert.strictEqual(testSlip.legs.find((l) => l.configuredPlayer === 'C.J. Stroud').status, 'hit');
+  pass('the new slip is scored on the very next poll');
+
+  const rejected = await post('/api/slips', { text: 'nothing parseable here', name: 'Bad' });
+  assert.ok(rejected.error, 'a slip with no readable legs is refused');
+  assert.strictEqual((await get('/api/state')).slips.length, 4, 'and nothing was written');
+  pass('a slip with no readable legs is refused rather than saved empty');
+
+  await del('/api/slips/test-eightfold');
+  assert.strictEqual((await get('/api/state')).slips.length, 3);
+  pass('DELETE /api/slips/:id removes it again');
+
+  restoreSlips();
   console.log('\nAll checks passed.\n');
   process.exit(0);
 }
 
 main().catch((err) => {
+  restoreSlips(); // never leave a test slip behind
   console.error('\nFAILED:', err && err.message);
   console.error(err);
   process.exit(1);

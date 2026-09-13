@@ -220,6 +220,68 @@ const rosterPayloadFor = (teamId) => {
   };
 };
 
+
+/* --------------------------- betslip text --------------------------- */
+
+/** Verbatim leg text as the three slips print it, for the parser tests. */
+const BETSLIP_TEXT = {
+  eight: `3+ Receptions By The Player - Including Overtime: James Cook - Yes
+Live HOU Texans - Buffalo Bills
+14-17   2nd Quarter 4:04
+Total Rushing Yards by the Player - Including Overtime: C.J. Stroud - Over 9.5
+Live HOU Texans - Buffalo Bills
+4+ Receptions By The Player - Including Overtime: Bijan Robinson - Yes
+Live Pittsburgh Steelers - Atlanta Falcons
+13-7   2nd Quarter 7:36
+20+ Rushing Yards By The Player - Including Overtime: Daniel Jones - Yes
+Live Indianapolis Colts - Baltimore Ravens
+5+ Receptions By The Player - Including Overtime: Zay Flowers - Yes
+Live Indianapolis Colts - Baltimore Ravens
+3+ Receptions By The Player - Including Overtime: Jerry Jeudy - Yes
+Live Jacksonville Jaguars - Cleveland Browns
+4+ Receptions By The Player - Including Overtime: Sam LaPorta - Yes
+Live Detroit Lions - New Orleans Saints
+50+ Rushing Yards By The Player - Including Overtime: Tony Pollard - Yes
+Live Tennessee Titans - New York Jets`,
+
+  eighteen: `2+ Receptions By The Player - Including Overtime: James Cook - Yes
+Live HOU Texans - Buffalo Bills
+50+ Receiving Yards By The Player - Including Overtime: Garrett Wilson - Yes
+Live Tennessee Titans - New York Jets
+2+ Touchdown Passes By The Player - Including Overtime: Jared Goff - Yes
+Live Detroit Lions - New Orleans Saints
+200+ Passing Yards By The Player - Including Overtime: Baker Mayfield - Yes
+Live Cincinnati Bengals - Tampa Bay Buccaneers
+20+ Rushing Yards By The Player - Including Overtime: Lamar Jackson - Yes
+Live Indianapolis Colts - Baltimore Ravens
+2+ Receptions By The Player - Including Overtime: Ja'Kobi Lane - Yes
+Live Indianapolis Colts - Baltimore Ravens
+20+ Receiving Yards By The Player - Including Overtime: Keenan Allen - Yes
+Live Indianapolis Colts - Baltimore Ravens
+40+ Receiving Yards By The Player - Including Overtime: Tetairoa McMillan - Yes
+Live Carolina Panthers - Chicago Bears
+60+ Rushing Yards By The Player - Including Overtime: Bijan Robinson - Yes
+Live Pittsburgh Steelers - Atlanta Falcons
+3+ Receptions By The Player - Including Overtime: Harold Fannin Jr. - Yes
+Live Jacksonville Jaguars - Cleveland Browns
+3+ Receptions By The Player - Including Overtime: Stefon Diggs - Yes
+Philadelphia Eagles - Washington Commanders
+40+ Receiving Yards By The Player - Including Overtime: Stefon Diggs - Yes
+Philadelphia Eagles - Washington Commanders
+50+ Receiving Yards By The Player - Including Overtime: Justin Jefferson - Yes
+Minnesota Vikings - Green Bay Packers
+20+ Rushing Yards By The Player - Including Overtime: Kyler Murray - Yes
+Minnesota Vikings - Green Bay Packers
+50+ Rushing Yards By The Player - Including Overtime: De'Von Achane - Yes
+Las Vegas Raiders - Miami Dolphins
+40+ Receiving Yards By The Player - Including Overtime: Ladd McConkey - Yes
+Los Angeles Chargers - Arizona Cardinals
+50+ Receiving Yards By The Player - Including Overtime: George Pickens - Yes
+New York Giants - Dallas Cowboys
+30+ Receiving Yards By The Player - Including Overtime: Isaiah Likely - Yes
+New York Giants - Dallas Cowboys`,
+};
+
 const state = { failUpstream: false, upstreamCalls: 0 };
 
 /** Swap global fetch for one that serves the fixtures above. */
@@ -252,6 +314,6 @@ function installStub() {
 
 module.exports = {
   SCOREBOARD, SUMMARIES, PASSING, RUSHING, RECEIVING_NO_KEYS,
-  ROSTER_PLAYERS, TEAMS_PAYLOAD, rosterPayloadFor,
+  ROSTER_PLAYERS, TEAMS_PAYLOAD, rosterPayloadFor, BETSLIP_TEXT,
   installStub, state,
 };

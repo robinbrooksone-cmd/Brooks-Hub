@@ -172,6 +172,42 @@
   .game-card .st { color: var(--ink-faint); font-size: 11.5px; margin-top: 7px; }
   .game-card.in .st { color: var(--live); }
 
+
+  /* ---------- add slip ---------- */
+
+  details.add {
+    margin-top: 18px; background: var(--panel);
+    border: 1px solid var(--line); border-radius: var(--radius);
+  }
+  details.add summary {
+    padding: 13px 18px; cursor: pointer; font-size: 13.5px; font-weight: 600; color: var(--ink-dim);
+  }
+  details.add[open] summary { border-bottom: 1px solid var(--line); }
+  .add-body { padding: 16px 18px; display: grid; gap: 14px; }
+  .add-body label { display: block; font-size: 12px; color: var(--ink-dim); margin-bottom: 5px; }
+  .add-body textarea, .add-body input {
+    width: 100%; font: inherit; font-size: 13px;
+    color: var(--ink); background: #0d131c;
+    border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px;
+  }
+  .add-body textarea { min-height: 150px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; line-height: 1.5; }
+  .add-body textarea:focus, .add-body input:focus { outline: none; border-color: var(--accent); }
+  .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+  .hint { color: var(--ink-faint); font-size: 12px; }
+  .preview { border: 1px solid var(--line); border-radius: 8px; padding: 11px 13px; background: #0d131c; font-size: 12.5px; }
+  .preview ol { margin: 0; padding-left: 20px; }
+  .preview li { margin: 3px 0; color: var(--ink-dim); }
+  .preview li b { color: var(--ink); font-weight: 600; }
+  .preview .bad { color: #ffb3b6; }
+  .actions { display: flex; gap: 10px; align-items: center; }
+  button.primary { background: #16324f; border-color: #2b5f93; }
+  button.danger:hover { border-color: var(--miss); color: var(--miss); }
+  .x {
+    background: none; border: none; color: var(--ink-faint);
+    font-size: 17px; line-height: 1; padding: 3px 7px; cursor: pointer; border-radius: 6px;
+  }
+  .x:hover { color: var(--miss); background: rgba(242,85,90,.12); }
+
   .empty { color: var(--ink-faint); padding: 40px 0; text-align: center; }
 
   @media (max-width: 860px) {
@@ -203,6 +239,32 @@
 
 <div class="wrap">
   <div id="banner"></div>
+  <details class="add" id="addPanel">
+    <summary>+ Add a betslip</summary>
+    <div class="add-body">
+      <div>
+        <label for="slipText">Paste the legs straight off the slip — one per line. Game and score lines are fine, they're used for team hints or ignored.</label>
+        <textarea id="slipText" spellcheck="false" placeholder="80+ Receiving Yards By The Player - Including Overtime: Ja'Marr Chase - Yes
+Live Cincinnati Bengals - Tampa Bay Buccaneers
+21-3   2nd Quarter 4:51
+Touchdown Scorer: Saquon Barkley - Yes
+Philadelphia Eagles - Washington Commanders"></textarea>
+      </div>
+      <div class="fields">
+        <div><label for="slipName">Name</label><input id="slipName" placeholder="Fourfold"></div>
+        <div><label for="slipCoupon">Coupon ID</label><input id="slipCoupon" placeholder="optional"></div>
+        <div><label for="slipStake">Stake</label><input id="slipStake" inputmode="decimal" placeholder="100"></div>
+        <div><label for="slipOdds">Odds</label><input id="slipOdds" inputmode="decimal" placeholder="589.0"></div>
+        <div><label for="slipPayout">Payout</label><input id="slipPayout" inputmode="decimal" placeholder="58899.59"></div>
+      </div>
+      <div class="preview" id="preview"><span class="hint">Paste some legs and they'll be read back here before you save.</span></div>
+      <div class="actions">
+        <button class="primary" id="saveSlip">Save slip</button>
+        <span class="hint" id="saveMsg"></span>
+      </div>
+    </div>
+  </details>
+
   <div id="slips"><div class="empty">Loading slips…</div></div>
   <div id="games"></div>
 </div>
@@ -232,6 +294,14 @@
 
   const esc = (s) =>
     String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // Mirrors STAT_LABELS on the server, for the add-slip preview.
+  const STAT_NAMES = {
+    pass_yds: 'pass yds', pass_td: 'pass TDs',
+    rush_yds: 'rush yds', rush_td: 'rush TDs',
+    rec_yds: 'rec yds', rec: 'receptions', rec_td: 'rec TDs',
+    any_td: 'TDs',
+  };
 
   const STATUS_TEXT = {
     hit: 'HIT',
@@ -330,6 +400,7 @@
             <div class="slip-sub">${esc(subBits.join(' · '))}</div>
           </div>
           <span class="pill ${slip.status}">${slip.status}</span>
+          <button class="x" data-remove="${esc(slip.id)}" title="Remove this slip">&times;</button>
           <div class="spacer"></div>
           <div>
             <div class="pips">${pips}</div>
@@ -466,6 +537,109 @@
   // Catch up immediately when the tab comes back rather than waiting out the timer.
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden && Date.now() > nextPollAt) load();
+  });
+
+
+  /* ---------- adding a slip ---------- */
+
+  const debounce = (fn, ms) => {
+    let t;
+    return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+  };
+
+  function renderPreview({ legs, problems }) {
+    const parts = [];
+
+    if (legs.length) {
+      parts.push(
+        `<ol>${legs.map((l) => {
+          const line = l.label || `${l.line}+ ${STAT_NAMES[l.stat] || l.stat}`;
+          const team = Array.isArray(l.team) ? l.team.join(' / ') : l.team || '—';
+          return `<li><b>${esc(l.player)}</b> — ${esc(line)} <span class="hint">(${esc(team)})</span></li>`;
+        }).join('')}</ol>`
+      );
+    }
+
+    if (problems.length) {
+      parts.push(
+        `<div class="bad" style="margin-top:${legs.length ? 9 : 0}px">Couldn't read ${problems.length} line${problems.length > 1 ? 's' : ''}:<ul style="margin:4px 0 0;padding-left:18px">${problems
+          .map((p) => `<li>${esc(p.line)} <span class="hint">— ${esc(p.error)}</span></li>`)
+          .join('')}</ul></div>`
+      );
+    }
+
+    if (!parts.length) parts.push('<span class="hint">Nothing recognised yet.</span>');
+    $('preview').innerHTML = parts.join('');
+  }
+
+  const doPreview = debounce(async () => {
+    const text = $('slipText').value;
+    if (!text.trim()) {
+      $('preview').innerHTML = '<span class="hint">Paste some legs and they\u2019ll be read back here before you save.</span>';
+      return;
+    }
+    try {
+      const res = await fetch('/api/slips/parse', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ text }),
+      });
+      renderPreview(await res.json());
+    } catch (err) {
+      $('preview').innerHTML = `<span class="bad">${esc(err.message)}</span>`;
+    }
+  }, 250);
+
+  $('slipText').addEventListener('input', doPreview);
+
+  $('saveSlip').addEventListener('click', async () => {
+    const btn = $('saveSlip');
+    const msg = $('saveMsg');
+    btn.disabled = true;
+    msg.textContent = 'Saving…';
+
+    try {
+      const res = await fetch('/api/slips', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          text: $('slipText').value,
+          name: $('slipName').value,
+          coupon: $('slipCoupon').value,
+          stake: $('slipStake').value,
+          odds: $('slipOdds').value,
+          payout: $('slipPayout').value,
+        }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        msg.innerHTML = `<span style="color:var(--miss)">${esc(data.error || 'Save failed')}</span>`;
+        return;
+      }
+
+      msg.innerHTML = `<span style="color:var(--hit)">Added ${esc(data.slip.name)} (${data.slip.legs.length} legs)</span>`;
+      ['slipText', 'slipName', 'slipCoupon', 'slipStake', 'slipOdds', 'slipPayout']
+        .forEach((id) => { $(id).value = ''; });
+      $('preview').innerHTML = '<span class="hint">Saved.</span>';
+      $('addPanel').open = false;
+      await load();
+    } catch (err) {
+      msg.innerHTML = `<span style="color:var(--miss)">${esc(err.message)}</span>`;
+    } finally {
+      btn.disabled = false;
+      setTimeout(() => { msg.textContent = ''; }, 6000);
+    }
+  });
+
+  // Slip cards are re-rendered on every poll, so listen on the container.
+  $('slips').addEventListener('click', async (event) => {
+    const id = event.target?.dataset?.remove;
+    if (!id) return;
+    if (!confirm('Remove this slip from the tracker?')) return;
+
+    await fetch(`/api/slips/${encodeURIComponent(id)}`, { method: 'DELETE' });
+    await load();
   });
 
   tickTimer = setInterval(tick, 1000);

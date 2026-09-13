@@ -66,8 +66,34 @@ Three Sunbet parlays are loaded, R100 stake each:
 Odds and payout are recorded for the Thirteenfold (589.0, R58,899.59). The other
 two show "payout not recorded" until you fill in `odds` and `payout`.
 
-Everything lives in **`slips.json`**, re-read on every request — edit it and hit
-Refresh, no restart needed.
+### Adding a betslip
+
+Open **"+ Add a betslip"** on the page, paste the legs straight off the slip —
+one per line — and they're read back to you before you save:
+
+```
+80+ Receiving Yards By The Player - Including Overtime: Ja'Marr Chase - Yes
+Live Cincinnati Bengals - Tampa Bay Buccaneers
+21-3   2nd Quarter 4:51
+Touchdown Scorer: Saquon Barkley - Yes
+Philadelphia Eagles - Washington Commanders
+```
+
+becomes two tracked legs. Game lines are turned into team hints (both sides —
+the roster resolver picks the right one), score lines are ignored, and anything
+it can't read is listed with the reason instead of being quietly dropped, so a
+leg never goes missing.
+
+Markets it understands: `N+ Receiving/Rushing/Passing Yards`, `N+ Receptions`,
+`N+ Touchdown Passes`, `Touchdown Scorer`, and `Total ... Yards - Over N`.
+**Under** and **No** selections are refused — the tracker only scores "reach
+this number" props, and silently inverting one would be worse than rejecting it.
+
+Once saved, the slip is scored on the very next poll. The **×** on a slip header
+removes it.
+
+Everything lives in **`slips.json`**, re-read on every request — you can also
+edit it directly and hit Refresh, no restart needed.
 
 ```json
 { "player": "Derrick Henry", "team": "BAL", "stat": "rush_yds", "line": 80 }
@@ -146,6 +172,10 @@ the ball, and the leg says which it can't distinguish.
 A slip is **dead** as soon as any leg misses, **won** when every leg hits, and
 **alive** otherwise.
 
+Because the app accepts writes, it listens on **127.0.0.1** by default rather
+than every interface. Set `HOST=0.0.0.0` if you deliberately want it reachable
+from another device on your network.
+
 ## Refresh and failure behaviour
 
 Polls every 30 seconds (`POLL_MS` to change), plus a manual Refresh button and a
@@ -168,6 +198,9 @@ scoreboard call plus one call per in-progress game.
 | `GET /api/state` | Evaluated slips + games. `?date=YYYYMMDD` for another slate. |
 | `GET /api/debug/shape` | How each stat column resolved on the last parse. |
 | `GET /api/debug/scoreboard` | Raw ESPN scoreboard passthrough. |
+| `POST /api/slips/parse` | Parse pasted betslip text without saving (drives the preview). |
+| `POST /api/slips` | Parse pasted text and append it as a slip. |
+| `DELETE /api/slips/:id` | Remove a slip. |
 | `GET /api/debug/summary/:eventId` | Raw ESPN summary passthrough. |
 
 Roster resolution costs 33 requests once every 12 hours. A poll costs one
@@ -184,5 +217,7 @@ end-to-end: column resolution via both `keys[]` and `labels[]`, a player split
 across category blocks merging into one line, the `>=` boundary, a decimal
 `Over 9.5` line, anytime-TD derivation, receptions vs yards column separation,
 final-vs-live miss logic, matchup-level team hints, players absent from the
-slate, the one-scoreboard-plus-live-games request budget, and that a failed poll
-serves the last good data with `stale: true`.
+slate, the one-scoreboard-plus-live-games request budget, roster resolution
+overriding a stale hint, betslip parsing of all three slips verbatim, rejection
+of unsupported markets, and that a failed poll serves the last good data with
+`stale: true`.
