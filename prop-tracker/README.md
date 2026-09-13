@@ -14,6 +14,30 @@ it; the launcher will tell you if it's missing.
 
 From a terminal, `node server.js` does the same thing.
 
+## Or put it on a link
+
+To reach it from your phone, or anywhere that isn't the machine it's running
+on, deploy it. `render.yaml` in the repo root already defines it as a service
+(`brooks-hub-props`) alongside the wedding site:
+
+1. In Render, **New → Blueprint**, pick this repo, and let it read `render.yaml`.
+2. It asks for `ACCESS_PASSWORD` — **set one**. The page can add and delete
+   slips, so without a password anyone with the URL can read and edit your bets.
+3. Deploy. You get `https://brooks-hub-props.onrender.com`, and the browser asks
+   for that password once.
+
+There's no build step and nothing to install, so deploys take seconds. The
+service mounts a small disk at `/var/data` so slips you add from the page
+survive redeploys — that disk is the one part of this that costs anything.
+
+It works on any Node host, not just Render: set `HOST=0.0.0.0`, point `PORT` at
+whatever the host provides, set `ACCESS_PASSWORD`, and run `node server.js`.
+
+**A hosted page can't do this without a server.** The browser can't call ESPN
+directly — ESPN sends no CORS headers, so the request is blocked — which is why
+the server proxies it. That also rules out publishing this as a static page or a
+Claude Artifact: those have no server to proxy through.
+
 ## Add a bet
 
 Click **"+ Add a betslip"** and type one leg per line, however you'd say it:
@@ -187,8 +211,9 @@ A slip is **dead** as soon as any leg misses, **won** when every leg hits, and
 **alive** otherwise.
 
 Because the app accepts writes, it listens on **127.0.0.1** by default rather
-than every interface. Set `HOST=0.0.0.0` if you deliberately want it reachable
-from another device on your network.
+than every interface. Set `HOST=0.0.0.0` to make it reachable from another
+device — and set `ACCESS_PASSWORD` when you do; the server warns at startup if
+you haven't. `SLIPS_PATH` moves `slips.json` onto a mounted disk for deploys.
 
 ### Refresh and failure behaviour
 

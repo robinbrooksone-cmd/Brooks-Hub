@@ -71,6 +71,53 @@ const del = (path) => send('DELETE', path);
 
 const pass = (msg) => console.log(`  ok  ${msg}`);
 
+
+/**
+ * Auth is read from the environment at startup, so it needs its own process.
+ * No ESPN stub here — a 401 is returned before any upstream call.
+ */
+function testPassword() {
+  const { spawn } = require('child_process');
+  const PW_PORT = 3198;
+
+  const child = spawn(process.execPath, [path.join(__dirname, '..', 'server.js')], {
+    env: { ...process.env, PORT: String(PW_PORT), HOST: '127.0.0.1', ACCESS_PASSWORD: 'hunter2' },
+    stdio: 'ignore',
+  });
+
+  const status = (auth) =>
+    new Promise((resolve, reject) => {
+      const headers = auth
+        ? { authorization: `Basic ${Buffer.from(`x:${auth}`).toString('base64')}` }
+        : {};
+      const req = http.request(
+        { host: '127.0.0.1', port: PW_PORT, path: '/', method: 'GET', headers },
+        (res) => {
+          res.resume();
+          resolve(res.statusCode);
+        }
+      );
+      req.on('error', reject);
+      req.end();
+    });
+
+  return new Promise((resolve, reject) => {
+    setTimeout(async () => {
+      try {
+        assert.strictEqual(await status(null), 401, 'no credentials must be refused');
+        assert.strictEqual(await status('wrong'), 401, 'a wrong password must be refused');
+        assert.strictEqual(await status('hunter2'), 200, 'the right password gets in');
+        pass('ACCESS_PASSWORD refuses missing and wrong passwords, admits the right one');
+        resolve();
+      } catch (err) {
+        reject(err);
+      } finally {
+        child.kill();
+      }
+    }, 700);
+  });
+}
+
 async function main() {
   require('../server.js');
   await new Promise((r) => setTimeout(r, 400));
@@ -438,6 +485,9 @@ async function main() {
   await del('/api/slips/test-eightfold');
   assert.strictEqual((await get('/api/state')).slips.length, 3);
   pass('DELETE /api/slips/:id removes it again');
+
+  console.log('\nPassword protection');
+  await testPassword();
 
   restoreSlips();
   console.log('\nAll checks passed.\n');

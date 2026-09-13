@@ -11,6 +11,7 @@
 const http = require('http');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 
 const {
   SUMMARY_URL,
@@ -29,7 +30,41 @@ const POLL_MS = Number(process.env.POLL_MS) || 30000;
 const HOST = process.env.HOST || '127.0.0.1';
 
 const PUBLIC_DIR = path.join(__dirname, 'public');
-const SLIPS_PATH = path.join(__dirname, 'slips.json');
+
+// Deployed, slips.json wants to live on a mounted disk so added slips survive
+// a redeploy. Locally it's just the file next to this one.
+const BUNDLED_SLIPS = path.join(__dirname, 'slips.json');
+const SLIPS_PATH = process.env.SLIPS_PATH || BUNDLED_SLIPS;
+
+if (SLIPS_PATH !== BUNDLED_SLIPS && !fs.existsSync(SLIPS_PATH)) {
+  fs.mkdirSync(path.dirname(SLIPS_PATH), { recursive: true });
+  fs.copyFileSync(BUNDLED_SLIPS, SLIPS_PATH);
+  console.log(`[slips] seeded ${SLIPS_PATH} from the bundled copy`);
+}
+
+/**
+ * Optional password. Unset (the local default) means no prompt; set, every
+ * request needs it. The page can add and delete slips, so a public URL
+ * without this is world-writable.
+ */
+const ACCESS_PASSWORD = process.env.ACCESS_PASSWORD || '';
+
+const digest = (value) => crypto.createHash('sha256').update(String(value)).digest();
+
+/** Compares hashes so the check doesn't leak the password's length. */
+function passwordMatches(supplied) {
+  return crypto.timingSafeEqual(digest(supplied), digest(ACCESS_PASSWORD));
+}
+
+function authorized(req) {
+  if (!ACCESS_PASSWORD) return true;
+
+  const [scheme, encoded] = String(req.headers.authorization || '').split(' ');
+  if (!/^basic$/i.test(scheme || '') || !encoded) return false;
+
+  const decoded = Buffer.from(encoded, 'base64').toString('utf8');
+  return passwordMatches(decoded.slice(decoded.indexOf(':') + 1));
+}
 
 /* ------------------------------------------------------------------ */
 /* HTTP helpers                                                        */
@@ -269,6 +304,15 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   const { pathname } = url;
 
+  if (!authorized(req)) {
+    res.writeHead(401, {
+      'www-authenticate': 'Basic realm="NFL prop tracker", charset="UTF-8"',
+      'content-type': 'text/plain; charset=utf-8',
+    });
+    res.end('Password required.');
+    return;
+  }
+
   try {
     if (req.method === 'GET' && pathname === '/api/state') return await handleState(url, res);
 
@@ -312,10 +356,19 @@ server.listen(PORT, HOST, () => {
   const url = `http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}`;
   console.log(`\n  NFL prop tracker running — open ${url}\n`);
   console.log(`  Polling every ${POLL_MS / 1000}s. Slips: ${SLIPS_PATH}`);
-  console.log('  Press Ctrl+C to stop.\n');
+
+  if (HOST === '0.0.0.0' && !ACCESS_PASSWORD) {
+    console.warn(
+      '  WARNING: reachable from the network with no ACCESS_PASSWORD set —\n' +
+      '  anyone who finds this URL can read and edit your slips.\n'
+    );
+  } else {
+    console.log('  Press Ctrl+C to stop.\n');
+  }
   refresh().catch(() => {
     /* first poll failure is already logged; the page will retry */
   });
 });
 
 module.exports = server;
+module.exports.authorized = authorized;
