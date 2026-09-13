@@ -184,7 +184,8 @@
   }
   details.add[open] summary { border-bottom: 1px solid var(--line); }
   .add-body { padding: 16px 18px; display: grid; gap: 14px; }
-  .add-body label { display: block; font-size: 12px; color: var(--ink-dim); margin-bottom: 5px; }
+  .add-body label { display: block; font-size: 12px; color: var(--ink-dim); margin-bottom: 5px; line-height: 1.5; }
+  .add-body label code { background: #0d131c; border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; color: var(--ink); font-size: 11.5px; }
   .add-body textarea, .add-body input {
     width: 100%; font: inherit; font-size: 13px;
     color: var(--ink); background: #0d131c;
@@ -243,12 +244,16 @@
     <summary>+ Add a betslip</summary>
     <div class="add-body">
       <div>
-        <label for="slipText">Paste the legs straight off the slip — one per line. Game and score lines are fine, they're used for team hints or ignored.</label>
-        <textarea id="slipText" spellcheck="false" placeholder="80+ Receiving Yards By The Player - Including Overtime: Ja'Marr Chase - Yes
-Live Cincinnati Bengals - Tampa Bay Buccaneers
-21-3   2nd Quarter 4:51
-Touchdown Scorer: Saquon Barkley - Yes
-Philadelphia Eagles - Washington Commanders"></textarea>
+        <label for="slipText">One leg per line — type it however you'd say it (<code>Josh Allen 35 rush yards</code>), or paste straight off the slip. Either works, and you'll see what was read below before you save.</label>
+        <textarea id="slipText" spellcheck="false" placeholder="Josh Allen 35 rush yards
+Ja'Marr Chase 80 rec yards
+DeVonta Smith 4 catches
+Saquon Barkley anytime td
+C.J. Stroud over 9.5 rushing yards
+
+...or paste the slip itself:
+80+ Receiving Yards By The Player - Including Overtime: George Pickens - Yes
+New York Giants - Dallas Cowboys"></textarea>
       </div>
       <div class="fields">
         <div><label for="slipName">Name</label><input id="slipName" placeholder="Fourfold"></div>

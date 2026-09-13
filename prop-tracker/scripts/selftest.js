@@ -335,6 +335,49 @@ async function main() {
   assert.match(junk.problems[1].error, /unrecognised market/);
   pass('unsupported and malformed lines are reported individually, never silently dropped');
 
+  console.log('\nPlain-language legs');
+  const { parsePlainLine } = require('../slip-parser');
+
+  const plain = (text) => parsePlainLine(text).leg;
+
+  assert.deepStrictEqual(plain('Josh Allen 35 rush yards'), { player: 'Josh Allen', stat: 'rush_yds', line: 35 });
+  assert.deepStrictEqual(plain("Ja'Marr Chase 80+ receiving yds"), { player: "Ja'Marr Chase", stat: 'rec_yds', line: 80 });
+  assert.deepStrictEqual(plain('Joe Burrow 250 passing yards'), { player: 'Joe Burrow', stat: 'pass_yds', line: 250 });
+  assert.deepStrictEqual(plain('DeVonta Smith 4 catches'), { player: 'DeVonta Smith', stat: 'rec', line: 4 });
+  assert.deepStrictEqual(plain('Derrick Henry 80 rush'), { player: 'Derrick Henry', stat: 'rush_yds', line: 80 });
+  pass('typed shorthand reads as you would say it, with or without "+" or a unit');
+
+  assert.deepStrictEqual(plain('Saquon Barkley anytime td'), { player: 'Saquon Barkley', stat: 'any_td', line: 1, label: 'anytime TD' });
+  assert.deepStrictEqual(plain('Saquon Barkley to score'), { player: 'Saquon Barkley', stat: 'any_td', line: 1, label: 'anytime TD' });
+  pass('"anytime td" and "to score" both mean an anytime scorer');
+
+  assert.strictEqual(plain('Jared Goff 2 passing tds').stat, 'pass_td', 'must not fall through to pass_yds or any_td');
+  assert.strictEqual(plain('C.J. Stroud over 9.5 rushing yards').line, 9.5);
+  assert.strictEqual(plain('C.J. Stroud over 9.5 rushing yards').label, 'over 9.5 rush yds');
+  pass('"2 passing tds" and "over 9.5 rushing yards" read correctly');
+
+  // A bare "rec" is genuinely ambiguous; the number decides, and the preview shows it.
+  assert.strictEqual(plain('Sam LaPorta 4 rec').stat, 'rec');
+  assert.strictEqual(plain('Tetairoa McMillan 60 rec').stat, 'rec_yds');
+  pass('a bare "rec" resolves to catches at 4 and to yards at 60');
+
+  assert.match(parsePlainLine('Tony Pollard 50 yards').error, /doesn.t say which yards/);
+  assert.match(parsePlainLine('Nobody 12 blocks').error, /couldn.t tell which stat/);
+  assert.match(parsePlainLine('just some words').error, /no number found/);
+  pass('genuinely ambiguous or unreadable shorthand asks rather than guessing');
+
+  // Both formats can sit in the same paste.
+  const mixed = parseSlipText([
+    'Josh Allen 35 rush yards',
+    "80+ Receiving Yards By The Player - Including Overtime: Ja'Marr Chase - Yes",
+    'Live Cincinnati Bengals - Tampa Bay Buccaneers',
+    'Saquon Barkley anytime td',
+  ].join('\n'));
+  assert.strictEqual(mixed.problems.length, 0);
+  assert.deepStrictEqual(mixed.legs.map((l) => l.stat), ['rush_yds', 'rec_yds', 'any_td']);
+  assert.deepStrictEqual(mixed.legs[1].team, ['CIN', 'TB']);
+  pass('typed and pasted legs can be mixed in one paste');
+
   console.log('\nAdding and removing slips');
   const added = await post('/api/slips', {
     text: BETSLIP_TEXT.eight,

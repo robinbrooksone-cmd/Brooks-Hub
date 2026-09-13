@@ -1,8 +1,16 @@
 'use strict';
 
+/**
+ * NFL prop tracker — serves the dashboard and proxies ESPN server-side so the
+ * browser never makes a cross-origin call.
+ *
+ * No dependencies: Node's own http server and global fetch do everything this
+ * needs, so there is nothing to install before running it.
+ */
+
+const http = require('http');
 const path = require('path');
 const fs = require('fs');
-const express = require('express');
 
 const {
   SUMMARY_URL,
@@ -15,15 +23,89 @@ const { buildPayload } = require('./evaluate');
 const { getRosterIndex } = require('./rosters');
 const { parseSlipText } = require('./slip-parser');
 
-const app = express();
 const PORT = Number(process.env.PORT) || 3100;
 const POLL_MS = Number(process.env.POLL_MS) || 30000;
 // Local app that accepts writes, so don't listen on every interface by default.
 const HOST = process.env.HOST || '127.0.0.1';
+
+const PUBLIC_DIR = path.join(__dirname, 'public');
 const SLIPS_PATH = path.join(__dirname, 'slips.json');
 
-app.use(express.json({ limit: '256kb' }));
-app.use(express.static(path.join(__dirname, 'public')));
+/* ------------------------------------------------------------------ */
+/* HTTP helpers                                                        */
+/* ------------------------------------------------------------------ */
+
+const MIME = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.ico': 'image/x-icon',
+};
+
+function sendJson(res, status, body) {
+  const payload = JSON.stringify(body);
+  res.writeHead(status, {
+    'content-type': 'application/json; charset=utf-8',
+    'content-length': Buffer.byteLength(payload),
+    'cache-control': 'no-store',
+  });
+  res.end(payload);
+}
+
+function serveStatic(res, pathname) {
+  const relative = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
+  const file = path.join(PUBLIC_DIR, relative);
+
+  // Never serve outside public/, whatever the request path claims.
+  if (!file.startsWith(PUBLIC_DIR + path.sep) && file !== PUBLIC_DIR) {
+    sendJson(res, 403, { error: 'forbidden' });
+    return;
+  }
+
+  fs.readFile(file, (err, data) => {
+    if (err) {
+      sendJson(res, 404, { error: 'not found' });
+      return;
+    }
+    res.writeHead(200, {
+      'content-type': MIME[path.extname(file).toLowerCase()] || 'application/octet-stream',
+      'content-length': data.length,
+      'cache-control': 'no-store',
+    });
+    res.end(data);
+  });
+}
+
+function readBody(req, limit = 256 * 1024) {
+  return new Promise((resolve, reject) => {
+    let size = 0;
+    const chunks = [];
+
+    req.on('data', (chunk) => {
+      size += chunk.length;
+      if (size > limit) {
+        reject(new Error('request body too large'));
+        req.destroy();
+        return;
+      }
+      chunks.push(chunk);
+    });
+    req.on('end', () => {
+      const raw = Buffer.concat(chunks).toString('utf8');
+      if (!raw) return resolve({});
+      try {
+        resolve(JSON.parse(raw));
+      } catch {
+        reject(new Error('body is not valid JSON'));
+      }
+    });
+    req.on('error', reject);
+  });
+}
 
 /* ------------------------------------------------------------------ */
 /* Slip config                                                         */
@@ -31,92 +113,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 /** Read fresh each time so editing slips.json takes effect without a restart. */
 function readSlips() {
-  const raw = fs.readFileSync(SLIPS_PATH, 'utf8');
-  const parsed = JSON.parse(raw);
+  const parsed = JSON.parse(fs.readFileSync(SLIPS_PATH, 'utf8'));
   if (!Array.isArray(parsed.slips)) throw new Error('slips.json: "slips" must be an array');
   return parsed;
 }
-
-/* ------------------------------------------------------------------ */
-/* Poll cache — last good response survives a failed fetch             */
-/* ------------------------------------------------------------------ */
-
-let lastGood = null; // { payload, fetchedAt }
-let lastError = null;
-let inFlight = null;
-
-async function refresh({ date } = {}) {
-  // Collapse concurrent requests onto one upstream fetch.
-  if (inFlight) return inFlight;
-
-  inFlight = (async () => {
-    try {
-      const config = readSlips();
-      // Rosters are cached for hours and never fatal, so this is nearly always
-      // a no-op that just hands back the existing index.
-      const rosters = await getRosterIndex();
-      const live = await fetchLiveData({ date, rosters });
-      lastGood = { payload: buildPayload(config, live), fetchedAt: Date.now() };
-      lastError = null;
-      return lastGood;
-    } catch (err) {
-      lastError = { message: String(err?.message || err), at: Date.now() };
-      console.error(`[poll] ${lastError.message}`);
-      throw err;
-    } finally {
-      inFlight = null;
-    }
-  })();
-
-  return inFlight;
-}
-
-/* ------------------------------------------------------------------ */
-/* Routes                                                              */
-/* ------------------------------------------------------------------ */
-
-app.get('/api/state', async (req, res) => {
-  const date = typeof req.query.date === 'string' ? req.query.date : undefined;
-
-  try {
-    const fresh = await refresh({ date });
-    res.json({
-      ok: true,
-      stale: false,
-      fetchedAt: new Date(fresh.fetchedAt).toISOString(),
-      pollMs: POLL_MS,
-      error: null,
-      ...fresh.payload,
-    });
-  } catch (err) {
-    // A failed poll shows the last good data with its own timestamp
-    // rather than blanking the screen.
-    if (lastGood) {
-      res.json({
-        ok: true,
-        stale: true,
-        fetchedAt: new Date(lastGood.fetchedAt).toISOString(),
-        pollMs: POLL_MS,
-        error: String(err?.message || err),
-        ...lastGood.payload,
-      });
-      return;
-    }
-    res.status(503).json({
-      ok: false,
-      stale: false,
-      fetchedAt: null,
-      pollMs: POLL_MS,
-      error: String(err?.message || err),
-      slips: [],
-      games: [],
-    });
-  }
-});
-
-/* ------------------------------------------------------------------ */
-/* Adding and removing slips                                           */
-/* ------------------------------------------------------------------ */
 
 function writeSlips(config) {
   // Write via a temp file so an interrupted save can't truncate slips.json.
@@ -144,96 +144,178 @@ const numberOrNull = (value) => {
   return Number.isFinite(n) ? n : null;
 };
 
-/** Parse pasted betslip text without saving anything — drives the preview. */
-app.post('/api/slips/parse', (req, res) => {
-  const { legs, problems } = parseSlipText(req.body?.text || '');
-  res.json({ legs, problems });
-});
+/* ------------------------------------------------------------------ */
+/* Poll cache — last good response survives a failed fetch             */
+/* ------------------------------------------------------------------ */
 
-/** Parse pasted betslip text and append it to slips.json. */
-app.post('/api/slips', (req, res) => {
+let lastGood = null; // { payload, fetchedAt }
+let inFlight = null;
+
+async function refresh({ date } = {}) {
+  // Collapse concurrent requests onto one upstream fetch.
+  if (inFlight) return inFlight;
+
+  inFlight = (async () => {
+    try {
+      const config = readSlips();
+      // Rosters are cached for hours and never fatal, so this is nearly always
+      // a no-op that just hands back the existing index.
+      const rosters = await getRosterIndex();
+      const live = await fetchLiveData({ date, rosters });
+      lastGood = { payload: buildPayload(config, live), fetchedAt: Date.now() };
+      return lastGood;
+    } catch (err) {
+      console.error(`[poll] ${err?.message || err}`);
+      throw err;
+    } finally {
+      inFlight = null;
+    }
+  })();
+
+  return inFlight;
+}
+
+/* ------------------------------------------------------------------ */
+/* Routes                                                              */
+/* ------------------------------------------------------------------ */
+
+async function handleState(url, res) {
+  const date = url.searchParams.get('date') || undefined;
+
   try {
-    const body = req.body || {};
-    const { legs, problems } = parseSlipText(body.text || '');
-
-    if (!legs.length) {
-      res.status(400).json({
-        error: 'No legs could be read from that text.',
-        problems,
+    const fresh = await refresh({ date });
+    sendJson(res, 200, {
+      ok: true,
+      stale: false,
+      fetchedAt: new Date(fresh.fetchedAt).toISOString(),
+      pollMs: POLL_MS,
+      error: null,
+      ...fresh.payload,
+    });
+  } catch (err) {
+    // A failed poll shows the last good data with its own timestamp
+    // rather than blanking the screen.
+    if (lastGood) {
+      sendJson(res, 200, {
+        ok: true,
+        stale: true,
+        fetchedAt: new Date(lastGood.fetchedAt).toISOString(),
+        pollMs: POLL_MS,
+        error: String(err?.message || err),
+        ...lastGood.payload,
       });
       return;
     }
-
-    const config = readSlips();
-    const existing = new Set(config.slips.map((s) => s.id));
-
-    const slip = {
-      id: makeSlipId(body.name, existing),
-      name: String(body.name || '').trim() || `Slip (${legs.length} legs)`,
-      book: String(body.book || 'Sunbet').trim(),
-      coupon: String(body.coupon || '').trim() || undefined,
-      placedAt: new Date().toISOString(),
-      stake: numberOrNull(body.stake),
-      odds: numberOrNull(body.odds),
-      payout: numberOrNull(body.payout),
-      legs,
-    };
-
-    config.slips.push(slip);
-    writeSlips(config);
-    lastGood = null; // force the next poll to rebuild against the new slip
-
-    console.log(`[slips] added "${slip.name}" with ${legs.length} legs`);
-    res.json({ slip, problems });
-  } catch (err) {
-    res.status(500).json({ error: String(err?.message || err) });
+    sendJson(res, 503, {
+      ok: false,
+      stale: false,
+      fetchedAt: null,
+      pollMs: POLL_MS,
+      error: String(err?.message || err),
+      slips: [],
+      games: [],
+    });
   }
-});
+}
 
-app.delete('/api/slips/:id', (req, res) => {
+function handleAddSlip(body, res) {
+  const { legs, problems } = parseSlipText(body.text || '');
+
+  if (!legs.length) {
+    sendJson(res, 400, { error: 'No legs could be read from that text.', problems });
+    return;
+  }
+
+  const config = readSlips();
+  const existing = new Set(config.slips.map((s) => s.id));
+
+  const slip = {
+    id: makeSlipId(body.name, existing),
+    name: String(body.name || '').trim() || `Slip (${legs.length} legs)`,
+    book: String(body.book || 'Sunbet').trim(),
+    coupon: String(body.coupon || '').trim() || undefined,
+    placedAt: new Date().toISOString(),
+    stake: numberOrNull(body.stake),
+    odds: numberOrNull(body.odds),
+    payout: numberOrNull(body.payout),
+    legs,
+  };
+
+  config.slips.push(slip);
+  writeSlips(config);
+  lastGood = null; // force the next poll to rebuild against the new slip
+
+  console.log(`[slips] added "${slip.name}" with ${legs.length} legs`);
+  sendJson(res, 200, { slip, problems });
+}
+
+function handleRemoveSlip(id, res) {
+  const config = readSlips();
+  const before = config.slips.length;
+  config.slips = config.slips.filter((s) => s.id !== id);
+
+  if (config.slips.length === before) {
+    sendJson(res, 404, { error: `no slip with id "${id}"` });
+    return;
+  }
+
+  writeSlips(config);
+  lastGood = null;
+  console.log(`[slips] removed "${id}"`);
+  sendJson(res, 200, { ok: true });
+}
+
+const server = http.createServer(async (req, res) => {
+  const url = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+  const { pathname } = url;
+
   try {
-    const config = readSlips();
-    const before = config.slips.length;
-    config.slips = config.slips.filter((s) => s.id !== req.params.id);
+    if (req.method === 'GET' && pathname === '/api/state') return await handleState(url, res);
 
-    if (config.slips.length === before) {
-      res.status(404).json({ error: `no slip with id "${req.params.id}"` });
-      return;
+    if (req.method === 'POST' && pathname === '/api/slips/parse') {
+      const body = await readBody(req);
+      return sendJson(res, 200, parseSlipText(body.text || ''));
     }
 
-    writeSlips(config);
-    lastGood = null;
-    console.log(`[slips] removed "${req.params.id}"`);
-    res.json({ ok: true });
+    if (req.method === 'POST' && pathname === '/api/slips') {
+      return handleAddSlip(await readBody(req), res);
+    }
+
+    if (req.method === 'DELETE' && pathname.startsWith('/api/slips/')) {
+      return handleRemoveSlip(decodeURIComponent(pathname.slice('/api/slips/'.length)), res);
+    }
+
+    /** How each stat column was resolved on the last parse — audit the shape. */
+    if (req.method === 'GET' && pathname === '/api/debug/shape') {
+      return sendJson(res, 200, shapeReport);
+    }
+
+    /** Raw ESPN passthrough, for eyeballing the real response. */
+    if (req.method === 'GET' && pathname === '/api/debug/scoreboard') {
+      return sendJson(res, 200, await getJson(SCOREBOARD_URL));
+    }
+
+    if (req.method === 'GET' && pathname.startsWith('/api/debug/summary/')) {
+      const eventId = pathname.slice('/api/debug/summary/'.length);
+      return sendJson(res, 200, await getJson(`${SUMMARY_URL}${encodeURIComponent(eventId)}`));
+    }
+
+    if (req.method === 'GET') return serveStatic(res, pathname);
+
+    sendJson(res, 404, { error: 'not found' });
   } catch (err) {
-    res.status(500).json({ error: String(err?.message || err) });
+    sendJson(res, 500, { error: String(err?.message || err) });
   }
 });
 
-/** How each stat column was resolved on the last parse — audit the shape. */
-app.get('/api/debug/shape', (req, res) => res.json(shapeReport));
-
-/** Raw ESPN passthrough, for eyeballing the real response. */
-app.get('/api/debug/scoreboard', async (req, res) => {
-  try {
-    res.json(await getJson(SCOREBOARD_URL));
-  } catch (err) {
-    res.status(502).json({ error: String(err?.message || err) });
-  }
-});
-
-app.get('/api/debug/summary/:eventId', async (req, res) => {
-  try {
-    res.json(await getJson(`${SUMMARY_URL}${encodeURIComponent(req.params.eventId)}`));
-  } catch (err) {
-    res.status(502).json({ error: String(err?.message || err) });
-  }
-});
-
-app.listen(PORT, HOST, () => {
-  console.log(`NFL prop tracker listening on http://${HOST}:${PORT}`);
-  console.log(`Polling every ${POLL_MS / 1000}s. Slips: ${SLIPS_PATH}`);
+server.listen(PORT, HOST, () => {
+  const url = `http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}`;
+  console.log(`\n  NFL prop tracker running — open ${url}\n`);
+  console.log(`  Polling every ${POLL_MS / 1000}s. Slips: ${SLIPS_PATH}`);
+  console.log('  Press Ctrl+C to stop.\n');
   refresh().catch(() => {
     /* first poll failure is already logged; the page will retry */
   });
 });
+
+module.exports = server;

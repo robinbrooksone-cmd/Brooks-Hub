@@ -1,61 +1,76 @@
 # NFL Prop Tracker
 
-A single-page local web app that tracks prop-bet slips against live NFL box
-scores. Node + Express serves one static page and proxies ESPN's public JSON
-API server-side, so the browser never makes a cross-origin call.
+A dashboard that tracks your prop bets against live NFL box scores. Type in
+your legs, leave it open, and watch the numbers move.
 
-```bash
-cd prop-tracker
-npm install
-npm run inspect     # confirm ESPN's response shape (do this first, see below)
-npm start           # http://localhost:3100
-```
+## Start it
 
-No API key, no account, nothing to configure.
+**Double-click `start.command`** (macOS/Linux) or **`start.bat`** (Windows).
+The dashboard opens in your browser.
 
-## Check the shape first
+That's it — there's nothing to install and no dependencies. It needs Node 18 or
+newer, which you can get from [nodejs.org](https://nodejs.org) if you don't have
+it; the launcher will tell you if it's missing.
 
-**`npm run inspect` is the step to run before trusting anything else.** ESPN's
-summary endpoint doesn't return named stat fields — each category returns
-parallel arrays and the athlete rows are positional strings:
+From a terminal, `node server.js` does the same thing.
 
-```
-labels : ["CAR","YDS","AVG","TD","LONG"]
-stats  : ["14","65","4.6","0","12"]        <- Derrick Henry, 65 rushing yards
-```
+## Add a bet
 
-So "rushing yards" means *index 1 of the rushing category*, and if ESPN ever
-reorders a column the numbers silently become wrong rather than absent. The
-inspector dumps a full response to `debug/` and prints every category's
-`keys`/`labels`/`text` arrays next to the index each tracked stat resolved to:
+Click **"+ Add a betslip"** and type one leg per line, however you'd say it:
 
 ```
-  category "rushing"  <-- tracked
-    keys   : ["rushingAttempts","rushingYards","yardsPerRushAttempt",...]
-    labels : ["CAR","YDS","AVG","TD","LONG"]
-    sample : Derrick Henry
-    stats  : ["14","65","4.6","0","12"]
-      rush_yds  -> index 1    label YDS    sample value "65"
+Josh Allen 35 rush yards
+Ja'Marr Chase 80 rec yards
+DeVonta Smith 4 catches
+Saquon Barkley anytime td
+C.J. Stroud over 9.5 rushing yards
 ```
 
-The parser resolves each column three ways, most reliable first: the semantic
-`keys[]` entry (`rushingYards`), then the display `labels[]` entry (`YDS`),
-then `text` split on commas. `/api/debug/shape` reports which one won for each
-stat on the most recent parse, so a shape change is visible at runtime rather
-than being inferred from bad numbers.
+You can also paste the slip itself, straight off the bookmaker, game and score
+lines included:
 
-> The machine this was built on couldn't reach `site.api.espn.com` (blocked by
-> a network egress policy), so the parser was written against ESPN's documented
-> response shape and verified against fixtures reproducing it, not against a
-> live pull. Run `npm run inspect` once on your own machine to confirm the real
-> payload matches before relying on the numbers.
+```
+80+ Receiving Yards By The Player - Including Overtime: George Pickens - Yes
+New York Giants - Dallas Cowboys
+21-3   2nd Quarter 4:51
+```
 
-Also available: `npm run demo` runs the whole app against the fixture slate, so
-you can see the UI mid-week or off-season without a live game.
+Both work, and they can be mixed in one paste. Whatever you type is read back to
+you before you save, so you can see it was understood. Fill in the name, stake,
+odds and payout if you want them on the card, then **Save slip**. It starts
+tracking on the next refresh, within 30 seconds.
 
-## Your slips
+It understands rushing, receiving and passing yards; receptions; passing
+touchdowns; and anytime touchdown scorer. If a line is genuinely ambiguous —
+`Tony Pollard 50 yards` doesn't say *which* yards — it says so instead of
+guessing. **Under** and **No** props are refused rather than inverted.
 
-Three Sunbet parlays are loaded, R100 stake each:
+The **×** on a slip header removes it.
+
+## What you're looking at
+
+Each leg shows the live number against your line, how far there is to go, and
+the score and clock of the game it's in.
+
+| | |
+|---|---|
+| **HIT** | Reached your number. Stays hit. |
+| **live** | Game in progress, still short — shows how much is left. |
+| **missed** | Game **finished** short of the number. |
+| **not started** | Kickoff hasn't happened, or he has no box-score line yet. |
+
+A slip is **dead** the moment any leg misses, **won** when every leg hits, and
+**alive** until then. It refreshes every 30 seconds on its own; there's a manual
+Refresh button and a countdown to the next one.
+
+If a refresh fails, the page keeps showing the last good numbers with an amber
+banner and the time they were from — it never blanks out on you.
+
+## Reference
+
+### The slips that are loaded
+
+Three Sunbet parlays, R100 stake each:
 
 | slip | legs | coupon | placed |
 |---|---|---|---|
@@ -66,31 +81,7 @@ Three Sunbet parlays are loaded, R100 stake each:
 Odds and payout are recorded for the Thirteenfold (589.0, R58,899.59). The other
 two show "payout not recorded" until you fill in `odds` and `payout`.
 
-### Adding a betslip
-
-Open **"+ Add a betslip"** on the page, paste the legs straight off the slip —
-one per line — and they're read back to you before you save:
-
-```
-80+ Receiving Yards By The Player - Including Overtime: Ja'Marr Chase - Yes
-Live Cincinnati Bengals - Tampa Bay Buccaneers
-21-3   2nd Quarter 4:51
-Touchdown Scorer: Saquon Barkley - Yes
-Philadelphia Eagles - Washington Commanders
-```
-
-becomes two tracked legs. Game lines are turned into team hints (both sides —
-the roster resolver picks the right one), score lines are ignored, and anything
-it can't read is listed with the reason instead of being quietly dropped, so a
-leg never goes missing.
-
-Markets it understands: `N+ Receiving/Rushing/Passing Yards`, `N+ Receptions`,
-`N+ Touchdown Passes`, `Touchdown Scorer`, and `Total ... Yards - Over N`.
-**Under** and **No** selections are refused — the tracker only scores "reach
-this number" props, and silently inverting one would be worse than rejecting it.
-
-Once saved, the slip is scored on the very next poll. The **×** on a slip header
-removes it.
+### Editing slips by hand
 
 Everything lives in **`slips.json`**, re-read on every request — you can also
 edit it directly and hit Refresh, no restart needed.
@@ -153,7 +144,7 @@ not the thrower, so it's deliberately excluded — use `pass_td` for a "2+ TD
 passes" prop. Defensive and fumble-recovery touchdowns aren't counted, which is
 a real if unlikely gap for a skill-position player.
 
-## How a leg is scored
+### How a leg is scored, exactly
 
 | status | meaning |
 |---|---|
@@ -176,7 +167,7 @@ Because the app accepts writes, it listens on **127.0.0.1** by default rather
 than every interface. Set `HOST=0.0.0.0` if you deliberately want it reachable
 from another device on your network.
 
-## Refresh and failure behaviour
+### Refresh and failure behaviour
 
 Polls every 30 seconds (`POLL_MS` to change), plus a manual Refresh button and a
 countdown to the next poll. The tab catches up immediately when you return to it
@@ -191,7 +182,7 @@ Completed games are cached permanently (their stats can't change) and games that
 haven't kicked off are never requested, so a full slate settles down to one
 scoreboard call plus one call per in-progress game.
 
-## Endpoints
+### Endpoints
 
 | route | purpose |
 |---|---|
@@ -206,7 +197,7 @@ scoreboard call plus one call per in-progress game.
 Roster resolution costs 33 requests once every 12 hours. A poll costs one
 scoreboard request plus one per in-progress game.
 
-## Tests
+### Tests
 
 ```bash
 npm test
@@ -221,3 +212,42 @@ slate, the one-scoreboard-plus-live-games request budget, roster resolution
 overriding a stale hint, betslip parsing of all three slips verbatim, rejection
 of unsupported markets, and that a failed poll serves the last good data with
 `stale: true`.
+
+
+### If the numbers look wrong
+
+ESPN's summary endpoint doesn't return named stat fields — each category returns
+parallel arrays, and the athlete rows are positional strings:
+
+```
+labels : ["CAR","YDS","AVG","TD","LONG"]
+stats  : ["14","65","4.6","0","12"]        <- Derrick Henry, 65 rushing yards
+```
+
+So "rushing yards" means *index 1 of the rushing category*. The parser resolves
+each column three ways, most reliable first — the semantic `keys[]` entry
+(`rushingYards`), then the display `labels[]` entry (`YDS`), then `text` split on
+commas — and `/api/debug/shape` reports which one won, so a reshuffle at ESPN's
+end shows up as a mismatch rather than as quietly wrong numbers.
+
+`npm run inspect` dumps a full response to `debug/` and prints every category's
+arrays next to the index each tracked stat resolved to:
+
+```
+  category "rushing"  <-- tracked
+    keys   : ["rushingAttempts","rushingYards","yardsPerRushAttempt",...]
+    labels : ["CAR","YDS","AVG","TD","LONG"]
+    sample : Derrick Henry
+    stats  : ["14","65","4.6","0","12"]
+      rush_yds  -> index 1    label YDS    sample value "65"
+```
+
+Run it if a number ever looks off, and send me the output.
+
+> The machine this was built on couldn't reach `site.api.espn.com` (blocked by a
+> network egress policy), so the parser was written against ESPN's documented
+> response shape and verified against fixtures reproducing it, not against a live
+> pull.
+
+`npm run demo` runs the whole app against a fixture slate, so you can see the UI
+mid-week or off-season without a live game.
