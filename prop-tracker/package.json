@@ -1,0 +1,16 @@
+{
+  "name": "nfl-prop-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Live NFL prop-bet slip tracker driven by ESPN's public JSON API.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "demo": "node scripts/demo.js",
+    "inspect": "node scripts/inspect.js",
+    "test": "node scripts/selftest.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

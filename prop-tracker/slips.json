@@ -1,0 +1,34 @@
+{
+  "currency": "R",
+  "_help": {
+    "stat": "One of: pass_yds, pass_td, rush_yds, rec_yds, rec",
+    "line": "The number to reach. A '30+' prop is line: 30 and hits at >= 30.",
+    "team": "Display hint only, used for kickoff info before a game starts. The real team is taken from the box score once the game is live, so a wrong hint here cannot break matching.",
+    "aliases": "Optional extra spellings to match against ESPN's athlete names.",
+    "placeholder": "Set true for a leg you haven't filled in yet. It is never scored, and the slip can't read as WON while one is present."
+  },
+  "slips": [
+    {
+      "id": "slip-a",
+      "name": "Slip A",
+      "book": "Sunbet",
+      "stake": 100,
+      "odds": 589.0,
+      "payout": 58899.59,
+      "legs": [
+        { "player": "Josh Allen",          "team": "BUF", "stat": "rush_yds", "line": 30 },
+        { "player": "Derrick Henry",       "team": "BAL", "stat": "rush_yds", "line": 80 },
+        { "player": "Ja'Marr Chase",       "team": "CIN", "stat": "rec_yds",  "line": 80 },
+        { "player": "Joe Burrow",          "team": "CIN", "stat": "pass_yds", "line": 250 },
+        { "player": "Amon-Ra St. Brown",   "team": "DET", "stat": "rec_yds",  "line": 70 },
+        { "player": "Jahmyr Gibbs",        "team": "DET", "stat": "rush_yds", "line": 70 },
+        { "player": "Tetairoa McMillan",   "team": "CAR", "stat": "rec_yds",  "line": 60 },
+        { "player": "Tony Pollard",        "team": "TEN", "stat": "rush_yds", "line": 50 },
+        { "player": "Parker Washington",   "team": "JAX", "stat": "rec_yds",  "line": 50 },
+        { "player": "De'Von Achane",       "team": "MIA", "stat": "rush_yds", "line": 60 },
+        { "player": "George Pickens",      "team": "DAL", "stat": "rec_yds",  "line": 70 },
+        { "placeholder": true, "note": "Leg 12 — not supplied. Replace this line with the real prop." }
+      ]
+    }
+  ]
+}
