@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Value Board — Premier League</title>
+<meta name="description" content="Model-priced Premier League props and parlays against the Sportingbet board.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="dot"></span>
+    <div>
+      <h1>Value Board</h1>
+      <p id="slate-meta">Loading slate…</p>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <button class="btn ghost" id="btn-import">Import odds</button>
+    <button class="btn ghost" id="btn-method">How it works</button>
+  </div>
+</header>
+
+<div id="banner" class="banner" hidden></div>
+
+<section class="fixtures" id="fixtures" aria-label="Today's fixtures"></section>
+
+<main class="layout">
+  <section class="board" aria-label="Value picks">
+    <div class="controls">
+      <div class="control">
+        <label for="f-category">Market</label>
+        <select id="f-category">
+          <option value="">All markets</option>
+          <option>Goals</option>
+          <option>Corners</option>
+          <option>Cards</option>
+          <option>Shots</option>
+          <option>Player props</option>
+        </select>
+      </div>
+      <div class="control">
+        <label for="f-match">Fixture</label>
+        <select id="f-match"><option value="">All fixtures</option></select>
+      </div>
+      <div class="control">
+        <label for="f-family">Prop type</label>
+        <select id="f-family">
+          <option value="">Any</option>
+          <option value="player_shots">Player shots</option>
+          <option value="player_sot">Player shots on target</option>
+          <option value="player_fouls">Player fouls committed</option>
+          <option value="player_goals">Player goals</option>
+          <option value="player_booked">Player to be booked</option>
+          <option value="team_corners">Team / both-teams corners</option>
+          <option value="team_cards">Team / both-teams cards</option>
+          <option value="match_corners">Total corners</option>
+          <option value="match_cards">Total cards</option>
+          <option value="match_shots">Total shots &amp; SOT</option>
+          <option value="match_goals">Total goals</option>
+        </select>
+      </div>
+      <div class="control">
+        <label for="f-edge">Min edge <b id="edge-val">3.0pp</b></label>
+        <input type="range" id="f-edge" min="0" max="15" step="0.5" value="3">
+      </div>
+      <div class="control">
+        <label for="f-bankroll">Bankroll</label>
+        <input type="number" id="f-bankroll" value="100" min="1" step="10">
+      </div>
+      <div class="control">
+        <label for="f-sort">Sort</label>
+        <select id="f-sort">
+          <option value="ev">Expected value</option>
+          <option value="edge">Edge</option>
+          <option value="confidence">Confidence</option>
+          <option value="odds">Odds (low→high)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="board-head">
+      <h2>Picks <span id="pick-count" class="muted"></span></h2>
+      <div class="legend">
+        <span><i class="chip a"></i>A / A+</span>
+        <span><i class="chip b"></i>B</span>
+        <span><i class="chip c"></i>C / D</span>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="picks">
+        <thead>
+          <tr>
+            <th class="col-add"></th>
+            <th>Fixture</th>
+            <th>Selection</th>
+            <th class="num">Odds</th>
+            <th class="num">Model</th>
+            <th class="num">Fair</th>
+            <th class="num">Edge</th>
+            <th class="num">EV</th>
+            <th class="num">Stake</th>
+            <th class="num">Conf</th>
+          </tr>
+        </thead>
+        <tbody id="picks-body"></tbody>
+      </table>
+      <p id="empty" class="empty" hidden>No selections clear that edge threshold. Lower the slider.</p>
+    </div>
+    <button class="btn ghost wide" id="btn-more" hidden>Show more</button>
+  </section>
+
+  <aside class="slip" aria-label="Bet slip">
+    <div class="slip-head">
+      <h2>Slip <span id="slip-count" class="pill">0</span></h2>
+      <button class="btn tiny ghost" id="btn-clear">Clear</button>
+    </div>
+
+    <div class="auto-actions">
+      <button class="btn primary" id="btn-acca">Build accumulator</button>
+      <button class="btn" id="btn-sgp">Build same-game</button>
+    </div>
+
+    <div id="slip-legs" class="slip-legs">
+      <p class="empty small">Add selections from the board, or let the builder pick.</p>
+    </div>
+
+    <div id="slip-math" class="slip-math" hidden></div>
+
+    <div class="slip-foot">
+      <label for="sgp-price">Real parlay price <span class="muted">(optional)</span></label>
+      <input type="number" id="sgp-price" step="0.01" min="1.01" placeholder="e.g. 12.50">
+      <p class="muted tiny">Enter the price the book actually offers to get a true expected value. Without it, same-game slips show only a break-even price.</p>
+    </div>
+  </aside>
+</main>
+
+<dialog id="dlg-import">
+  <form method="dialog">
+    <h3>Import a real price board</h3>
+    <p class="muted">One line per selection. Separate with <code>|</code>, <code>@</code> or <code>=</code>.</p>
+    <pre class="sample">bou-liv:total_corners:10.5 | over | 1.91
+bou-liv:player_shots:salah:2 | over | 2.10
+ful-mun:both_cards:1 | yes | 1.44</pre>
+    <textarea id="import-text" rows="10" placeholder="Paste prices here…"></textarea>
+    <p id="import-status" class="muted tiny"></p>
+    <menu>
+      <button class="btn ghost" value="cancel">Cancel</button>
+      <button class="btn primary" id="btn-do-import" value="default" type="button">Import</button>
+    </menu>
+  </form>
+</dialog>
+
+<dialog id="dlg-method">
+  <form method="dialog">
+    <h3>How the numbers are built</h3>
+    <div class="method">
+      <p><b>Goals</b> — Dixon-Coles bivariate Poisson. The low-score correction matters: independent Poisson misprices 0-0, 1-0 and 1-1, which is where under 2.5 and BTTS value hides.</p>
+      <p><b>Corners, cards, shots</b> — negative binomial, not Poisson. Real match counts are over-dispersed (variance exceeds the mean), and using Poisson would systematically under-price the overs.</p>
+      <p><b>Both teams X+ corners / bookings</b> — priced from a genuine joint distribution. Both sides share a latent game-state factor (an open, stretched game; a strict referee), so the two teams' counts are correlated. Multiplying two marginals under-prices these lines, and that is the usual mistake.</p>
+      <p><b>Player props</b> — per-90 rates scaled by a mixture over minutes scenarios rather than a point estimate, so a rotation risk shows up as real mass at zero. Fouls are <b>committed</b>, not suffered. Bookings are derived from the foul distribution through a per-foul card hazard, scaled by referee strictness.</p>
+      <p><b>Fair prices</b> — the book's margin is removed before any comparison, using the power method on wide markets and proportional on tight ones. Skipping this step makes almost everything look like value.</p>
+      <p><b>Parlays</b> — cross-match legs are independent, so multiplying is correct. Same-game legs are not: they run through a Gaussian copula. A slip is scored on a correlation-adjusted probability, never on a naive product.</p>
+      <p class="warn">Model output, not advice. A model is only as good as its inputs — refresh team form and confirmed line-ups before staking. 18+ · begambleaware.org</p>
+    </div>
+    <menu><button class="btn primary" value="close">Close</button></menu>
+  </form>
+</dialog>
+
+<footer class="foot">
+  <span id="foot-meta"></span>
+  <span class="muted">Model output, not advice. 18+ · <a href="https://www.begambleaware.org" target="_blank" rel="noopener">begambleaware.org</a></span>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>

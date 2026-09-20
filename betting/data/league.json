@@ -1,0 +1,36 @@
+{
+  "id": "epl",
+  "name": "Premier League",
+  "season": "2026/27",
+  "baselines": {
+    "goalsPerTeamPerGame": 1.42,
+    "homeAdvantage": 1.10,
+    "awayAdjustment": 0.94,
+    "dixonColesRho": -0.045,
+
+    "cornersPerTeam": 5.15,
+    "cornersPhiTotal": 0.075,
+    "cornersPhiShared": 0.030,
+    "cornersHomeBias": 1.09,
+
+    "cardsPerTeam": 2.15,
+    "cardsPhiTotal": 0.095,
+    "cardsPhiShared": 0.058,
+    "cardsHomeBias": 0.91,
+
+    "shotsPerTeam": 12.6,
+    "shotsPhiTotal": 0.055,
+    "shotsPhiShared": 0.022,
+    "shotsHomeBias": 1.08,
+
+    "sotPerTeam": 4.45,
+    "sotPhiTotal": 0.090,
+    "sotPhiShared": 0.030,
+
+    "foulsPerTeam": 10.3
+  },
+  "notes": [
+    "Baselines are Premier League long-run averages. phiTotal is the marginal over-dispersion (Var = mu + phi*mu^2); phiShared is the portion driven by the shared game state, which is what creates correlation between the two teams and prices the 'both teams' markets.",
+    "cardsPhiShared is deliberately high relative to cardsPhiTotal: referee strictness is a single factor applied to both sides, so bookings co-move far more strongly between teams than corners do."
+  ]
+}

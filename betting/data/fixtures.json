@@ -1,0 +1,12 @@
+{
+  "date": "2026-09-20",
+  "competition": "Premier League",
+  "matchweek": 5,
+  "_note": "Referee is null where the appointment has not been entered. Null means the model uses the league-average referee profile. Setting the real referee materially moves every card and foul market, so it is worth filling in.",
+  "fixtures": [
+    { "id": "bou-liv", "kickoff": "2026-09-20T13:00:00Z", "localTime": "14:00", "home": "bournemouth",     "away": "liverpool",       "referee": null, "venue": "Vitality Stadium",   "heat": 1.00 },
+    { "id": "lee-cry", "kickoff": "2026-09-20T13:00:00Z", "localTime": "14:00", "home": "leeds",           "away": "crystal-palace",  "referee": null, "venue": "Elland Road",        "heat": 1.04 },
+    { "id": "mci-sun", "kickoff": "2026-09-20T13:00:00Z", "localTime": "14:00", "home": "man-city",        "away": "sunderland",      "referee": null, "venue": "Etihad Stadium",     "heat": 0.98 },
+    { "id": "ful-mun", "kickoff": "2026-09-20T15:30:00Z", "localTime": "16:30", "home": "fulham",          "away": "man-utd",         "referee": null, "venue": "Craven Cottage",     "heat": 1.03 }
+  ]
+}

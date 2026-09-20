@@ -1,12 +1,14 @@
 {
   "name": "brooks-hub",
   "version": "1.0.0",
-  "description": "Annami & Robin's wedding website, with guest-list RSVPs and an admin dashboard.",
+  "description": "Annami & Robin's wedding website, plus the Premier League value board.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "seed": "node scripts/seed-guests.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node betting/test/run.js",
+    "picks": "node betting/src/cli.js",
+    "odds:sample": "node betting/scripts/generate-sample-odds.js"
   },
   "repository": {
     "type": "git",

@@ -21,6 +21,10 @@ app.use(
     cookie: { httpOnly: true, maxAge: 1000 * 60 * 60 * 12 },
   })
 );
+// Betting value board: self-contained module mounted under /betting. Declared
+// before the wedding site's static handler so its own assets resolve first.
+app.use('/betting', require('./betting/routes'));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 function readContent() {

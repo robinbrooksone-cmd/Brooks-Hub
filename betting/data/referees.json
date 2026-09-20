@@ -1,0 +1,18 @@
+{
+  "_comment": "strictness multiplies card rates; foulThreshold below 1 means the referee lets play run (fewer whistles, but each foul is likelier to be carded).",
+  "referees": [
+    { "id": "oliver",     "name": "Michael Oliver",    "strictness": 1.02, "foulTendency": 0.97, "cardsPerGame": 4.3, "penaltyRate": 1.05 },
+    { "id": "taylor",     "name": "Anthony Taylor",    "strictness": 1.16, "foulTendency": 1.06, "cardsPerGame": 5.0, "penaltyRate": 1.10 },
+    { "id": "england",    "name": "Darren England",    "strictness": 1.10, "foulTendency": 1.02, "cardsPerGame": 4.7, "penaltyRate": 1.00 },
+    { "id": "madley",     "name": "Andy Madley",       "strictness": 0.92, "foulTendency": 0.95, "cardsPerGame": 3.9, "penaltyRate": 0.95 },
+    { "id": "brooks",     "name": "John Brooks",       "strictness": 1.08, "foulTendency": 1.03, "cardsPerGame": 4.6, "penaltyRate": 1.00 },
+    { "id": "barrott",    "name": "Sam Barrott",       "strictness": 1.05, "foulTendency": 1.01, "cardsPerGame": 4.5, "penaltyRate": 1.02 },
+    { "id": "bankes",     "name": "Peter Bankes",      "strictness": 1.12, "foulTendency": 1.05, "cardsPerGame": 4.8, "penaltyRate": 1.04 },
+    { "id": "robinson",   "name": "Tim Robinson",      "strictness": 1.14, "foulTendency": 1.04, "cardsPerGame": 4.9, "penaltyRate": 1.00 },
+    { "id": "salisbury",  "name": "Michael Salisbury", "strictness": 1.06, "foulTendency": 1.00, "cardsPerGame": 4.5, "penaltyRate": 1.00 },
+    { "id": "kavanagh",   "name": "Chris Kavanagh",    "strictness": 1.04, "foulTendency": 0.99, "cardsPerGame": 4.4, "penaltyRate": 1.03 },
+    { "id": "harrington", "name": "Tony Harrington",   "strictness": 1.09, "foulTendency": 1.02, "cardsPerGame": 4.6, "penaltyRate": 1.00 },
+    { "id": "pawson",     "name": "Craig Pawson",      "strictness": 0.96, "foulTendency": 0.98, "cardsPerGame": 4.1, "penaltyRate": 0.98 },
+    { "id": "average",    "name": "League average",    "strictness": 1.00, "foulTendency": 1.00, "cardsPerGame": 4.3, "penaltyRate": 1.00 }
+  ]
+}

@@ -122,3 +122,21 @@ public/                 — static frontend
   admin.html, css/admin.css, js/admin.js  — admin dashboard
 QUESTIONNAIRE.md         — content to fill in, organized by section
 ```
+
+---
+
+## Value Board (`/betting`)
+
+A separate module mounted at `/betting`: a Premier League pricing engine that
+runs the day's fixtures through a statistical model, compares it against a
+Sportingbet-shaped price board, and ranks props and parlays by expected value.
+
+```bash
+npm run odds:sample   # build the sample price board
+npm run picks         # terminal view
+npm test              # model tests
+```
+
+Full documentation, including the modelling approach and how to import real
+odds, is in [`betting/README.md`](betting/README.md). It ships with sample
+prices, not live odds — the board says so until you import a real one.
