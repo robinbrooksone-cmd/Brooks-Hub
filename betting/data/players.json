@@ -3,661 +3,146 @@
   "_refresh": "Update startProb/benchProb from confirmed line-ups via scripts/set-lineups.js, or edit in place. Everything downstream re-prices automatically.",
   "players": [
     {
-      "id": "haaland",
-      "name": "Erling Haaland",
-      "team": "man-city",
-      "role": "FWD",
-      "startProb": 0.92,
-      "benchProb": 0.04,
-      "cardProneness": 1.05,
-      "per90": {
-        "shots": 4.3,
-        "sot": 2,
-        "goals": 1.08,
-        "assists": 0.12,
-        "fouls": 0.8
-      },
-      "roleType": "poacher",
+      "id": "petrovic",
+      "name": "Djordje Petrovic",
+      "team": "bournemouth",
+      "position": "GK",
+      "roleType": "goalkeeper",
       "flank": "central",
-      "pace": 82,
-      "setPieces": {
-        "penalties": 0.85,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "foden",
-      "name": "Phil Foden",
-      "team": "man-city",
-      "role": "AM",
-      "startProb": 0.72,
-      "benchProb": 0.24,
-      "cardProneness": 0.9,
-      "per90": {
-        "shots": 2.3,
-        "sot": 0.85,
-        "goals": 0.42,
-        "assists": 0.24,
-        "fouls": 0.7
-      },
-      "roleType": "attacking-mid",
-      "flank": "central",
-      "pace": 82,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "doku",
-      "name": "Jérémy Doku",
-      "team": "man-city",
-      "role": "AM",
-      "startProb": 0.68,
-      "benchProb": 0.27,
-      "cardProneness": 0.95,
-      "per90": {
-        "shots": 1.9,
-        "sot": 0.6,
-        "goals": 0.25,
-        "assists": 0.3,
-        "fouls": 0.9
-      },
-      "roleType": "traditional-winger",
-      "flank": "left",
-      "pace": 92,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "cherki",
-      "name": "Rayan Cherki",
-      "team": "man-city",
-      "role": "AM",
-      "startProb": 0.55,
-      "benchProb": 0.36,
-      "cardProneness": 1,
-      "per90": {
-        "shots": 2.1,
-        "sot": 0.7,
-        "goals": 0.28,
-        "assists": 0.32,
-        "fouls": 0.8
-      },
-      "roleType": "attacking-mid",
-      "flank": "central",
-      "pace": 78,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0.4,
-        "corners": 0.4
-      }
-    },
-    {
-      "id": "marmoush",
-      "name": "Omar Marmoush",
-      "team": "man-city",
-      "role": "FWD",
-      "startProb": 0.5,
-      "benchProb": 0.4,
-      "cardProneness": 1.05,
-      "per90": {
-        "shots": 2.8,
-        "sot": 1.1,
-        "goals": 0.5,
-        "assists": 0.18,
-        "fouls": 0.9
-      },
-      "roleType": "pressing-forward",
-      "flank": "central",
-      "pace": 87,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "reijnders",
-      "name": "Tijjani Reijnders",
-      "team": "man-city",
-      "role": "MID",
-      "startProb": 0.8,
-      "benchProb": 0.15,
-      "cardProneness": 1.1,
-      "per90": {
-        "shots": 1.5,
-        "sot": 0.5,
-        "goals": 0.22,
-        "assists": 0.16,
-        "fouls": 1.1
-      },
-      "roleType": "box-to-box",
-      "flank": "central",
-      "pace": 79,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "rodri",
-      "name": "Rodri",
-      "team": "man-city",
-      "role": "MID",
-      "startProb": 0.7,
-      "benchProb": 0.2,
-      "cardProneness": 1.3,
-      "per90": {
-        "shots": 1,
-        "sot": 0.3,
-        "goals": 0.1,
-        "assists": 0.1,
-        "fouls": 1.5
-      },
-      "roleType": "holding-mid",
-      "flank": "central",
-      "pace": 68,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "nico-gonzalez",
-      "name": "Nico González",
-      "team": "man-city",
-      "role": "MID",
-      "startProb": 0.45,
-      "benchProb": 0.35,
-      "cardProneness": 1.3,
-      "per90": {
-        "shots": 0.9,
-        "sot": 0.25,
-        "goals": 0.08,
-        "assists": 0.08,
-        "fouls": 1.6
-      },
-      "roleType": "holding-mid",
-      "flank": "central",
-      "pace": 70,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "gvardiol",
-      "name": "Joško Gvardiol",
-      "team": "man-city",
-      "role": "DEF",
-      "startProb": 0.85,
-      "benchProb": 0.08,
-      "cardProneness": 1.1,
-      "per90": {
-        "shots": 0.7,
-        "sot": 0.2,
-        "goals": 0.1,
-        "assists": 0.08,
-        "fouls": 1.1
-      },
-      "roleType": "ball-playing-defender",
-      "flank": "central",
-      "pace": 82,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "dias",
-      "name": "Rúben Dias",
-      "team": "man-city",
-      "role": "DEF",
       "startProb": 0.88,
       "benchProb": 0.06,
-      "cardProneness": 1.1,
-      "per90": {
-        "shots": 0.5,
-        "sot": 0.15,
-        "goals": 0.06,
-        "assists": 0.04,
-        "fouls": 1
+      "cardProneness": 0.45,
+      "pace": 60,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
       },
-      "roleType": "aggressive-stopper",
-      "flank": "central",
+      "per90": {
+        "shots": 0.02,
+        "sot": 0.005,
+        "goals": 0.002,
+        "assists": 0.02,
+        "fouls": 0.1,
+        "saves": 3.35
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "adam-smith",
+      "name": "Adam Smith",
+      "team": "bournemouth",
+      "position": "RB",
+      "roleType": "defensive-fullback",
+      "flank": "right",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.25,
       "pace": 74,
       "setPieces": {
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
-    },
-    {
-      "id": "ait-nouri",
-      "name": "Rayan Aït-Nouri",
-      "team": "man-city",
-      "role": "DEF",
-      "startProb": 0.7,
-      "benchProb": 0.2,
-      "cardProneness": 1.2,
-      "per90": {
-        "shots": 0.8,
-        "sot": 0.22,
-        "goals": 0.07,
-        "assists": 0.16,
-        "fouls": 1.5
       },
-      "roleType": "attacking-fullback",
-      "flank": "left",
-      "pace": 84,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "oreilly",
-      "name": "Nico O'Reilly",
-      "team": "man-city",
-      "role": "DEF",
-      "startProb": 0.55,
-      "benchProb": 0.3,
-      "cardProneness": 1.15,
       "per90": {
         "shots": 0.5,
-        "sot": 0.15,
-        "goals": 0.05,
-        "assists": 0.1,
+        "sot": 0.14,
+        "goals": 0.04,
+        "assists": 0.08,
         "fouls": 1.3
       },
-      "roleType": "inverted-fullback",
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "james-hill",
+      "name": "James Hill",
+      "team": "bournemouth",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "antonio-silva",
+      "name": "Antonio Silva",
+      "team": "bournemouth",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "truffert",
+      "name": "Adrien Truffert",
+      "team": "bournemouth",
+      "position": "LB",
+      "roleType": "defensive-fullback",
       "flank": "left",
-      "pace": 80,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "isidor",
-      "name": "Wilson Isidor",
-      "team": "sunderland",
-      "role": "FWD",
-      "startProb": 0.6,
-      "benchProb": 0.32,
-      "cardProneness": 1.1,
-      "per90": {
-        "shots": 2.5,
-        "sot": 0.9,
-        "goals": 0.38,
-        "assists": 0.1,
-        "fouls": 1.3
-      },
-      "roleType": "pressing-forward",
-      "flank": "central",
-      "pace": 84,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "mayenda",
-      "name": "Eliezer Mayenda",
-      "team": "sunderland",
-      "role": "FWD",
-      "startProb": 0.6,
-      "benchProb": 0.3,
-      "cardProneness": 1.1,
-      "per90": {
-        "shots": 2.2,
-        "sot": 0.8,
-        "goals": 0.32,
-        "assists": 0.12,
-        "fouls": 1.2
-      },
-      "roleType": "pressing-forward",
-      "flank": "central",
-      "pace": 85,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "brobbey",
-      "name": "Brian Brobbey",
-      "team": "sunderland",
-      "role": "FWD",
-      "startProb": 0.5,
-      "benchProb": 0.38,
-      "cardProneness": 1.15,
-      "per90": {
-        "shots": 2.4,
-        "sot": 0.85,
-        "goals": 0.35,
-        "assists": 0.1,
-        "fouls": 1.5
-      },
-      "roleType": "target-forward",
-      "flank": "central",
-      "pace": 78,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "talbi",
-      "name": "Chemsdine Talbi",
-      "team": "sunderland",
-      "role": "AM",
-      "startProb": 0.65,
-      "benchProb": 0.28,
-      "cardProneness": 1.1,
-      "per90": {
-        "shots": 1.8,
-        "sot": 0.55,
-        "goals": 0.2,
-        "assists": 0.16,
-        "fouls": 1.1
-      },
-      "roleType": "inverted-winger",
-      "flank": "right",
-      "pace": 85,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "le-fee",
-      "name": "Enzo Le Fée",
-      "team": "sunderland",
-      "role": "MID",
-      "startProb": 0.7,
-      "benchProb": 0.22,
+      "startProb": 0.88,
+      "benchProb": 0.06,
       "cardProneness": 1.2,
-      "per90": {
-        "shots": 1.3,
-        "sot": 0.4,
-        "goals": 0.14,
-        "assists": 0.18,
-        "fouls": 1.4
-      },
-      "roleType": "attacking-mid",
-      "flank": "central",
-      "pace": 78,
+      "pace": 82,
       "setPieces": {
         "penalties": 0,
-        "freeKicks": 0.5,
-        "corners": 0.5
-      }
-    },
-    {
-      "id": "xhaka",
-      "name": "Granit Xhaka",
-      "team": "sunderland",
-      "role": "MID",
-      "startProb": 0.9,
-      "benchProb": 0.05,
-      "cardProneness": 1.45,
-      "per90": {
-        "shots": 1,
-        "sot": 0.3,
-        "goals": 0.1,
-        "assists": 0.14,
-        "fouls": 1.7
+        "freeKicks": 0,
+        "corners": 0
       },
-      "roleType": "deep-playmaker",
-      "flank": "central",
-      "pace": 62,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0.6,
-        "corners": 0.6
-      }
-    },
-    {
-      "id": "sadiki",
-      "name": "Noah Sadiki",
-      "team": "sunderland",
-      "role": "MID",
-      "startProb": 0.72,
-      "benchProb": 0.2,
-      "cardProneness": 1.35,
       "per90": {
         "shots": 0.6,
         "sot": 0.18,
         "goals": 0.05,
-        "assists": 0.06,
-        "fouls": 2
-      },
-      "roleType": "holding-mid",
-      "flank": "central",
-      "pace": 76,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "bertrand-traore",
-      "name": "Bertrand Traoré",
-      "team": "sunderland",
-      "role": "MID",
-      "startProb": 0.5,
-      "benchProb": 0.35,
-      "cardProneness": 1.3,
-      "per90": {
-        "shots": 0.8,
-        "sot": 0.25,
-        "goals": 0.06,
-        "assists": 0.1,
-        "fouls": 1.8
-      },
-      "roleType": "traditional-winger",
-      "flank": "right",
-      "pace": 80,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "ballard",
-      "name": "Daniel Ballard",
-      "team": "sunderland",
-      "role": "DEF",
-      "startProb": 0.85,
-      "benchProb": 0.08,
-      "cardProneness": 1.3,
-      "per90": {
-        "shots": 0.6,
-        "sot": 0.2,
-        "goals": 0.09,
-        "assists": 0.03,
-        "fouls": 1.4
-      },
-      "roleType": "aggressive-stopper",
-      "flank": "central",
-      "pace": 74,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "mukiele",
-      "name": "Nordi Mukiele",
-      "team": "sunderland",
-      "role": "DEF",
-      "startProb": 0.8,
-      "benchProb": 0.12,
-      "cardProneness": 1.35,
-      "per90": {
-        "shots": 0.4,
-        "sot": 0.12,
-        "goals": 0.04,
-        "assists": 0.06,
-        "fouls": 1.6
-      },
-      "roleType": "defensive-fullback",
-      "flank": "right",
-      "pace": 86,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "alderete",
-      "name": "Omar Alderete",
-      "team": "sunderland",
-      "role": "DEF",
-      "startProb": 0.78,
-      "benchProb": 0.14,
-      "cardProneness": 1.3,
-      "per90": {
-        "shots": 0.4,
-        "sot": 0.12,
-        "goals": 0.05,
-        "assists": 0.02,
-        "fouls": 1.5
-      },
-      "roleType": "cover-defender",
-      "flank": "central",
-      "pace": 72,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "hume",
-      "name": "Trai Hume",
-      "team": "sunderland",
-      "role": "DEF",
-      "startProb": 0.82,
-      "benchProb": 0.1,
-      "cardProneness": 1.2,
-      "per90": {
-        "shots": 0.5,
-        "sot": 0.15,
-        "goals": 0.04,
-        "assists": 0.08,
-        "fouls": 1.4
-      },
-      "roleType": "defensive-fullback",
-      "flank": "right",
-      "pace": 78,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "evanilson",
-      "name": "Evanilson",
-      "team": "bournemouth",
-      "role": "FWD",
-      "startProb": 0.82,
-      "benchProb": 0.12,
-      "cardProneness": 1.15,
-      "per90": {
-        "shots": 2.9,
-        "sot": 1.05,
-        "goals": 0.45,
         "assists": 0.12,
         "fouls": 1.4
       },
-      "roleType": "pressing-forward",
-      "flank": "central",
-      "pace": 81,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "kluivert",
-      "name": "Justin Kluivert",
-      "team": "bournemouth",
-      "role": "AM",
-      "startProb": 0.8,
-      "benchProb": 0.15,
-      "cardProneness": 1,
-      "per90": {
-        "shots": 2.4,
-        "sot": 0.85,
-        "goals": 0.38,
-        "assists": 0.18,
-        "fouls": 0.8
-      },
-      "roleType": "inverted-winger",
-      "flank": "right",
-      "pace": 82,
-      "setPieces": {
-        "penalties": 0.7,
-        "freeKicks": 0.6,
-        "corners": 0
-      }
-    },
-    {
-      "id": "tavernier",
-      "name": "Marcus Tavernier",
-      "team": "bournemouth",
-      "role": "MID",
-      "startProb": 0.7,
-      "benchProb": 0.22,
-      "cardProneness": 1.2,
-      "per90": {
-        "shots": 1.4,
-        "sot": 0.45,
-        "goals": 0.16,
-        "assists": 0.16,
-        "fouls": 1.5
-      },
-      "roleType": "box-to-box",
-      "flank": "central",
-      "pace": 78,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0.5
-      }
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
     },
     {
       "id": "tyler-adams",
       "name": "Tyler Adams",
       "team": "bournemouth",
-      "role": "MID",
-      "startProb": 0.8,
-      "benchProb": 0.12,
+      "position": "DM",
+      "roleType": "holding-mid",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
       "cardProneness": 1.45,
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
       "per90": {
         "shots": 0.7,
         "sot": 0.2,
@@ -665,22 +150,150 @@
         "assists": 0.06,
         "fouls": 2.3
       },
-      "roleType": "holding-mid",
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "alex-scott",
+      "name": "Alex Scott",
+      "team": "bournemouth",
+      "position": "CM",
+      "roleType": "box-to-box",
       "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.3,
       "pace": 78,
       "setPieces": {
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
+      },
+      "per90": {
+        "shots": 1.2,
+        "sot": 0.35,
+        "goals": 0.12,
+        "assists": 0.12,
+        "fouls": 1.7
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "rayan",
+      "name": "Rayan",
+      "team": "bournemouth",
+      "position": "RW",
+      "roleType": "inverted-winger",
+      "flank": "right",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "kluivert",
+      "name": "Justin Kluivert",
+      "team": "bournemouth",
+      "position": "AM",
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "pace": 82,
+      "setPieces": {
+        "penalties": 0.7,
+        "freeKicks": 0.6,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 2.4,
+        "sot": 0.85,
+        "goals": 0.38,
+        "assists": 0.18,
+        "fouls": 0.8
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "tavernier",
+      "name": "Marcus Tavernier",
+      "team": "bournemouth",
+      "position": "LW",
+      "roleType": "inverted-winger",
+      "flank": "left",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.2,
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0.5
+      },
+      "per90": {
+        "shots": 1.4,
+        "sot": 0.45,
+        "goals": 0.16,
+        "assists": 0.16,
+        "fouls": 1.5
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "evanilson",
+      "name": "Evanilson",
+      "team": "bournemouth",
+      "position": "ST",
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.15,
+      "pace": 81,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 2.9,
+        "sot": 1.05,
+        "goals": 0.45,
+        "assists": 0.12,
+        "fouls": 1.4
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
     },
     {
       "id": "christie",
       "name": "Ryan Christie",
       "team": "bournemouth",
       "role": "MID",
-      "startProb": 0.7,
-      "benchProb": 0.22,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.25,
       "per90": {
         "shots": 1,
@@ -696,39 +309,19 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
-    },
-    {
-      "id": "alex-scott",
-      "name": "Alex Scott",
-      "team": "bournemouth",
-      "role": "MID",
-      "startProb": 0.65,
-      "benchProb": 0.26,
-      "cardProneness": 1.3,
-      "per90": {
-        "shots": 1.2,
-        "sot": 0.35,
-        "goals": 0.12,
-        "assists": 0.12,
-        "fouls": 1.7
       },
-      "roleType": "box-to-box",
-      "flank": "central",
-      "pace": 78,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "brooks-bou",
       "name": "David Brooks",
       "team": "bournemouth",
       "role": "AM",
-      "startProb": 0.45,
-      "benchProb": 0.4,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1,
       "per90": {
         "shots": 1.5,
@@ -744,15 +337,19 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "diakite",
       "name": "Bafodé Diakité",
       "team": "bournemouth",
       "role": "DEF",
-      "startProb": 0.85,
-      "benchProb": 0.08,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.3,
       "per90": {
         "shots": 0.5,
@@ -768,15 +365,19 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "senesi",
       "name": "Marcos Senesi",
       "team": "bournemouth",
       "role": "DEF",
-      "startProb": 0.85,
-      "benchProb": 0.08,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.25,
       "per90": {
         "shots": 0.5,
@@ -792,64 +393,276 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
-      "id": "truffert",
-      "name": "Adrien Truffert",
-      "team": "bournemouth",
-      "role": "DEF",
-      "startProb": 0.8,
-      "benchProb": 0.13,
-      "cardProneness": 1.2,
-      "per90": {
-        "shots": 0.6,
-        "sot": 0.18,
-        "goals": 0.05,
-        "assists": 0.12,
-        "fouls": 1.4
-      },
-      "roleType": "attacking-fullback",
-      "flank": "left",
-      "pace": 82,
+      "id": "alisson-becker",
+      "name": "Alisson Becker",
+      "team": "liverpool",
+      "position": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
       "setPieces": {
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
     },
     {
-      "id": "adam-smith",
-      "name": "Adam Smith",
-      "team": "bournemouth",
-      "role": "DEF",
-      "startProb": 0.75,
-      "benchProb": 0.16,
-      "cardProneness": 1.25,
-      "per90": {
-        "shots": 0.5,
-        "sot": 0.14,
-        "goals": 0.04,
-        "assists": 0.08,
-        "fouls": 1.3
-      },
+      "id": "ronald-araujo",
+      "name": "Ronald Araujo",
+      "team": "liverpool",
+      "position": "RB",
       "roleType": "defensive-fullback",
       "flank": "right",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "jeremy-jacquet",
+      "name": "Jeremy Jacquet",
+      "team": "liverpool",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "van-dijk",
+      "name": "Virgil van Dijk",
+      "team": "liverpool",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.1,
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.7,
+        "sot": 0.25,
+        "goals": 0.11,
+        "assists": 0.04,
+        "fouls": 0.9
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "kerkez",
+      "name": "Milos Kerkez",
+      "team": "liverpool",
+      "position": "LB",
+      "roleType": "defensive-fullback",
+      "flank": "left",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.35,
+      "pace": 87,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.04,
+        "assists": 0.12,
+        "fouls": 1.6
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "szoboszlai",
+      "name": "Dominik Szoboszlai",
+      "team": "liverpool",
+      "position": "DM",
+      "roleType": "holding-mid",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.2,
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0.7,
+        "corners": 0.5
+      },
+      "per90": {
+        "shots": 1.9,
+        "sot": 0.6,
+        "goals": 0.2,
+        "assists": 0.18,
+        "fouls": 1.4
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "mac-allister",
+      "name": "Alexis Mac Allister",
+      "team": "liverpool",
+      "position": "CM",
+      "roleType": "box-to-box",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.3,
       "pace": 74,
       "setPieces": {
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
+      },
+      "per90": {
+        "shots": 1.2,
+        "sot": 0.4,
+        "goals": 0.15,
+        "assists": 0.16,
+        "fouls": 1.6
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "bradley-barcola",
+      "name": "Bradley Barcola",
+      "team": "liverpool",
+      "position": "RW",
+      "roleType": "inverted-winger",
+      "flank": "right",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "wirtz",
+      "name": "Florian Wirtz",
+      "team": "liverpool",
+      "position": "AM",
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "pace": 79,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0.4
+      },
+      "per90": {
+        "shots": 1.9,
+        "sot": 0.65,
+        "goals": 0.25,
+        "assists": 0.3,
+        "fouls": 0.9
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "gakpo",
+      "name": "Cody Gakpo",
+      "team": "liverpool",
+      "position": "LW",
+      "roleType": "inverted-winger",
+      "flank": "left",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 0.95,
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 2.4,
+        "sot": 0.9,
+        "goals": 0.38,
+        "assists": 0.16,
+        "fouls": 0.7
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
     },
     {
       "id": "isak",
       "name": "Alexander Isak",
       "team": "liverpool",
-      "role": "FWD",
-      "startProb": 0.62,
-      "benchProb": 0.3,
+      "position": "ST",
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
       "cardProneness": 0.95,
+      "pace": 86,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
       "per90": {
         "shots": 3.2,
         "sot": 1.25,
@@ -857,22 +670,18 @@
         "assists": 0.1,
         "fouls": 0.8
       },
-      "roleType": "poacher",
-      "flank": "central",
-      "pace": 86,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
     },
     {
       "id": "ekitike",
       "name": "Hugo Ekitiké",
       "team": "liverpool",
       "role": "FWD",
-      "startProb": 0.6,
-      "benchProb": 0.32,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.1,
       "per90": {
         "shots": 3,
@@ -888,111 +697,19 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
-    },
-    {
-      "id": "gakpo",
-      "name": "Cody Gakpo",
-      "team": "liverpool",
-      "role": "AM",
-      "startProb": 0.72,
-      "benchProb": 0.22,
-      "cardProneness": 0.95,
-      "per90": {
-        "shots": 2.4,
-        "sot": 0.9,
-        "goals": 0.38,
-        "assists": 0.16,
-        "fouls": 0.7
       },
-      "roleType": "inside-forward",
-      "flank": "left",
-      "pace": 80,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "wirtz",
-      "name": "Florian Wirtz",
-      "team": "liverpool",
-      "role": "AM",
-      "startProb": 0.7,
-      "benchProb": 0.24,
-      "cardProneness": 1,
-      "per90": {
-        "shots": 1.9,
-        "sot": 0.65,
-        "goals": 0.25,
-        "assists": 0.3,
-        "fouls": 0.9
-      },
-      "roleType": "attacking-mid",
-      "flank": "central",
-      "pace": 79,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0.4
-      }
-    },
-    {
-      "id": "szoboszlai",
-      "name": "Dominik Szoboszlai",
-      "team": "liverpool",
-      "role": "MID",
-      "startProb": 0.8,
-      "benchProb": 0.14,
-      "cardProneness": 1.2,
-      "per90": {
-        "shots": 1.9,
-        "sot": 0.6,
-        "goals": 0.2,
-        "assists": 0.18,
-        "fouls": 1.4
-      },
-      "roleType": "box-to-box",
-      "flank": "central",
-      "pace": 80,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0.7,
-        "corners": 0.5
-      }
-    },
-    {
-      "id": "mac-allister",
-      "name": "Alexis Mac Allister",
-      "team": "liverpool",
-      "role": "MID",
-      "startProb": 0.78,
-      "benchProb": 0.15,
-      "cardProneness": 1.3,
-      "per90": {
-        "shots": 1.2,
-        "sot": 0.4,
-        "goals": 0.15,
-        "assists": 0.16,
-        "fouls": 1.6
-      },
-      "roleType": "box-to-box",
-      "flank": "central",
-      "pace": 74,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "gravenberch",
       "name": "Ryan Gravenberch",
       "team": "liverpool",
       "role": "MID",
-      "startProb": 0.85,
-      "benchProb": 0.1,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.35,
       "per90": {
         "shots": 0.9,
@@ -1008,63 +725,19 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
-    },
-    {
-      "id": "van-dijk",
-      "name": "Virgil van Dijk",
-      "team": "liverpool",
-      "role": "DEF",
-      "startProb": 0.92,
-      "benchProb": 0.04,
-      "cardProneness": 1.1,
-      "per90": {
-        "shots": 0.7,
-        "sot": 0.25,
-        "goals": 0.11,
-        "assists": 0.04,
-        "fouls": 0.9
       },
-      "roleType": "aggressive-stopper",
-      "flank": "central",
-      "pace": 80,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "kerkez",
-      "name": "Milos Kerkez",
-      "team": "liverpool",
-      "role": "DEF",
-      "startProb": 0.75,
-      "benchProb": 0.18,
-      "cardProneness": 1.35,
-      "per90": {
-        "shots": 0.5,
-        "sot": 0.15,
-        "goals": 0.04,
-        "assists": 0.12,
-        "fouls": 1.6
-      },
-      "roleType": "attacking-fullback",
-      "flank": "left",
-      "pace": 87,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "frimpong",
       "name": "Jeremie Frimpong",
       "team": "liverpool",
       "role": "DEF",
-      "startProb": 0.6,
-      "benchProb": 0.3,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.15,
       "per90": {
         "shots": 1,
@@ -1080,15 +753,19 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "bradley",
       "name": "Conor Bradley",
       "team": "liverpool",
       "role": "DEF",
-      "startProb": 0.5,
-      "benchProb": 0.35,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.25,
       "per90": {
         "shots": 0.7,
@@ -1104,15 +781,316 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
+    },
+    {
+      "id": "alisson",
+      "name": "Alisson",
+      "team": "liverpool",
+      "role": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "pace": 60,
+      "startProb": 0.14,
+      "benchProb": 0.46,
+      "cardProneness": 0.45,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.02,
+        "sot": 0.005,
+        "goals": 0.002,
+        "assists": 0.02,
+        "fouls": 0.1,
+        "saves": 2.6
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
+    },
+    {
+      "id": "james-trafford",
+      "name": "James Trafford",
+      "team": "leeds",
+      "position": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "james-justin",
+      "name": "James Justin",
+      "team": "leeds",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "nico-elvedi",
+      "name": "Nico Elvedi",
+      "team": "leeds",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "tarik-muharemovic",
+      "name": "Tarik Muharemovic",
+      "team": "leeds",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "jayden-bogle",
+      "name": "Jayden Bogle",
+      "team": "leeds",
+      "position": "RWB",
+      "roleType": "wingback",
+      "flank": "right",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "stach",
+      "name": "Anton Stach",
+      "team": "leeds",
+      "position": "CM",
+      "roleType": "box-to-box",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.4,
+      "pace": 74,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.9,
+        "sot": 0.28,
+        "goals": 0.08,
+        "assists": 0.1,
+        "fouls": 2.1
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "ampadu",
+      "name": "Ethan Ampadu",
+      "team": "leeds",
+      "position": "DM",
+      "roleType": "holding-mid",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.4,
+      "pace": 72,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.7,
+        "sot": 0.2,
+        "goals": 0.05,
+        "assists": 0.06,
+        "fouls": 1.9
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "tanaka",
+      "name": "Ao Tanaka",
+      "team": "leeds",
+      "position": "CM",
+      "roleType": "box-to-box",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.3,
+      "pace": 74,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.8,
+        "sot": 0.25,
+        "goals": 0.07,
+        "assists": 0.08,
+        "fouls": 1.8
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "gudmundsson",
+      "name": "Gabriel Gudmundsson",
+      "team": "leeds",
+      "position": "LWB",
+      "roleType": "wingback",
+      "flank": "left",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.2,
+      "pace": 82,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0.5
+      },
+      "per90": {
+        "shots": 0.6,
+        "sot": 0.18,
+        "goals": 0.05,
+        "assists": 0.12,
+        "fouls": 1.3
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "calvert-lewin",
+      "name": "Dominic Calvert-Lewin",
+      "team": "leeds",
+      "position": "ST",
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.2,
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 2.3,
+        "sot": 0.8,
+        "goals": 0.33,
+        "assists": 0.08,
+        "fouls": 1.6
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "okafor",
+      "name": "Noah Okafor",
+      "team": "leeds",
+      "position": "ST",
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.05,
+      "pace": 86,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 1.9,
+        "sot": 0.6,
+        "goals": 0.22,
+        "assists": 0.12,
+        "fouls": 0.9
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
     },
     {
       "id": "piroe",
       "name": "Joël Piroe",
       "team": "leeds",
       "role": "FWD",
-      "startProb": 0.6,
-      "benchProb": 0.32,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1,
       "per90": {
         "shots": 2.6,
@@ -1128,39 +1106,19 @@
         "penalties": 0.8,
         "freeKicks": 0,
         "corners": 0
-      }
-    },
-    {
-      "id": "calvert-lewin",
-      "name": "Dominic Calvert-Lewin",
-      "team": "leeds",
-      "role": "FWD",
-      "startProb": 0.6,
-      "benchProb": 0.3,
-      "cardProneness": 1.2,
-      "per90": {
-        "shots": 2.3,
-        "sot": 0.8,
-        "goals": 0.33,
-        "assists": 0.08,
-        "fouls": 1.6
       },
-      "roleType": "target-forward",
-      "flank": "central",
-      "pace": 78,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "dan-james",
       "name": "Daniel James",
       "team": "leeds",
       "role": "AM",
-      "startProb": 0.8,
-      "benchProb": 0.14,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1,
       "per90": {
         "shots": 1.9,
@@ -1176,15 +1134,19 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "gnonto",
       "name": "Wilfried Gnonto",
       "team": "leeds",
       "role": "AM",
-      "startProb": 0.65,
-      "benchProb": 0.28,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.05,
       "per90": {
         "shots": 1.8,
@@ -1200,39 +1162,19 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
-    },
-    {
-      "id": "okafor",
-      "name": "Noah Okafor",
-      "team": "leeds",
-      "role": "AM",
-      "startProb": 0.55,
-      "benchProb": 0.34,
-      "cardProneness": 1.05,
-      "per90": {
-        "shots": 1.9,
-        "sot": 0.6,
-        "goals": 0.22,
-        "assists": 0.12,
-        "fouls": 0.9
       },
-      "roleType": "inside-forward",
-      "flank": "left",
-      "pace": 86,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "aaronson",
       "name": "Brenden Aaronson",
       "team": "leeds",
       "role": "AM",
-      "startProb": 0.55,
-      "benchProb": 0.34,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.25,
       "per90": {
         "shots": 1.4,
@@ -1248,87 +1190,19 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
-    },
-    {
-      "id": "stach",
-      "name": "Anton Stach",
-      "team": "leeds",
-      "role": "MID",
-      "startProb": 0.8,
-      "benchProb": 0.13,
-      "cardProneness": 1.4,
-      "per90": {
-        "shots": 0.9,
-        "sot": 0.28,
-        "goals": 0.08,
-        "assists": 0.1,
-        "fouls": 2.1
       },
-      "roleType": "box-to-box",
-      "flank": "central",
-      "pace": 74,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "ampadu",
-      "name": "Ethan Ampadu",
-      "team": "leeds",
-      "role": "MID",
-      "startProb": 0.82,
-      "benchProb": 0.11,
-      "cardProneness": 1.4,
-      "per90": {
-        "shots": 0.7,
-        "sot": 0.2,
-        "goals": 0.05,
-        "assists": 0.06,
-        "fouls": 1.9
-      },
-      "roleType": "holding-mid",
-      "flank": "central",
-      "pace": 72,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "tanaka",
-      "name": "Ao Tanaka",
-      "team": "leeds",
-      "role": "MID",
-      "startProb": 0.5,
-      "benchProb": 0.35,
-      "cardProneness": 1.3,
-      "per90": {
-        "shots": 0.8,
-        "sot": 0.25,
-        "goals": 0.07,
-        "assists": 0.08,
-        "fouls": 1.8
-      },
-      "roleType": "box-to-box",
-      "flank": "central",
-      "pace": 74,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "bijol",
       "name": "Jaka Bijol",
       "team": "leeds",
       "role": "DEF",
-      "startProb": 0.85,
-      "benchProb": 0.08,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.4,
       "per90": {
         "shots": 0.6,
@@ -1344,39 +1218,19 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
-    },
-    {
-      "id": "rodon",
-      "name": "Joe Rodon",
-      "team": "leeds",
-      "role": "DEF",
-      "startProb": 0.85,
-      "benchProb": 0.08,
-      "cardProneness": 1.3,
-      "per90": {
-        "shots": 0.5,
-        "sot": 0.15,
-        "goals": 0.05,
-        "assists": 0.02,
-        "fouls": 1.4
       },
-      "roleType": "cover-defender",
-      "flank": "central",
-      "pace": 74,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "struijk",
       "name": "Pascal Struijk",
       "team": "leeds",
       "role": "DEF",
-      "startProb": 0.75,
-      "benchProb": 0.16,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.25,
       "per90": {
         "shots": 0.5,
@@ -1392,112 +1246,241 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
-      "id": "gudmundsson",
-      "name": "Gabriel Gudmundsson",
+      "id": "perri",
+      "name": "Lucas Perri",
       "team": "leeds",
-      "role": "DEF",
-      "startProb": 0.7,
-      "benchProb": 0.2,
-      "cardProneness": 1.2,
+      "role": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "pace": 60,
+      "startProb": 0.14,
+      "benchProb": 0.46,
+      "cardProneness": 0.45,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.02,
+        "sot": 0.005,
+        "goals": 0.002,
+        "assists": 0.02,
+        "fouls": 0.1,
+        "saves": 3.85
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
+    },
+    {
+      "id": "walter-benitez",
+      "name": "Walter Benitez",
+      "team": "crystal-palace",
+      "position": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "richards",
+      "name": "Chris Richards",
+      "team": "crystal-palace",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.4,
+      "pace": 79,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.06,
+        "assists": 0.02,
+        "fouls": 1.6
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "takehiro-tomiyasu",
+      "name": "Takehiro Tomiyasu",
+      "team": "crystal-palace",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "jaydee-canvot",
+      "name": "Jaydee Canvot",
+      "team": "crystal-palace",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "anan-khalaili",
+      "name": "Anan Khalaili",
+      "team": "crystal-palace",
+      "position": "RWB",
+      "roleType": "wingback",
+      "flank": "right",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "quinten-timber",
+      "name": "Quinten Timber",
+      "team": "crystal-palace",
+      "position": "CM",
+      "roleType": "box-to-box",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "wharton",
+      "name": "Adam Wharton",
+      "team": "crystal-palace",
+      "position": "DM",
+      "roleType": "holding-mid",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.3,
+      "pace": 68,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0.6,
+        "corners": 0.7
+      },
+      "per90": {
+        "shots": 0.8,
+        "sot": 0.25,
+        "goals": 0.07,
+        "assists": 0.14,
+        "fouls": 1.7
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "mitchell",
+      "name": "Tyrick Mitchell",
+      "team": "crystal-palace",
+      "position": "LWB",
+      "roleType": "wingback",
+      "flank": "left",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.3,
+      "pace": 84,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
       "per90": {
         "shots": 0.6,
         "sot": 0.18,
-        "goals": 0.05,
+        "goals": 0.04,
         "assists": 0.12,
-        "fouls": 1.3
-      },
-      "roleType": "attacking-fullback",
-      "flank": "left",
-      "pace": 82,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0.5
-      }
-    },
-    {
-      "id": "mateta",
-      "name": "Jean-Philippe Mateta",
-      "team": "crystal-palace",
-      "role": "FWD",
-      "startProb": 0.85,
-      "benchProb": 0.1,
-      "cardProneness": 1.15,
-      "per90": {
-        "shots": 3,
-        "sot": 1.1,
-        "goals": 0.48,
-        "assists": 0.1,
         "fouls": 1.5
       },
-      "roleType": "target-forward",
-      "flank": "central",
-      "pace": 78,
-      "setPieces": {
-        "penalties": 0.8,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "sarr",
-      "name": "Ismaïla Sarr",
-      "team": "crystal-palace",
-      "role": "AM",
-      "startProb": 0.85,
-      "benchProb": 0.1,
-      "cardProneness": 1.05,
-      "per90": {
-        "shots": 2.5,
-        "sot": 0.9,
-        "goals": 0.35,
-        "assists": 0.16,
-        "fouls": 1.1
-      },
-      "roleType": "inside-forward",
-      "flank": "right",
-      "pace": 88,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "pino",
-      "name": "Yeremy Pino",
-      "team": "crystal-palace",
-      "role": "AM",
-      "startProb": 0.7,
-      "benchProb": 0.24,
-      "cardProneness": 1.05,
-      "per90": {
-        "shots": 2,
-        "sot": 0.65,
-        "goals": 0.24,
-        "assists": 0.16,
-        "fouls": 1
-      },
-      "roleType": "inverted-winger",
-      "flank": "left",
-      "pace": 85,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
     },
     {
       "id": "kamada",
       "name": "Daichi Kamada",
       "team": "crystal-palace",
-      "role": "MID",
-      "startProb": 0.72,
-      "benchProb": 0.22,
+      "position": "AM",
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
       "cardProneness": 1.2,
+      "pace": 74,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
       "per90": {
         "shots": 1.3,
         "sot": 0.4,
@@ -1505,22 +1488,66 @@
         "assists": 0.14,
         "fouls": 1.3
       },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "pino",
+      "name": "Yeremi Pino",
+      "team": "crystal-palace",
+      "position": "AM",
       "roleType": "attacking-mid",
       "flank": "central",
-      "pace": 74,
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.05,
+      "pace": 85,
       "setPieces": {
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
+      },
+      "per90": {
+        "shots": 2,
+        "sot": 0.65,
+        "goals": 0.24,
+        "assists": 0.16,
+        "fouls": 1
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "jorgen-strand-larsen",
+      "name": "Jorgen Strand Larsen",
+      "team": "crystal-palace",
+      "position": "ST",
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
     },
     {
       "id": "devenny",
       "name": "Justin Devenny",
       "team": "crystal-palace",
       "role": "MID",
-      "startProb": 0.5,
-      "benchProb": 0.36,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.2,
       "per90": {
         "shots": 1.2,
@@ -1536,39 +1563,19 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
-    },
-    {
-      "id": "wharton",
-      "name": "Adam Wharton",
-      "team": "crystal-palace",
-      "role": "MID",
-      "startProb": 0.82,
-      "benchProb": 0.12,
-      "cardProneness": 1.3,
-      "per90": {
-        "shots": 0.8,
-        "sot": 0.25,
-        "goals": 0.07,
-        "assists": 0.14,
-        "fouls": 1.7
       },
-      "roleType": "deep-playmaker",
-      "flank": "central",
-      "pace": 68,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0.6,
-        "corners": 0.7
-      }
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "hughes",
       "name": "Will Hughes",
       "team": "crystal-palace",
       "role": "MID",
-      "startProb": 0.7,
-      "benchProb": 0.22,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.3,
       "per90": {
         "shots": 0.9,
@@ -1584,15 +1591,19 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "guehi",
       "name": "Marc Guéhi",
       "team": "crystal-palace",
       "role": "DEF",
-      "startProb": 0.88,
-      "benchProb": 0.06,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.15,
       "per90": {
         "shots": 0.5,
@@ -1608,39 +1619,19 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
-    },
-    {
-      "id": "richards",
-      "name": "Chris Richards",
-      "team": "crystal-palace",
-      "role": "DEF",
-      "startProb": 0.8,
-      "benchProb": 0.12,
-      "cardProneness": 1.4,
-      "per90": {
-        "shots": 0.5,
-        "sot": 0.15,
-        "goals": 0.06,
-        "assists": 0.02,
-        "fouls": 1.6
       },
-      "roleType": "aggressive-stopper",
-      "flank": "central",
-      "pace": 79,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "munoz",
       "name": "Daniel Muñoz",
       "team": "crystal-palace",
       "role": "DEF",
-      "startProb": 0.88,
-      "benchProb": 0.06,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.4,
       "per90": {
         "shots": 1,
@@ -1656,39 +1647,1114 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
-      "id": "mitchell",
-      "name": "Tyrick Mitchell",
-      "team": "crystal-palace",
-      "role": "DEF",
-      "startProb": 0.8,
-      "benchProb": 0.13,
+      "id": "donnarumma",
+      "name": "Gianluigi Donnarumma",
+      "team": "man-city",
+      "position": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 0.45,
+      "pace": 60,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.02,
+        "sot": 0.005,
+        "goals": 0.002,
+        "assists": 0.02,
+        "fouls": 0.1,
+        "saves": 2.35
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "matheus-nunes",
+      "name": "Matheus Nunes",
+      "team": "man-city",
+      "position": "RB",
+      "roleType": "defensive-fullback",
+      "flank": "right",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "dias",
+      "name": "Ruben Dias",
+      "team": "man-city",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.1,
+      "pace": 74,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.06,
+        "assists": 0.04,
+        "fouls": 1
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "marc-guehi",
+      "name": "Marc Guehi",
+      "team": "man-city",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "gvardiol",
+      "name": "Josko Gvardiol",
+      "team": "man-city",
+      "position": "LB",
+      "roleType": "defensive-fullback",
+      "flank": "left",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.1,
+      "pace": 82,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.7,
+        "sot": 0.2,
+        "goals": 0.1,
+        "assists": 0.08,
+        "fouls": 1.1
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "elliot-anderson",
+      "name": "Elliot Anderson",
+      "team": "man-city",
+      "position": "DM",
+      "roleType": "holding-mid",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "iliman-ndiaye",
+      "name": "Iliman Ndiaye",
+      "team": "man-city",
+      "position": "RM",
+      "roleType": "wide-playmaker",
+      "flank": "right",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "cherki",
+      "name": "Rayan Cherki",
+      "team": "man-city",
+      "position": "AM",
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0.4,
+        "corners": 0.4
+      },
+      "per90": {
+        "shots": 2.1,
+        "sot": 0.7,
+        "goals": 0.28,
+        "assists": 0.32,
+        "fouls": 0.8
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "enzo-fernandez",
+      "name": "Enzo Fernandez",
+      "team": "man-city",
+      "position": "CM",
+      "roleType": "box-to-box",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "antoine-semenyo",
+      "name": "Antoine Semenyo",
+      "team": "man-city",
+      "position": "LM",
+      "roleType": "wide-playmaker",
+      "flank": "left",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "haaland",
+      "name": "Erling Haaland",
+      "team": "man-city",
+      "position": "ST",
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.05,
+      "pace": 82,
+      "setPieces": {
+        "penalties": 0.85,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 4.3,
+        "sot": 2,
+        "goals": 1.08,
+        "assists": 0.12,
+        "fouls": 0.8
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "marmoush",
+      "name": "Omar Marmoush",
+      "team": "man-city",
+      "role": "FWD",
+      "startProb": 0.14,
+      "benchProb": 0.46,
+      "cardProneness": 1.05,
+      "per90": {
+        "shots": 2.8,
+        "sot": 1.1,
+        "goals": 0.5,
+        "assists": 0.18,
+        "fouls": 0.9
+      },
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "pace": 87,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
+    },
+    {
+      "id": "reijnders",
+      "name": "Tijjani Reijnders",
+      "team": "man-city",
+      "role": "MID",
+      "startProb": 0.14,
+      "benchProb": 0.46,
+      "cardProneness": 1.1,
+      "per90": {
+        "shots": 1.5,
+        "sot": 0.5,
+        "goals": 0.22,
+        "assists": 0.16,
+        "fouls": 1.1
+      },
+      "roleType": "box-to-box",
+      "flank": "central",
+      "pace": 79,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
+    },
+    {
+      "id": "rodri",
+      "name": "Rodri",
+      "team": "man-city",
+      "role": "MID",
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.3,
       "per90": {
-        "shots": 0.6,
-        "sot": 0.18,
-        "goals": 0.04,
-        "assists": 0.12,
+        "shots": 1,
+        "sot": 0.3,
+        "goals": 0.1,
+        "assists": 0.1,
         "fouls": 1.5
       },
-      "roleType": "wingback",
+      "roleType": "holding-mid",
+      "flank": "central",
+      "pace": 68,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
+    },
+    {
+      "id": "nico-gonzalez",
+      "name": "Nico González",
+      "team": "man-city",
+      "role": "MID",
+      "startProb": 0.14,
+      "benchProb": 0.46,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.9,
+        "sot": 0.25,
+        "goals": 0.08,
+        "assists": 0.08,
+        "fouls": 1.6
+      },
+      "roleType": "holding-mid",
+      "flank": "central",
+      "pace": 70,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
+    },
+    {
+      "id": "ait-nouri",
+      "name": "Rayan Aït-Nouri",
+      "team": "man-city",
+      "role": "DEF",
+      "startProb": 0.14,
+      "benchProb": 0.46,
+      "cardProneness": 1.2,
+      "per90": {
+        "shots": 0.8,
+        "sot": 0.22,
+        "goals": 0.07,
+        "assists": 0.16,
+        "fouls": 1.5
+      },
+      "roleType": "attacking-fullback",
       "flank": "left",
       "pace": 84,
       "setPieces": {
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
+    },
+    {
+      "id": "oreilly",
+      "name": "Nico O'Reilly",
+      "team": "man-city",
+      "role": "DEF",
+      "startProb": 0.14,
+      "benchProb": 0.46,
+      "cardProneness": 1.15,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.05,
+        "assists": 0.1,
+        "fouls": 1.3
+      },
+      "roleType": "inverted-fullback",
+      "flank": "left",
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
+    },
+    {
+      "id": "roefs",
+      "name": "Robin Roefs",
+      "team": "sunderland",
+      "position": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 0.45,
+      "pace": 60,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.02,
+        "sot": 0.005,
+        "goals": 0.002,
+        "assists": 0.02,
+        "fouls": 0.1,
+        "saves": 3.7
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "mukiele",
+      "name": "Nordi Mukiele",
+      "team": "sunderland",
+      "position": "RB",
+      "roleType": "defensive-fullback",
+      "flank": "right",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.35,
+      "pace": 86,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.4,
+        "sot": 0.12,
+        "goals": 0.04,
+        "assists": 0.06,
+        "fouls": 1.6
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "kevin-danso",
+      "name": "Kevin Danso",
+      "team": "sunderland",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "ballard",
+      "name": "Daniel Ballard",
+      "team": "sunderland",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.3,
+      "pace": 74,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.6,
+        "sot": 0.2,
+        "goals": 0.09,
+        "assists": 0.03,
+        "fouls": 1.4
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "hume",
+      "name": "Trai Hume",
+      "team": "sunderland",
+      "position": "LB",
+      "roleType": "defensive-fullback",
+      "flank": "left",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.2,
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.04,
+        "assists": 0.08,
+        "fouls": 1.4
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "xhaka",
+      "name": "Granit Xhaka",
+      "team": "sunderland",
+      "position": "CM",
+      "roleType": "box-to-box",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.45,
+      "pace": 62,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0.6,
+        "corners": 0.6
+      },
+      "per90": {
+        "shots": 1,
+        "sot": 0.3,
+        "goals": 0.1,
+        "assists": 0.14,
+        "fouls": 1.7
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "sadiki",
+      "name": "Noah Sadiki",
+      "team": "sunderland",
+      "position": "DM",
+      "roleType": "holding-mid",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.35,
+      "pace": 76,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.6,
+        "sot": 0.18,
+        "goals": 0.05,
+        "assists": 0.06,
+        "fouls": 2
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "thomas-meunier",
+      "name": "Thomas Meunier",
+      "team": "sunderland",
+      "position": "RM",
+      "roleType": "wide-playmaker",
+      "flank": "right",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "le-fee",
+      "name": "Enzo Le Fee",
+      "team": "sunderland",
+      "position": "AM",
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.2,
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0.5,
+        "corners": 0.5
+      },
+      "per90": {
+        "shots": 1.3,
+        "sot": 0.4,
+        "goals": 0.14,
+        "assists": 0.18,
+        "fouls": 1.4
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "nilson-angulo",
+      "name": "Nilson Angulo",
+      "team": "sunderland",
+      "position": "LM",
+      "roleType": "wide-playmaker",
+      "flank": "left",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "brobbey",
+      "name": "Brian Brobbey",
+      "team": "sunderland",
+      "position": "ST",
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.15,
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 2.4,
+        "sot": 0.85,
+        "goals": 0.35,
+        "assists": 0.1,
+        "fouls": 1.5
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "isidor",
+      "name": "Wilson Isidor",
+      "team": "sunderland",
+      "role": "FWD",
+      "startProb": 0.14,
+      "benchProb": 0.46,
+      "cardProneness": 1.1,
+      "per90": {
+        "shots": 2.5,
+        "sot": 0.9,
+        "goals": 0.38,
+        "assists": 0.1,
+        "fouls": 1.3
+      },
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "pace": 84,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
+    },
+    {
+      "id": "mayenda",
+      "name": "Eliezer Mayenda",
+      "team": "sunderland",
+      "role": "FWD",
+      "startProb": 0.14,
+      "benchProb": 0.46,
+      "cardProneness": 1.1,
+      "per90": {
+        "shots": 2.2,
+        "sot": 0.8,
+        "goals": 0.32,
+        "assists": 0.12,
+        "fouls": 1.2
+      },
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "pace": 85,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
+    },
+    {
+      "id": "talbi",
+      "name": "Chemsdine Talbi",
+      "team": "sunderland",
+      "role": "AM",
+      "startProb": 0.14,
+      "benchProb": 0.46,
+      "cardProneness": 1.1,
+      "per90": {
+        "shots": 1.8,
+        "sot": 0.55,
+        "goals": 0.2,
+        "assists": 0.16,
+        "fouls": 1.1
+      },
+      "roleType": "inverted-winger",
+      "flank": "right",
+      "pace": 85,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
+    },
+    {
+      "id": "bertrand-traore",
+      "name": "Bertrand Traoré",
+      "team": "sunderland",
+      "role": "MID",
+      "startProb": 0.14,
+      "benchProb": 0.46,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.8,
+        "sot": 0.25,
+        "goals": 0.06,
+        "assists": 0.1,
+        "fouls": 1.8
+      },
+      "roleType": "traditional-winger",
+      "flank": "right",
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
+    },
+    {
+      "id": "leno",
+      "name": "Bernd Leno",
+      "team": "fulham",
+      "position": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 0.45,
+      "pace": 60,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.02,
+        "sot": 0.005,
+        "goals": 0.002,
+        "assists": 0.02,
+        "fouls": 0.1,
+        "saves": 3.25
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "castagne",
+      "name": "Timothy Castagne",
+      "team": "fulham",
+      "position": "RB",
+      "roleType": "defensive-fullback",
+      "flank": "right",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.25,
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.04,
+        "assists": 0.1,
+        "fouls": 1.4
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "david-affengruber",
+      "name": "David Affengruber",
+      "team": "fulham",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "bassey",
+      "name": "Calvin Bassey",
+      "team": "fulham",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.25,
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.05,
+        "assists": 0.04,
+        "fouls": 1.3
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "robinson",
+      "name": "Antonee Robinson",
+      "team": "fulham",
+      "position": "LB",
+      "roleType": "defensive-fullback",
+      "flank": "left",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.3,
+      "pace": 88,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.6,
+        "sot": 0.18,
+        "goals": 0.05,
+        "assists": 0.16,
+        "fouls": 1.5
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "berge",
+      "name": "Sander Berge",
+      "team": "fulham",
+      "position": "CM",
+      "roleType": "box-to-box",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.3,
+      "pace": 72,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 1.1,
+        "sot": 0.35,
+        "goals": 0.12,
+        "assists": 0.08,
+        "fouls": 1.6
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "shea-charles",
+      "name": "Shea Charles",
+      "team": "fulham",
+      "position": "DM",
+      "roleType": "holding-mid",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "oscar-bobb",
+      "name": "Oscar Bobb",
+      "team": "fulham",
+      "position": "RW",
+      "roleType": "inverted-winger",
+      "flank": "right",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "joshua-king",
+      "name": "Joshua King",
+      "team": "fulham",
+      "position": "AM",
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "iwobi",
+      "name": "Alex Iwobi",
+      "team": "fulham",
+      "position": "LW",
+      "roleType": "inverted-winger",
+      "flank": "left",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.05,
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 1.6,
+        "sot": 0.5,
+        "goals": 0.18,
+        "assists": 0.18,
+        "fouls": 1.1
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "gonzalo-garcia",
+      "name": "Gonzalo Garcia",
+      "team": "fulham",
+      "position": "ST",
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
     },
     {
       "id": "muniz",
       "name": "Rodrigo Muniz",
       "team": "fulham",
       "role": "FWD",
-      "startProb": 0.45,
-      "benchProb": 0.42,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.1,
       "per90": {
         "shots": 2.4,
@@ -1704,39 +2770,19 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
-    },
-    {
-      "id": "iwobi",
-      "name": "Alex Iwobi",
-      "team": "fulham",
-      "role": "AM",
-      "startProb": 0.85,
-      "benchProb": 0.1,
-      "cardProneness": 1.05,
-      "per90": {
-        "shots": 1.6,
-        "sot": 0.5,
-        "goals": 0.18,
-        "assists": 0.18,
-        "fouls": 1.1
       },
-      "roleType": "wide-playmaker",
-      "flank": "right",
-      "pace": 78,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "smith-rowe",
       "name": "Emile Smith Rowe",
       "team": "fulham",
       "role": "AM",
-      "startProb": 0.6,
-      "benchProb": 0.32,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.05,
       "per90": {
         "shots": 1.7,
@@ -1752,39 +2798,19 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
-    },
-    {
-      "id": "berge",
-      "name": "Sander Berge",
-      "team": "fulham",
-      "role": "MID",
-      "startProb": 0.8,
-      "benchProb": 0.13,
-      "cardProneness": 1.3,
-      "per90": {
-        "shots": 1.1,
-        "sot": 0.35,
-        "goals": 0.12,
-        "assists": 0.08,
-        "fouls": 1.6
       },
-      "roleType": "box-to-box",
-      "flank": "central",
-      "pace": 72,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "lukic",
       "name": "Saša Lukić",
       "team": "fulham",
       "role": "MID",
-      "startProb": 0.78,
-      "benchProb": 0.15,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.45,
       "per90": {
         "shots": 0.9,
@@ -1800,63 +2826,19 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
-    },
-    {
-      "id": "cairney",
-      "name": "Tom Cairney",
-      "team": "fulham",
-      "role": "MID",
-      "startProb": 0.4,
-      "benchProb": 0.4,
-      "cardProneness": 1.15,
-      "per90": {
-        "shots": 0.8,
-        "sot": 0.25,
-        "goals": 0.07,
-        "assists": 0.12,
-        "fouls": 1.4
       },
-      "roleType": "deep-playmaker",
-      "flank": "central",
-      "pace": 62,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0.5
-      }
-    },
-    {
-      "id": "bassey",
-      "name": "Calvin Bassey",
-      "team": "fulham",
-      "role": "DEF",
-      "startProb": 0.88,
-      "benchProb": 0.06,
-      "cardProneness": 1.25,
-      "per90": {
-        "shots": 0.5,
-        "sot": 0.15,
-        "goals": 0.05,
-        "assists": 0.04,
-        "fouls": 1.3
-      },
-      "roleType": "ball-playing-defender",
-      "flank": "central",
-      "pace": 80,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
       "id": "diop",
       "name": "Issa Diop",
       "team": "fulham",
       "role": "DEF",
-      "startProb": 0.8,
-      "benchProb": 0.12,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.3,
       "per90": {
         "shots": 0.5,
@@ -1872,112 +2854,209 @@
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
+      },
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     },
     {
-      "id": "robinson",
-      "name": "Antonee Robinson",
-      "team": "fulham",
-      "role": "DEF",
-      "startProb": 0.85,
-      "benchProb": 0.08,
+      "id": "lammens",
+      "name": "Senne Lammens",
+      "team": "man-utd",
+      "position": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 0.45,
+      "pace": 60,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.02,
+        "sot": 0.005,
+        "goals": 0.002,
+        "assists": 0.02,
+        "fouls": 0.1,
+        "saves": 3.05
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "dalot",
+      "name": "Diogo Dalot",
+      "team": "man-utd",
+      "position": "RB",
+      "roleType": "defensive-fullback",
+      "flank": "right",
+      "startProb": 0.88,
+      "benchProb": 0.06,
       "cardProneness": 1.3,
+      "pace": 82,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.8,
+        "sot": 0.25,
+        "goals": 0.07,
+        "assists": 0.12,
+        "fouls": 1.4
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "maguire",
+      "name": "Harry Maguire",
+      "team": "man-utd",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.3,
+      "pace": 66,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
       "per90": {
         "shots": 0.6,
-        "sot": 0.18,
+        "sot": 0.2,
+        "goals": 0.09,
+        "assists": 0.03,
+        "fouls": 1.3
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "lisandro-martinez",
+      "name": "Lisandro Martinez",
+      "team": "man-utd",
+      "position": "CB",
+      "roleType": "cover-defender",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "dorgu",
+      "name": "Patrick Dorgu",
+      "team": "man-utd",
+      "position": "LB",
+      "roleType": "defensive-fullback",
+      "flank": "left",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.4,
+      "pace": 89,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.7,
+        "sot": 0.2,
         "goals": 0.05,
-        "assists": 0.16,
+        "assists": 0.1,
+        "fouls": 1.7
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "youri-tielemans",
+      "name": "Youri Tielemans",
+      "team": "man-utd",
+      "position": "CM",
+      "roleType": "box-to-box",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "ratesFrom": "role-archetype",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "mainoo",
+      "name": "Kobbie Mainoo",
+      "team": "man-utd",
+      "position": "DM",
+      "roleType": "holding-mid",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.2,
+      "pace": 76,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.9,
+        "sot": 0.28,
+        "goals": 0.08,
+        "assists": 0.08,
         "fouls": 1.5
       },
-      "roleType": "attacking-fullback",
-      "flank": "left",
-      "pace": 88,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "castagne",
-      "name": "Timothy Castagne",
-      "team": "fulham",
-      "role": "DEF",
-      "startProb": 0.7,
-      "benchProb": 0.2,
-      "cardProneness": 1.25,
-      "per90": {
-        "shots": 0.5,
-        "sot": 0.15,
-        "goals": 0.04,
-        "assists": 0.1,
-        "fouls": 1.4
-      },
-      "roleType": "defensive-fullback",
-      "flank": "right",
-      "pace": 78,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "tete",
-      "name": "Kenny Tete",
-      "team": "fulham",
-      "role": "DEF",
-      "startProb": 0.6,
-      "benchProb": 0.28,
-      "cardProneness": 1.25,
-      "per90": {
-        "shots": 0.6,
-        "sot": 0.18,
-        "goals": 0.04,
-        "assists": 0.1,
-        "fouls": 1.4
-      },
-      "roleType": "defensive-fullback",
-      "flank": "right",
-      "pace": 80,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "sesko",
-      "name": "Benjamin Šeško",
-      "team": "man-utd",
-      "role": "FWD",
-      "startProb": 0.8,
-      "benchProb": 0.15,
-      "cardProneness": 1.1,
-      "per90": {
-        "shots": 3.1,
-        "sot": 1.15,
-        "goals": 0.5,
-        "assists": 0.1,
-        "fouls": 1.2
-      },
-      "roleType": "target-forward",
-      "flank": "central",
-      "pace": 84,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
     },
     {
       "id": "mbeumo",
       "name": "Bryan Mbeumo",
       "team": "man-utd",
-      "role": "AM",
+      "position": "RW",
+      "roleType": "inverted-winger",
+      "flank": "right",
       "startProb": 0.88,
-      "benchProb": 0.08,
+      "benchProb": 0.06,
       "cardProneness": 1.05,
+      "pace": 86,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
       "per90": {
         "shots": 2.7,
         "sot": 0.95,
@@ -1985,23 +3064,27 @@
         "assists": 0.18,
         "fouls": 1
       },
-      "roleType": "inside-forward",
-      "flank": "right",
-      "pace": 86,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
     },
     {
       "id": "cunha",
       "name": "Matheus Cunha",
       "team": "man-utd",
-      "role": "AM",
-      "startProb": 0.85,
-      "benchProb": 0.1,
+      "position": "AM",
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
       "cardProneness": 1.3,
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
       "per90": {
         "shots": 2.5,
         "sot": 0.85,
@@ -2009,22 +3092,74 @@
         "assists": 0.2,
         "fouls": 1.5
       },
-      "roleType": "inside-forward",
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "mount",
+      "name": "Mason Mount",
+      "team": "man-utd",
+      "position": "LW",
+      "roleType": "inverted-winger",
       "flank": "left",
-      "pace": 80,
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.15,
+      "pace": 76,
       "setPieces": {
         "penalties": 0,
         "freeKicks": 0,
         "corners": 0
-      }
+      },
+      "per90": {
+        "shots": 1.5,
+        "sot": 0.5,
+        "goals": 0.16,
+        "assists": 0.14,
+        "fouls": 1.1
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
+    },
+    {
+      "id": "sesko",
+      "name": "Benjamin Sesko",
+      "team": "man-utd",
+      "position": "ST",
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.1,
+      "pace": 84,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 3.1,
+        "sot": 1.15,
+        "goals": 0.5,
+        "assists": 0.1,
+        "fouls": 1.2
+      },
+      "ratesFrom": "prior",
+      "lineup": "predicted-xi",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob"
     },
     {
       "id": "fernandes",
       "name": "Bruno Fernandes",
       "team": "man-utd",
       "role": "MID",
-      "startProb": 0.92,
-      "benchProb": 0.04,
+      "startProb": 0.14,
+      "benchProb": 0.46,
       "cardProneness": 1.25,
       "per90": {
         "shots": 2.6,
@@ -2040,455 +3175,18 @@
         "penalties": 0.85,
         "freeKicks": 0.7,
         "corners": 0.6
-      }
-    },
-    {
-      "id": "amad",
-      "name": "Amad Diallo",
-      "team": "man-utd",
-      "role": "AM",
-      "startProb": 0.7,
-      "benchProb": 0.24,
-      "cardProneness": 1.15,
-      "per90": {
-        "shots": 1.8,
-        "sot": 0.6,
-        "goals": 0.2,
-        "assists": 0.2,
-        "fouls": 1.2
       },
-      "roleType": "inverted-winger",
-      "flank": "right",
-      "pace": 84,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "mount",
-      "name": "Mason Mount",
-      "team": "man-utd",
-      "role": "AM",
-      "startProb": 0.4,
-      "benchProb": 0.42,
-      "cardProneness": 1.15,
-      "per90": {
-        "shots": 1.5,
-        "sot": 0.5,
-        "goals": 0.16,
-        "assists": 0.14,
-        "fouls": 1.1
-      },
-      "roleType": "attacking-mid",
-      "flank": "central",
-      "pace": 76,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "mainoo",
-      "name": "Kobbie Mainoo",
-      "team": "man-utd",
-      "role": "MID",
-      "startProb": 0.5,
-      "benchProb": 0.36,
-      "cardProneness": 1.2,
-      "per90": {
-        "shots": 0.9,
-        "sot": 0.28,
-        "goals": 0.08,
-        "assists": 0.08,
-        "fouls": 1.5
-      },
-      "roleType": "box-to-box",
-      "flank": "central",
-      "pace": 76,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "de-ligt",
-      "name": "Matthijs de Ligt",
-      "team": "man-utd",
-      "role": "DEF",
-      "startProb": 0.85,
-      "benchProb": 0.08,
-      "cardProneness": 1.3,
-      "per90": {
-        "shots": 0.5,
-        "sot": 0.16,
-        "goals": 0.07,
-        "assists": 0.02,
-        "fouls": 1.2
-      },
-      "roleType": "aggressive-stopper",
-      "flank": "central",
-      "pace": 76,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "maguire",
-      "name": "Harry Maguire",
-      "team": "man-utd",
-      "role": "DEF",
-      "startProb": 0.75,
-      "benchProb": 0.16,
-      "cardProneness": 1.3,
-      "per90": {
-        "shots": 0.6,
-        "sot": 0.2,
-        "goals": 0.09,
-        "assists": 0.03,
-        "fouls": 1.3
-      },
-      "roleType": "aggressive-stopper",
-      "flank": "central",
-      "pace": 66,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "shaw",
-      "name": "Luke Shaw",
-      "team": "man-utd",
-      "role": "DEF",
-      "startProb": 0.7,
-      "benchProb": 0.2,
-      "cardProneness": 1.2,
-      "per90": {
-        "shots": 0.4,
-        "sot": 0.12,
-        "goals": 0.03,
-        "assists": 0.08,
-        "fouls": 1.2
-      },
-      "roleType": "defensive-fullback",
-      "flank": "left",
-      "pace": 74,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "dalot",
-      "name": "Diogo Dalot",
-      "team": "man-utd",
-      "role": "DEF",
-      "startProb": 0.8,
-      "benchProb": 0.14,
-      "cardProneness": 1.3,
-      "per90": {
-        "shots": 0.8,
-        "sot": 0.25,
-        "goals": 0.07,
-        "assists": 0.12,
-        "fouls": 1.4
-      },
-      "roleType": "attacking-fullback",
-      "flank": "right",
-      "pace": 82,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "dorgu",
-      "name": "Patrick Dorgu",
-      "team": "man-utd",
-      "role": "DEF",
-      "startProb": 0.65,
-      "benchProb": 0.26,
-      "cardProneness": 1.4,
-      "per90": {
-        "shots": 0.7,
-        "sot": 0.2,
-        "goals": 0.05,
-        "assists": 0.1,
-        "fouls": 1.7
-      },
-      "roleType": "wingback",
-      "flank": "left",
-      "pace": 89,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "donnarumma",
-      "name": "Gianluigi Donnarumma",
-      "team": "man-city",
-      "role": "GK",
-      "roleType": "goalkeeper",
-      "flank": "central",
-      "pace": 60,
-      "startProb": 0.97,
-      "benchProb": 0.02,
-      "cardProneness": 0.45,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      },
-      "per90": {
-        "shots": 0.02,
-        "sot": 0.005,
-        "goals": 0.002,
-        "assists": 0.02,
-        "fouls": 0.1,
-        "saves": 2.35
-      }
-    },
-    {
-      "id": "roefs",
-      "name": "Robin Roefs",
-      "team": "sunderland",
-      "role": "GK",
-      "roleType": "goalkeeper",
-      "flank": "central",
-      "pace": 60,
-      "startProb": 0.95,
-      "benchProb": 0.04,
-      "cardProneness": 0.45,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      },
-      "per90": {
-        "shots": 0.02,
-        "sot": 0.005,
-        "goals": 0.002,
-        "assists": 0.02,
-        "fouls": 0.1,
-        "saves": 3.7
-      }
-    },
-    {
-      "id": "petrovic",
-      "name": "Djordje Petrovic",
-      "team": "bournemouth",
-      "role": "GK",
-      "roleType": "goalkeeper",
-      "flank": "central",
-      "pace": 60,
-      "startProb": 0.96,
-      "benchProb": 0.03,
-      "cardProneness": 0.45,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      },
-      "per90": {
-        "shots": 0.02,
-        "sot": 0.005,
-        "goals": 0.002,
-        "assists": 0.02,
-        "fouls": 0.1,
-        "saves": 3.35
-      }
-    },
-    {
-      "id": "alisson",
-      "name": "Alisson",
-      "team": "liverpool",
-      "role": "GK",
-      "roleType": "goalkeeper",
-      "flank": "central",
-      "pace": 60,
-      "startProb": 0.93,
-      "benchProb": 0.06,
-      "cardProneness": 0.45,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      },
-      "per90": {
-        "shots": 0.02,
-        "sot": 0.005,
-        "goals": 0.002,
-        "assists": 0.02,
-        "fouls": 0.1,
-        "saves": 2.6
-      }
-    },
-    {
-      "id": "perri",
-      "name": "Lucas Perri",
-      "team": "leeds",
-      "role": "GK",
-      "roleType": "goalkeeper",
-      "flank": "central",
-      "pace": 60,
-      "startProb": 0.95,
-      "benchProb": 0.04,
-      "cardProneness": 0.45,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      },
-      "per90": {
-        "shots": 0.02,
-        "sot": 0.005,
-        "goals": 0.002,
-        "assists": 0.02,
-        "fouls": 0.1,
-        "saves": 3.85
-      }
-    },
-    {
-      "id": "henderson",
-      "name": "Dean Henderson",
-      "team": "crystal-palace",
-      "role": "GK",
-      "roleType": "goalkeeper",
-      "flank": "central",
-      "pace": 60,
-      "startProb": 0.96,
-      "benchProb": 0.03,
-      "cardProneness": 0.45,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      },
-      "per90": {
-        "shots": 0.02,
-        "sot": 0.005,
-        "goals": 0.002,
-        "assists": 0.02,
-        "fouls": 0.1,
-        "saves": 3.1
-      }
-    },
-    {
-      "id": "leno",
-      "name": "Bernd Leno",
-      "team": "fulham",
-      "role": "GK",
-      "roleType": "goalkeeper",
-      "flank": "central",
-      "pace": 60,
-      "startProb": 0.96,
-      "benchProb": 0.03,
-      "cardProneness": 0.45,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      },
-      "per90": {
-        "shots": 0.02,
-        "sot": 0.005,
-        "goals": 0.002,
-        "assists": 0.02,
-        "fouls": 0.1,
-        "saves": 3.25
-      }
-    },
-    {
-      "id": "lammens",
-      "name": "Senne Lammens",
-      "team": "man-utd",
-      "role": "GK",
-      "roleType": "goalkeeper",
-      "flank": "central",
-      "pace": 60,
-      "startProb": 0.92,
-      "benchProb": 0.07,
-      "cardProneness": 0.45,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      },
-      "per90": {
-        "shots": 0.02,
-        "sot": 0.005,
-        "goals": 0.002,
-        "assists": 0.02,
-        "fouls": 0.1,
-        "saves": 3.05
-      }
+      "lineup": "bench-cover",
+      "verifiedAt": "2026-09-20",
+      "source": "fotmob+prior",
+      "ratesFrom": "prior"
     }
   ],
   "_roles": "roleType maps each player to an archetype in roles.json, which supplies every per-90 metric not listed explicitly below. flank drives the positional matchup model; pace feeds duel outcomes; setPieces are shares of the team's penalties, direct free kicks and corners.",
   "_squadVerification": {
-    "verifiedAt": null,
-    "note": "Confirmed departures have been removed, but the roster as a whole has NOT been verified against a confirmed team sheet. Arrivals are listed in _knownGaps and are absent from the model. Player markets stay gated until verifiedAt is set to a date after the last transfer window close.",
-    "lastTransfersApplied": "2026-09-20",
-    "removedThisPass": [
-      "Mohamed Salah (liverpool) - left on a free at contract expiry",
-      "Ibrahima Konaté (liverpool) - departed",
-      "Casemiro (man-utd) - left on a free at contract expiry",
-      "Manuel Ugarte (man-utd) - sold",
-      "Savinho (man-city) - Tottenham Hotspur (club record)",
-      "Bernardo Silva (man-city) - Real Madrid (free)",
-      "Antoine Semenyo (bournemouth) - Manchester City (Jan 2026, GBP 64m)",
-      "Raúl Jiménez (fulham) - departed on a free",
-      "Harry Wilson (fulham) - Leeds United (free)",
-      "Maxence Lacroix (crystal-palace) - departed"
-    ]
-  },
-  "_knownGaps": {
-    "note": "Known arrivals with no per-90 data in this file. The model cannot price them; add real numbers before relying on player markets.",
-    "arrivals": {
-      "liverpool": [
-        "Bradley Barcola (PSG)",
-        "Victor Munoz (Osasuna)",
-        "Jeremy Jacquet",
-        "Ronald Araujo (loan)"
-      ],
-      "man-city": [
-        "Enzo Fernandez (Chelsea)",
-        "Iliman Ndiaye (Everton)",
-        "Elliot Anderson",
-        "Ayyoub Bouaddi",
-        "Antoine Semenyo (Bournemouth)"
-      ],
-      "man-utd": [
-        "Andrey Santos (Chelsea)",
-        "Karl Darlow (Leeds)"
-      ],
-      "leeds": [
-        "Harry Wilson (Fulham)"
-      ],
-      "crystal-palace": [
-        "Oscar Mingueza"
-      ],
-      "sunderland": [
-        "Thomas Meunier"
-      ],
-      "bournemouth": [
-        "Alvaro Rodriguez (Elche)",
-        "Antonio Silva (Benfica)",
-        "Amine Adli",
-        "Eli Junior Kroupi"
-      ],
-      "fulham": []
-    }
+    "verifiedAt": "2026-09-20",
+    "source": "FotMob predicted XIs and availability lists",
+    "note": "Players and availability come from FotMob. Per-90 RATES do not: FotMob's per-player stat tables did not come through the retrieval path, so rates are role-archetype baselines except where a prior value was already held (ratesFrom records which). Re-import with real per-90 data to improve the rates; the roster itself is sound.",
+    "lineupsAre": "predicted, not confirmed - re-import about an hour before kick-off"
   }
 }

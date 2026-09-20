@@ -583,16 +583,52 @@ test('game state splits into proper probabilities', () => {
   assert(st.home.fouls > st.away.fouls, 'the side protecting a lead should foul more');
 });
 
-test('a duel raises the defender fouls and the attacker fouls won together', () => {
-  const slate = runSlate({ minEdge: 0 });
-  const fixture = slate.fixtures.find((f) => f.id === 'mci-sun');
-  const sunDefs = fixture.players.filter((p) => p.side === 'away' && p.line === 'DEF' && p.matchup);
-  const cityAtt = fixture.players.filter((p) => p.side === 'home' && p.line !== 'DEF' && p.line !== 'GK' && p.matchup);
+test('a duel moves the defender and the attacker consistently', () => {
+  // Built from controlled inputs rather than a real fixture: which players are
+  // available changes every week, and a test that assumes one particular
+  // afternoon produces a large effect fails for reasons that are not bugs.
+  const mk = (id, line, zone, flank, per90, minutesShare = 1, pace = 78) => ({
+    player: { id, name: id, pace, cardProneness: 1 },
+    line, zone, flank,
+    per90: Object.assign({
+      dribblesAttempted: 1, fouls: 1.35, tacklesWon: 2.1, foulsDrawn: 1.5,
+    }, per90),
+    minutes: { minutesShare, scenarios: [{ minutes: 90, weight: 1 }] },
+  });
 
-  const pressured = sunDefs.filter((p) => p.matchup.fouls > 1.05);
-  assert(pressured.length > 0, 'a side defending this much should have pressured defenders');
-  const drawing = cityAtt.filter((p) => p.matchup.foulsDrawn > 1.02);
-  assert(drawing.length > 0, 'the attackers they foul must draw more fouls in return');
+  const winger = mk('winger', 'WIDE', 'wide', 'left', { dribblesAttempted: 6.0 }, 1, 92);
+  const quietWinger = mk('quiet', 'WIDE', 'wide', 'left', { dribblesAttempted: 0.6 }, 1, 70);
+  const fullback = mk('fullback', 'DEF', 'wide', 'right', {}, 1, 72);
+
+  const heavy = matchups.buildMatchups([winger], [fullback]).multipliers;
+  const light = matchups.buildMatchups([quietWinger], [fullback]).multipliers;
+
+  // Facing six take-ons a game must make a full-back foul more than facing
+  // half a take-on does.
+  assert(heavy.fullback.fouls > light.fullback.fouls,
+    `dribble pressure should raise defender fouls: ${heavy.fullback.fouls} vs ${light.fullback.fouls}`);
+  assert(heavy.fullback.fouls > 1, `expected an uplift, got ${heavy.fullback.fouls}`);
+  assert(heavy.fullback.tackles > light.fullback.tackles, 'more take-ons faced means more tackles attempted');
+
+  // And the attacker facing the now-more-fouling defender must draw more than
+  // he would from the same defender unpressured. A foul in a duel is one event
+  // seen from two ends, so the two sides must move together.
+  assert(heavy.winger.foulsDrawn > light.quiet.foulsDrawn,
+    `conservation broken: ${heavy.winger.foulsDrawn} vs ${light.quiet.foulsDrawn}`);
+});
+
+test('a foul-happy defender concedes more to whoever he marks', () => {
+  const mk = (id, line, zone, flank, per90, pace = 78) => ({
+    player: { id, name: id, pace, cardProneness: 1 },
+    line, zone, flank,
+    per90: Object.assign({ dribblesAttempted: 3, fouls: 1.35, tacklesWon: 2.1 }, per90),
+    minutes: { minutesShare: 1, scenarios: [{ minutes: 90, weight: 1 }] },
+  });
+  const attacker = mk('att', 'WIDE', 'wide', 'left', {});
+  const clean = matchups.buildMatchups([attacker], [mk('clean', 'DEF', 'wide', 'right', { fouls: 0.7 })]).multipliers;
+  const dirty = matchups.buildMatchups([attacker], [mk('dirty', 'DEF', 'wide', 'right', { fouls: 2.4 })]).multipliers;
+  assert(dirty.att.foulsDrawn > clean.att.foulsDrawn,
+    `a defender who fouls twice as often should concede more: ${dirty.att.foulsDrawn} vs ${clean.att.foulsDrawn}`);
 });
 
 test('matchup multipliers stay within their declared bounds', () => {
@@ -789,8 +825,14 @@ test('team and match markets are unaffected by the squad gate', () => {
   const slate = runSlate({ minEdge: 0.02 });
   assert(slate.picks.length > 0, 'team markets should still produce picks');
   const categories = new Set(slate.picks.map((p) => p.category));
-  assert(!categories.has('Player props'), 'player props must not appear while gated');
   assert(categories.size >= 2, 'team-level categories should survive');
+  // Player props are present or absent according to the gate, never regardless
+  // of it - assert the relationship, not one side of it.
+  if (slate.playerPicksSuppressed) {
+    assert(!categories.has('Player props'), 'player props must not appear while gated');
+  } else {
+    assert(categories.has('Player props'), 'player props should appear once the squad is verified');
+  }
 });
 
 test('the fair sheet honours the same gate', () => {

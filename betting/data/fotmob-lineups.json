@@ -1,0 +1,123 @@
+{
+  "_source": "FotMob, retrieved 2026-09-20 via scoped search. Predicted XIs published pre-kickoff, plus confirmed injury and suspension lists.",
+  "_caveat": "These are FotMob's PREDICTED line-ups, not confirmed team sheets. Confirmed XIs land about an hour before kick-off; re-import then. Availability (injuries/suspensions) IS confirmed.",
+  "retrievedAt": "2026-09-20",
+  "seasonMatchesPlayed": 4,
+
+  "table": {
+    "man-city":       { "position": 1,  "points": 12, "w": 4, "d": 0, "l": 0 },
+    "leeds":          { "position": 4,  "points": 8,  "w": 2, "d": 2, "l": 0 },
+    "liverpool":      { "position": 8,  "points": 5,  "w": 1, "d": 2, "l": 1, "note": "2-2 Forest, 2-0 Ipswich, 0-0 Fulham; position estimated from results, not read directly" },
+    "man-utd":        { "position": 13, "points": 4,  "w": 1, "d": 1, "l": 2 },
+    "sunderland":     { "position": 14, "points": 4,  "w": 1, "d": 1, "l": 2 },
+    "bournemouth":    { "position": 16, "points": 3,  "w": 0, "d": 3, "l": 1 },
+    "crystal-palace": { "position": 17, "points": 3,  "w": 1, "d": 0, "l": 3 },
+    "fulham":         { "position": 19, "points": 1,  "w": 0, "d": 1, "l": 3, "note": "longest winless start since 2020-21; failed to score in 10 top-flight games in 2026" }
+  },
+
+  "fixtures": {
+    "bou-liv": {
+      "home": {
+        "team": "bournemouth", "formation": "4-2-3-1",
+        "xi": [
+          ["Djordje Petrovic", "GK"], ["Adam Smith", "RB"], ["James Hill", "CB"],
+          ["Antonio Silva", "CB"], ["Adrien Truffert", "LB"],
+          ["Tyler Adams", "DM"], ["Alex Scott", "CM"],
+          ["Rayan", "RW"], ["Justin Kluivert", "AM"], ["Marcus Tavernier", "LW"],
+          ["Evanilson", "ST"]
+        ],
+        "out": []
+      },
+      "away": {
+        "team": "liverpool", "formation": "4-2-3-1",
+        "xi": [
+          ["Alisson Becker", "GK"], ["Ronald Araujo", "RB"], ["Jeremy Jacquet", "CB"],
+          ["Virgil van Dijk", "CB"], ["Milos Kerkez", "LB"],
+          ["Dominik Szoboszlai", "DM"], ["Alexis Mac Allister", "CM"],
+          ["Bradley Barcola", "RW"], ["Florian Wirtz", "AM"], ["Cody Gakpo", "LW"],
+          ["Alexander Isak", "ST"]
+        ],
+        "xiNote": "FotMob's XI was truncated after Barcola in the retrieved summary; Wirtz, Gakpo and Isak are inferred from the squad list and season minutes. Treat the front four as less certain than the back six.",
+        "out": []
+      }
+    },
+
+    "lee-cry": {
+      "home": {
+        "team": "leeds", "formation": "3-5-2",
+        "xi": [
+          ["James Trafford", "GK"], ["James Justin", "CB"], ["Nico Elvedi", "CB"],
+          ["Tarik Muharemovic", "CB"],
+          ["Jayden Bogle", "RWB"], ["Anton Stach", "CM"], ["Ethan Ampadu", "DM"],
+          ["Ao Tanaka", "CM"], ["Gabriel Gudmundsson", "LWB"],
+          ["Dominic Calvert-Lewin", "ST"], ["Noah Okafor", "ST"]
+        ],
+        "out": ["Joe Rodon (injury)", "Mateo Joseph (injury)"]
+      },
+      "away": {
+        "team": "crystal-palace", "formation": "3-4-2-1",
+        "xi": [
+          ["Walter Benitez", "GK"], ["Chris Richards", "CB"], ["Takehiro Tomiyasu", "CB"],
+          ["Jaydee Canvot", "CB"],
+          ["Anan Khalaili", "RWB"], ["Quinten Timber", "CM"], ["Adam Wharton", "DM"],
+          ["Tyrick Mitchell", "LWB"],
+          ["Daichi Kamada", "AM"], ["Yeremi Pino", "AM"],
+          ["Jorgen Strand Larsen", "ST"]
+        ],
+        "out": ["Dean Henderson (injury)", "Axel Disasi (suspension)", "Chadi Riad (injury)", "Jean-Philippe Mateta (injury)", "Ismaila Sarr (unavailable)"]
+      }
+    },
+
+    "mci-sun": {
+      "home": {
+        "team": "man-city", "formation": "4-1-4-1",
+        "xi": [
+          ["Gianluigi Donnarumma", "GK"], ["Matheus Nunes", "RB"], ["Ruben Dias", "CB"],
+          ["Marc Guehi", "CB"], ["Josko Gvardiol", "LB"],
+          ["Elliot Anderson", "DM"],
+          ["Iliman Ndiaye", "RM"], ["Rayan Cherki", "AM"], ["Enzo Fernandez", "CM"],
+          ["Antoine Semenyo", "LM"],
+          ["Erling Haaland", "ST"]
+        ],
+        "out": ["Jeremy Doku (injury)", "Phil Foden (suspension)"]
+      },
+      "away": {
+        "team": "sunderland", "formation": "4-2-3-1",
+        "xi": [
+          ["Robin Roefs", "GK"], ["Nordi Mukiele", "RB"], ["Kevin Danso", "CB"],
+          ["Daniel Ballard", "CB"], ["Trai Hume", "LB"],
+          ["Granit Xhaka", "CM"], ["Noah Sadiki", "DM"],
+          ["Thomas Meunier", "RM"], ["Enzo Le Fee", "AM"], ["Nilson Angulo", "LM"],
+          ["Brian Brobbey", "ST"]
+        ],
+        "out": ["Omar Alderete (injury)", "Reinildo (suspension)", "Habib Diarra (injury)", "Romaine Mundle (injury)"]
+      }
+    },
+
+    "ful-mun": {
+      "home": {
+        "team": "fulham", "formation": "4-2-3-1",
+        "xi": [
+          ["Bernd Leno", "GK"], ["Timothy Castagne", "RB"], ["David Affengruber", "CB"],
+          ["Calvin Bassey", "CB"], ["Antonee Robinson", "LB"],
+          ["Sander Berge", "CM"], ["Shea Charles", "DM"],
+          ["Oscar Bobb", "RW"], ["Joshua King", "AM"], ["Alex Iwobi", "LW"],
+          ["Gonzalo Garcia", "ST"]
+        ],
+        "out": ["Ryan Sessegnon (injury)", "Kenny Tete (injury)", "Tom Cairney (injury)"]
+      },
+      "away": {
+        "team": "man-utd", "formation": "4-2-3-1",
+        "xi": [
+          ["Senne Lammens", "GK"], ["Diogo Dalot", "RB"], ["Harry Maguire", "CB"],
+          ["Lisandro Martinez", "CB"], ["Patrick Dorgu", "LB"],
+          ["Youri Tielemans", "CM"], ["Kobbie Mainoo", "DM"],
+          ["Bryan Mbeumo", "RW"], ["Matheus Cunha", "AM"], ["Mason Mount", "LW"],
+          ["Benjamin Sesko", "ST"]
+        ],
+        "xiNote": "FotMob's XI was truncated after Mainoo in the retrieved summary; the front four is inferred from available squad members with de Ligt, Shaw, Amad and Ugarte all ruled out. Treat it as less certain than the back six.",
+        "out": ["Luke Shaw (injury)", "Carlos Baleba (injury)", "Tom Heaton (injury)", "Matthijs de Ligt (injury)", "Manuel Ugarte (injury)", "Amad Diallo (injury)"]
+      }
+    }
+  }
+}
