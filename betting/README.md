@@ -370,7 +370,25 @@ npm run picks -- --players=mci-sun     # projection chain for one fixture
 npm run picks -- --players               # every fixture
 npm run picks -- --fair                  # fair prices, no odds board needed
 npm run picks -- --fair --required-edge=8
+node betting/scripts/themed-parlay.js --legs=4   # themed slip, N legs per game
 ```
+
+### Themed slips
+
+`themed-parlay.js` builds a slip from a chosen set of market families — both-teams
+corners, both-teams cards, player shots on target, player fouls — taking N legs
+per fixture, one per theme, never two on the same player, and only on players in
+the predicted XI.
+
+Each leg is drawn from a **probability band** rather than simply taking the
+strongest: a 90% leg adds almost nothing to a slip but still carries the
+bookmaker's margin, and a 25% leg turns the slip into a lottery ticket. Player
+legs resting on real per-90 data are preferred over role archetypes and tagged
+`[data]` / `[archetype]` so the difference is visible.
+
+Each fixture's slip is priced through the copula and reported as a break-even
+price; across fixtures the legs are independent, so combining the per-game slips
+multiplies honestly.
 
 ### Comparing against a coupon by hand
 
