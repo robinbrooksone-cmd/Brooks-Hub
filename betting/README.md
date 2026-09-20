@@ -49,7 +49,45 @@ pipeline objected, because every layer downstream assumes the roster is right.
 deliberately *not* invented, since fabricating per-90 numbers for a new signing
 swaps one class of error for another.
 
-**3. Team and player rates are informed priors, not a fitted season sample.**
+**3. FotMob integration is built, but must run where FotMob is reachable.**
+`src/adapters/fotmob.js` maps FotMob's API into this model's schema: squads,
+season stats converted to per-90 rates, functional roles inferred from position
+*and* output, confirmed line-ups and referee appointments. Run it from a machine
+with open egress:
+
+```bash
+node betting/scripts/fetch-fotmob.js --probe            # is it reachable?
+node betting/scripts/fetch-fotmob.js --date=2026-09-20 --lineups
+node betting/scripts/fetch-fotmob.js --from-file=saved.json --team=liverpool
+```
+
+The mappers are **pure functions**, deliberately separated from the transport,
+so the offline path produces identical output: open FotMob in a browser,
+devtools → Network → the `/api/` request → Copy Response, save it, and feed it
+in with `--from-file`. That path is covered by tests against realistic payload
+shapes, including the grouped/flat stat containers and the formation-grid
+nesting for starters.
+
+Three details worth knowing:
+
+- **A thin minutes sample is rejected, not extrapolated.** Under 270 minutes the
+  adapter returns no rates and lets the role archetype supply the baseline. Two
+  goals in 95 minutes is not a 1.9-per-90 striker.
+- **Roles come from output, not just position.** A right winger taking 3.1 shots
+  per 90 is an inside forward; one putting in 3.4 crosses is a traditional
+  winger. Position alone cannot separate them, and the difference is a factor of
+  two in shots.
+- **Card proneness is measured, not guessed** — yellows per foul against the
+  league norm, damped and bounded so a small sample cannot produce a 2× multiplier.
+
+FotMob publishes no documented API and its shapes change without notice, so
+every mapper probes several candidate paths and throws an error naming the keys
+it *did* see rather than returning empty data. Silent empties are how a squad
+ends up half-populated and the model starts pricing a phantom bench. Check
+FotMob's terms before pointing an automated fetch at them; the `--from-file`
+path exists partly for that reason.
+
+**4. Team and player rates are informed priors, not a fitted season sample.**
 Per-90 rates, start probabilities and team rates are realistic estimates, not
 scraped season-to-date numbers. They are plain per-game rates in flat JSON, so a
 real stats table drops straight in. `startProb` is the single highest-value field

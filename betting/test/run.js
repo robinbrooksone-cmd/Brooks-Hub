@@ -19,6 +19,8 @@ const matchups = require('../src/model/matchups');
 const playerEvents = require('../src/model/playerEvents');
 const squad = require('../src/model/squad');
 const squadStatus = require('../src/model/squadStatus');
+const fotmob = require('../src/adapters/fotmob');
+const samples = require('./fixtures/fotmob-samples');
 const rolesData = require('../data/roles.json');
 const playersData = require('../data/players.json').players;
 const teamsData = require('../data/teams.json').teams;
@@ -811,6 +813,140 @@ test('players removed in a transfer window are gone from the squad', () => {
   const gone = ['salah', 'casemiro', 'ugarte', 'savinho', 'bernardo', 'semenyo', 'jimenez', 'harry-wilson', 'lacroix', 'konate'];
   for (const id of gone) {
     assert(!playersData.some((p) => p.id === id), `${id} has left his club but is still in the squad file`);
+  }
+});
+
+
+/* ------------------------------------------------------- FotMob adapter */
+
+test('FotMob fixtures map to the right league', () => {
+  const fx = fotmob.mapFixtures(samples.fixturesByDate);
+  assert(fx.length === 2, `expected 2 Premier League fixtures, got ${fx.length}`);
+  assert(fx[0].home === 'Bournemouth' && fx[0].away === 'Liverpool', 'wrong fixture mapped');
+  assert(fx[0].fotmobMatchId === 4321, 'match id lost');
+});
+
+test('FotMob fixtures fail loudly when the league is absent', () => {
+  let threw = false;
+  try {
+    fotmob.mapFixtures({ leagues: [{ primaryId: 55, name: 'Serie A', matches: [] }] });
+  } catch (err) {
+    threw = true;
+    assert(/no Premier League/.test(err.message), `unhelpful error: ${err.message}`);
+    assert(/Serie A/.test(err.message), 'error should name what it did see');
+  }
+  assert(threw, 'must not silently return nothing');
+});
+
+test('flattenStats handles both flat and grouped containers', () => {
+  const flat = fotmob.flattenStats(samples.playerFlat.mainLeague.stats);
+  close(fotmob.statValue(flat, 'goals'), 8, 1e-9, 'flat goals');
+  close(fotmob.statValue(flat, 'minutes'), 1800, 1e-9, 'flat minutes');
+
+  const grouped = fotmob.flattenStats(samples.playerGrouped.stats);
+  close(fotmob.statValue(grouped, 'fouls'), 61, 1e-9, 'grouped fouls through a nested object value');
+  close(fotmob.statValue(grouped, 'interceptions'), 40, 1e-9, 'second group not reached');
+});
+
+test('season totals convert to correct per-90 rates', () => {
+  const flat = fotmob.flattenStats(samples.playerFlat.mainLeague.stats);
+  const { per90, reliable } = fotmob.toPer90(flat);
+  assert(reliable, '1800 minutes should be a usable sample');
+  // 62 shots in 1800 minutes = 3.1 per 90.
+  close(per90.shots, 3.1, 1e-6, 'shots per 90');
+  close(per90.goals, 0.4, 1e-6, 'goals per 90');
+  close(per90.fouls, 0.7, 1e-6, 'fouls per 90');
+  close(per90.foulsDrawn, 1.65, 1e-6, 'fouls won per 90');
+});
+
+test('a thin minutes sample is rejected rather than extrapolated', () => {
+  const flat = fotmob.flattenStats(samples.playerThin.mainLeague.stats);
+  const { per90, reliable } = fotmob.toPer90(flat);
+  assert(!reliable, '95 minutes must not be treated as a usable sample');
+  assert(per90 === null, 'must return nothing rather than a 1.9-goals-per-90 fantasy');
+});
+
+test('card proneness is derived from cards per foul and stays bounded', () => {
+  const calm = fotmob.cardProneness({ 'yellow cards': 1, 'fouls committed': 40 });
+  const reckless = fotmob.cardProneness({ 'yellow cards': 9, 'fouls committed': 61 });
+  assert(reckless > calm, 'a higher card-per-foul rate must raise proneness');
+  assert(calm >= 0.5 && reckless <= 1.8, `out of bounds: ${calm}, ${reckless}`);
+  // Too small a sample to judge: fall back to neutral.
+  close(fotmob.cardProneness({ 'yellow cards': 2, 'fouls committed': 6 }), 1, 1e-9, 'small sample');
+});
+
+test('a mapped player carries real rates and a sensible role', () => {
+  const p = fotmob.mapPlayer(samples.playerFlat, { teamId: 'sample', verifiedAt: '2026-09-20' });
+  assert(p.id === 'flat-statline', `bad slug: ${p.id}`);
+  assert(p.team === 'sample' && p.verifiedAt === '2026-09-20', 'provenance lost');
+  // RW with 3.1 shots per 90 is an inside forward, not a crosser.
+  assert(p.roleType === 'inside-forward', `wrong role: ${p.roleType}`);
+  assert(p.flank === 'right', `wrong flank: ${p.flank}`);
+  assert(p.statsReliable && p.per90.shots > 3, 'rates missing');
+  assert(p.source === 'fotmob', 'source not recorded');
+});
+
+test('a mapped defensive midfielder is classified from his output', () => {
+  const p = fotmob.mapPlayer(samples.playerGrouped, { teamId: 'sample', verifiedAt: '2026-09-20' });
+  assert(p.roleType === 'holding-mid', `wrong role: ${p.roleType}`);
+  close(p.per90.fouls, (61 / 2250) * 90, 1e-6, 'fouls per 90');
+  assert(p.cardProneness > 1, 'nine yellows in 61 fouls should read as card-prone');
+});
+
+test('a thin-sample player is mapped without inventing rates', () => {
+  const p = fotmob.mapPlayer(samples.playerThin, { teamId: 'sample', verifiedAt: '2026-09-20' });
+  assert(!p.statsReliable, 'should be flagged unreliable');
+  assert(p.per90 === undefined, 'must not carry fabricated per-90 numbers');
+});
+
+test('squad mapping skips staff and keeps every player', () => {
+  const squadList = fotmob.mapSquad(samples.squadPayload, { teamId: 'sample' });
+  assert(squadList.length === 4, `expected 4 players, got ${squadList.length}`);
+  assert(!squadList.some((p) => p.name === 'A Manager'), 'the coach must not be in the squad');
+  assert(squadList.every((p) => p.team === 'sample'), 'team not stamped');
+});
+
+test('squad mapping fails loudly on an unknown shape', () => {
+  let threw = false;
+  try { fotmob.mapSquad({ nothing: true }, { teamId: 'x' }); } catch (err) {
+    threw = true;
+    assert(err.code === 'FOTMOB_SHAPE', 'should be a shape error');
+    assert(/nothing/.test(err.message), 'error should describe what it saw');
+  }
+  assert(threw, 'must not return an empty squad silently');
+});
+
+test('line-ups unpack from the formation grid, and the referee is found', () => {
+  const m = fotmob.mapMatchDetails(samples.matchDetails);
+  assert(m.referee === 'Sample Referee', `referee missed: ${m.referee}`);
+  assert(m.sides.length === 2, 'both sides expected');
+  assert(m.sides[0].starters.length === 11, `home XI wrong: ${m.sides[0].starters.length}`);
+  assert(m.sides[1].starters.length === 11, `away XI wrong: ${m.sides[1].starters.length}`);
+  assert(m.sides[0].bench.length === 2, 'bench lost');
+  assert(m.lineupsConfirmed, 'two full XIs should count as confirmed');
+  assert(m.sides[0].formation === '4-3-3', 'formation lost');
+});
+
+test('start probability from history is shrunk toward the mean', () => {
+  const nailed = fotmob.startProbFromHistory({ starts: 5, appearances: 5, teamMatches: 5 });
+  assert(nailed.startProb < 0.95, 'five from five must not read as certainty');
+  assert(nailed.startProb > 0.7, 'but should still be high');
+  const rotated = fotmob.startProbFromHistory({ starts: 1, appearances: 4, teamMatches: 5 });
+  assert(rotated.startProb < nailed.startProb, 'ordering wrong');
+  assert(rotated.benchProb > nailed.benchProb, 'a rotation player has more bench mass');
+});
+
+test('every FotMob role maps to a real archetype', () => {
+  const archetypes = new Set(Object.keys(rolesData.roles));
+  for (const [pos, role] of Object.entries(fotmob.POSITION_TO_ROLE)) {
+    assert(archetypes.has(role), `position ${pos} maps to unknown archetype ${role}`);
+  }
+  // And the refinements must land somewhere real too.
+  for (const pos of Object.keys(fotmob.POSITION_TO_ROLE)) {
+    for (const stats of [{}, { shots: 4, aerials: 7, keyPasses: 3, passes: 75, tackles: 3, crosses: 4 }]) {
+      const r = fotmob.inferRoleType(pos, stats);
+      assert(archetypes.has(r), `inferRoleType(${pos}) produced unknown archetype ${r}`);
+    }
   }
 });
 
