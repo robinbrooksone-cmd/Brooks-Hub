@@ -226,4 +226,124 @@ function buildParlays(slate, options = {}) {
   };
 }
 
-module.exports = { loadContext, runSlate, buildParlays, priceParlay };
+/**
+ * Fair-price sheet: the model's own prices, with no bookmaker board involved.
+ *
+ * This is what you need when you have a coupon in front of you but no machine
+ * -readable odds. For every selection it gives the model probability, the fair
+ * (zero-margin) price, and the minimum price worth taking once a margin of
+ * safety is demanded. Compare each against the screen by hand.
+ *
+ * Selections are ranked by CONVICTION rather than edge, because without a board
+ * there is no edge to measure. Conviction rewards a market where the model has
+ * a real opinion and the inputs behind it are trustworthy, and it penalises the
+ * extremes where a small modelling error moves the price a long way.
+ */
+function fairSheet(options = {}) {
+  const {
+    date,
+    requiredEdge = 0.06,
+    minProb = 0.15,
+    maxProb = 0.85,
+    perCategory = 14,
+  } = options;
+
+  const ctx = loadContext();
+  const slateDate = date || ctx.fixturesFile.date;
+  const fixtures = [];
+
+  for (const fixture of ctx.fixturesFile.fixtures) {
+    const model = buildFixtureModel(fixture, ctx);
+    const rows = [];
+
+    for (const market of model.markets) {
+      // One row per MARKET, carrying both sides. A coupon quotes both, and the
+      // value can sit on either, so collapsing to a single "preferred" side
+      // would throw away half of what the sheet is for.
+      const primary = market.selections.find((s) => s.key === 'over' || s.key === 'yes');
+      const secondary = market.selections.find((s) => s.key === 'under' || s.key === 'no');
+      if (!primary || !secondary) continue;
+
+      const p = primary.modelProb;
+      if (p < minProb || p > maxProb) continue;
+
+      const price = (prob) => ({
+        prob,
+        fair: 1 / prob,
+        // The shortest price worth taking once a margin of safety is demanded.
+        target: (1 + requiredEdge) / prob,
+      });
+
+      // Without a board there is no edge to rank by, so rank by how USEFUL the
+      // row is to someone holding a coupon. That is not the same as how extreme
+      // the model's view is: a 13%-to-hit line is where the model is least
+      // reliable and the bookmaker's margin heaviest, so surfacing those first
+      // is actively unhelpful. 4p(1-p) peaks at an even-money line and falls
+      // away at the extremes, which is the band actually worth shopping.
+      const interest = 4 * p * (1 - p) * market.dataQuality;
+
+      rows.push({
+        matchId: fixture.id,
+        marketId: market.id,
+        family: market.family,
+        category: market.category,
+        team: market.team,
+        playerId: market.playerId || null,
+        playerName: market.playerName || null,
+        market: market.label,
+        note: market.note || null,
+        expectation: market.expectation ?? null,
+        dataQuality: market.dataQuality,
+        interest,
+        over: { key: primary.key, label: primary.label, ...price(p) },
+        under: { key: secondary.key, label: secondary.label, ...price(1 - p) },
+      });
+    }
+
+    rows.sort((a, b) => b.interest - a.interest);
+
+    const byCategory = {};
+    for (const row of rows) {
+      (byCategory[row.category] = byCategory[row.category] || []).push(row);
+    }
+    // Cap each family before trimming the category. Shots alone produce four
+    // lines per player across two dozen players, so without this the player
+    // section is nothing but shots and every other market type is pushed off
+    // the sheet - exactly the markets worth shopping for.
+    for (const key of Object.keys(byCategory)) {
+      const perFamily = key === 'Player props' ? 3 : perCategory;
+      const seen = {};
+      const kept = [];
+      for (const row of byCategory[key]) {
+        seen[row.family] = (seen[row.family] || 0) + 1;
+        if (seen[row.family] > perFamily) continue;
+        kept.push(row);
+      }
+      byCategory[key] = kept.slice(0, key === 'Player props' ? perCategory * 2 : perCategory);
+    }
+
+    fixtures.push({
+      id: fixture.id,
+      localTime: fixture.localTime,
+      kickoff: fixture.kickoff,
+      home: { id: model.home.id, name: model.home.name, short: model.home.short },
+      away: { id: model.away.id, name: model.away.name, short: model.away.short },
+      referee: model.referee.name,
+      refereeConfirmed: Boolean(fixture.referee),
+      expectations: model.expectations,
+      players: model.players,
+      byCategory,
+      all: rows,
+    });
+  }
+
+  return {
+    date: slateDate,
+    competition: ctx.fixturesFile.competition,
+    matchweek: ctx.fixturesFile.matchweek,
+    requiredEdge,
+    fixtures,
+  };
+}
+
+module.exports = { loadContext, runSlate, buildParlays, priceParlay, fairSheet };

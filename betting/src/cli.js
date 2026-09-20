@@ -5,7 +5,7 @@
  * Terminal view of the slate. `node betting/src/cli.js --help` for options.
  */
 
-const { runSlate, buildParlays } = require('./engine');
+const { runSlate, buildParlays, fairSheet } = require('./engine');
 
 const C = {
   reset: '\x1b[0m', dim: '\x1b[2m', bold: '\x1b[1m',
@@ -28,6 +28,8 @@ function parseArgs(argv) {
       case '--min-legs': out.minLegs = Number(next()); break;
       case '--date': out.date = next(); break;
       case '--players': out.players = inline || argv[i + 1] && !argv[i + 1].startsWith('--') ? next() : 'all'; break;
+      case '--fair': out.fair = true; break;
+      case '--required-edge': out.requiredEdge = Number(next()) / 100; break;
       case '--help': out.help = true; break;
       default: break;
     }
@@ -50,6 +52,8 @@ ${C.bold}Premier League value finder${C.reset}
   --max-legs=N     maximum parlay legs (default 4)
   --date=YYYY-MM-DD
   --players[=ID]   show the player projection chain (optionally one fixture)
+  --fair           model fair prices with no odds board, to compare by hand
+  --required-edge=N  margin of safety on the fair sheet (default 6)
 `);
 }
 
@@ -67,9 +71,64 @@ function gradeColour(g) {
   return C.grey;
 }
 
+/**
+ * Fair-price sheet. Used when you have a coupon on screen but no machine-
+ * readable odds: it prints what the model thinks each selection is worth and
+ * the shortest price worth taking, so the comparison can be made by eye.
+ */
+function printFairSheet(args) {
+  const sheet = fairSheet({ date: args.date, requiredEdge: args.requiredEdge ?? 0.06 });
+
+  console.log(`\n${C.bold}${sheet.competition} - Matchweek ${sheet.matchweek} - ${sheet.date}${C.reset}`);
+  console.log(`${C.grey}Model fair prices. No bookmaker board used - compare each TAKE AT figure against the coupon.${C.reset}`);
+  console.log(`${C.grey}Each market shows both sides. TAKE AT is the shortest price worth backing, with a ${((args.requiredEdge ?? 0.06) * 100).toFixed(0)}% margin of safety.${C.reset}`);
+  console.log(`${C.grey}If the coupon pays MORE than TAKE AT, it is a bet. If less, pass.${C.reset}`);
+
+  const order = ['Goals', 'Corners', 'Cards', 'Shots', 'Player props'];
+
+  for (const f of sheet.fixtures) {
+    const e = f.expectations;
+    console.log(`\n${C.bold}${'='.repeat(74)}${C.reset}`);
+    console.log(`${C.bold}${f.home.name} v ${f.away.name}${C.reset}  ${C.grey}${f.localTime} UK${C.reset}`);
+    console.log(
+      `${C.grey}  xG ${e.goals.home.toFixed(2)}-${e.goals.away.toFixed(2)}` +
+      ` | possession ${(e.possession.home * 100).toFixed(0)}/${(e.possession.away * 100).toFixed(0)}` +
+      ` | corners ${e.corners.total.toFixed(1)} | cards ${e.cards.total.toFixed(1)}` +
+      ` | shots ${e.shots.total.toFixed(1)} | SOT ${e.sot.total.toFixed(1)} | fouls ${e.fouls.total.toFixed(1)}` +
+      `\n  referee ${f.referee}${f.refereeConfirmed ? '' : ' (assumed - set it, it moves every card market)'}${C.reset}`
+    );
+
+    for (const category of order) {
+      const rows = f.byCategory[category];
+      if (!rows || rows.length === 0) continue;
+      console.log(`\n  ${C.cyan}${category.toUpperCase()}${C.reset}`);
+      console.log(
+        C.grey + pad('', 4) + pad('MARKET', 40) + pad('EXP', 7) +
+        pad('OVER', 7) + pad('TAKE AT', 9) + pad('UNDER', 7) + 'TAKE AT' + C.reset
+      );
+      for (const r of rows) {
+        const exp = r.expectation !== null && r.expectation !== undefined && r.family.startsWith('player_')
+          ? r.expectation.toFixed(2)
+          : '';
+        console.log(
+          pad('', 4) + pad(r.market.slice(0, 38), 40) +
+          pad(C.grey + exp + C.reset, 7) +
+          pad((r.over.prob * 100).toFixed(0) + '%', 7) +
+          pad(C.bold + C.green + r.over.target.toFixed(2) + C.reset, 9) +
+          pad((r.under.prob * 100).toFixed(0) + '%', 7) +
+          C.bold + C.green + r.under.target.toFixed(2) + C.reset
+        );
+      }
+    }
+  }
+
+  console.log(`\n${C.grey}Model output, not advice. Stake only what you can afford to lose. 18+ | begambleaware.org${C.reset}\n`);
+}
+
 function main() {
   const args = parseArgs(process.argv);
   if (args.help) return help();
+  if (args.fair) return printFairSheet(args);
 
   const slate = runSlate({ date: args.date, minEdge: args.minEdge, bankroll: args.bankroll });
 

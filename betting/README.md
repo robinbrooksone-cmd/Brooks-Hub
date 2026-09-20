@@ -309,7 +309,23 @@ npm run picks -- --min-edge=5 --category="Player props" --top=30
 npm run picks -- --match=ful-mun --bankroll=250
 npm run picks -- --players=mci-sun     # projection chain for one fixture
 npm run picks -- --players               # every fixture
+npm run picks -- --fair                  # fair prices, no odds board needed
+npm run picks -- --fair --required-edge=8
 ```
+
+### Comparing against a coupon by hand
+
+`--fair` is the mode for when you have Sportingbet open on your phone but no
+machine-readable odds. It prints every market with both sides, the model's
+probability, and a **TAKE AT** price — the shortest odds worth backing once a
+margin of safety is applied. If the coupon pays more than TAKE AT, it is a bet;
+if less, pass.
+
+Rows are ranked by `4p(1-p) × dataQuality`, not by how extreme the model's view
+is. A 13%-to-hit line is where the model is least reliable and the bookmaker's
+margin heaviest, so surfacing those first would be actively unhelpful. Each
+market family is also capped, otherwise player shots alone (four lines × two
+dozen players) would crowd every other market off the sheet.
 
 ---
 
