@@ -4,6 +4,7 @@
 
 const API = {
   picks: (q) => fetch(`api/picks?${new URLSearchParams(q)}`).then(r => r.json()),
+  players: (matchId) => fetch(`api/players/${encodeURIComponent(matchId)}`).then(r => r.json()),
   parlay: (body) => post('api/parlay', body),
   auto: (body) => post('api/parlay/auto', body),
   importOdds: (body) => post('api/odds/import', body),
@@ -25,6 +26,7 @@ const state = {
   filtered: [],
   shown: 40,
   slip: [],          // { marketId, selection, ...display }
+  playerData: null,
   bankroll: 100,
   minEdge: 3,
 };
@@ -97,11 +99,135 @@ function renderFixtures() {
 }
 
 function populateMatchFilter() {
+  const options = state.slate.fixtures
+    .map((f) => `<option value="${f.id}">${esc(f.home.short)} v ${esc(f.away.short)}</option>`).join('');
+
   const sel = $('f-match');
   const current = sel.value;
-  sel.innerHTML = '<option value="">All fixtures</option>' +
-    state.slate.fixtures.map((f) => `<option value="${f.id}">${esc(f.home.short)} v ${esc(f.away.short)}</option>`).join('');
+  sel.innerHTML = `<option value="">All fixtures</option>${options}`;
   sel.value = current;
+
+  const psel = $('p-match');
+  const pcurrent = psel.value;
+  psel.innerHTML = options;
+  psel.value = pcurrent || state.slate.fixtures[0].id;
+}
+
+/* ------------------------------------------------- player projections */
+
+const PLAYER_COLS = [
+  ['shots', 2], ['sot', 2], ['goals', 2], ['fouls', 2], ['foulsDrawn', 2],
+  ['tackles', 2], ['dribblesAttempted', 2], ['boxTouches', 1],
+];
+
+async function loadPlayers() {
+  const matchId = $('p-match').value;
+  if (!matchId) return;
+  const body = $('players-body');
+  body.innerHTML = '<tr><td colspan="13" class="empty">Loading…</td></tr>';
+  try {
+    const data = await API.players(matchId);
+    if (data.error) throw new Error(data.error);
+    state.playerData = data;
+    renderChain(data);
+    renderPlayers();
+  } catch (err) {
+    body.innerHTML = `<tr><td colspan="13" class="empty">${esc(err.message)}</td></tr>`;
+  }
+}
+
+function renderChain(data) {
+  const e = data.expectations;
+  const diag = (side) => {
+    const d = data.projections[side].diagnostics;
+    const rows = Object.entries(d).map(([metric, x]) => `
+      <div class="chain-row">
+        <span>${esc(metric)}</span>
+        <span>${x.playerSum.toFixed(1)} → ${x.blendedTeam.toFixed(1)} <span class="muted">(×${x.factor.toFixed(2)})</span></span>
+      </div>`).join('');
+    return `
+      <div class="chain-card">
+        <h4>${esc(side === 'home' ? data.fixture.home.short : data.fixture.away.short)} reconciliation</h4>
+        ${rows}
+        <p class="chain-note">Player aggregate → blended team total, and the factor applied to each player.
+        Squad coverage ${(data.projections[side].coverage * 100).toFixed(0)}% of a full XI.</p>
+      </div>`;
+  };
+
+  $('chain-summary').innerHTML = `
+    <div class="chain-card">
+      <h4>Match context</h4>
+      <div class="chain-row"><span>Possession</span><span>${(e.possession.home * 100).toFixed(0)}% / ${(e.possession.away * 100).toFixed(0)}%</span></div>
+      <div class="chain-row"><span>Expected goals</span><span>${e.goals.home.toFixed(2)} – ${e.goals.away.toFixed(2)}</span></div>
+      <div class="chain-row"><span>Expected shots</span><span>${e.shots.home.toFixed(1)} – ${e.shots.away.toFixed(1)}</span></div>
+      <div class="chain-row"><span>Chase index</span><span>${(e.gameState.homeChase * 100).toFixed(0)}% / ${(e.gameState.awayChase * 100).toFixed(0)}%</span></div>
+      <div class="chain-row"><span>Settled-early chance</span><span>${(e.gameState.blowoutProb * 100).toFixed(0)}%</span></div>
+      <p class="chain-note">Chase index drives shot and cross volume; a game likely settled early pulls substitutions forward.</p>
+    </div>
+    <div class="chain-card">
+      <h4>Cards: both directions</h4>
+      <div class="chain-row"><span>Team rating (top-down)</span><span>${(e.cards.topDown.home + e.cards.topDown.away).toFixed(2)}</span></div>
+      <div class="chain-row"><span>Player aggregate (bottom-up)</span><span>${(e.cards.bottomUp.home + e.cards.bottomUp.away).toFixed(2)}</span></div>
+      <div class="chain-row"><span>Blended</span><span>${e.cards.total.toFixed(2)}</span></div>
+      <div class="chain-row"><span>Referee</span><span>${esc(e.cards.referee)}</span></div>
+      <p class="chain-note">Individual booking probabilities are summed into a team total and blended with the team rating at ${(e.cards.blendWeight * 100).toFixed(0)}% weight on the rating.</p>
+    </div>
+    ${diag('home')}
+    ${diag('away')}`;
+}
+
+function renderPlayers() {
+  const data = state.playerData;
+  if (!data) return;
+  const sortKey = $('p-sort').value;
+  const value = (p) => (sortKey === 'yellowProb' ? p.yellowProb
+    : sortKey === 'expectedMinutes' ? p.expectedMinutes
+    : (p.expectations[sortKey] || 0));
+
+  const rows = [...data.players].sort((a, b) => value(b) - value(a));
+
+  $('players-body').innerHTML = rows.map((p) => {
+    const x = p.expectations;
+    // Which duel multiplier actually matters depends on which end of it the
+    // player is on: defenders are shaded on fouls committed, attackers on
+    // fouls won. Showing the defender's number for a winger reads as "no
+    // matchup effect" when there plainly is one.
+    const isDefender = p.line === 'DEF' || p.line === 'GK';
+    const duel = p.matchup ? (isDefender ? p.matchup.fouls : p.matchup.foulsDrawn) : 1;
+    const duelLabel = isDefender ? 'fouls' : 'won';
+    const duelClass = duel > 1.04 ? 'duel-up' : duel < 0.96 ? 'duel-down' : 'muted';
+    return `
+      <tr>
+        <td><span class="pname">${esc(p.name)}</span> <span class="fx-tag">${esc(p.team)}</span></td>
+        <td class="prole">${esc(p.role.replace(/-/g, ' '))}</td>
+        <td class="num">${p.expectedMinutes.toFixed(0)}</td>
+        <td class="num">${x.shots.toFixed(2)}</td>
+        <td class="num">${x.sot.toFixed(2)}</td>
+        <td class="num">${x.goals.toFixed(2)}</td>
+        <td class="num">${x.fouls.toFixed(2)}</td>
+        <td class="num">${x.foulsDrawn.toFixed(2)}</td>
+        <td class="num">${x.tackles.toFixed(2)}</td>
+        <td class="num">${x.dribblesAttempted.toFixed(2)}</td>
+        <td class="num">${x.boxTouches.toFixed(1)}</td>
+        <td class="num">${(p.yellowProb * 100).toFixed(0)}%</td>
+        <td class="num ${duelClass}">×${duel.toFixed(2)} <span class="muted tiny">${duelLabel}</span></td>
+      </tr>`;
+  }).join('');
+}
+
+function showTab(which) {
+  const onBoard = which === 'board';
+  $('tab-board').classList.toggle('active', onBoard);
+  $('tab-players').classList.toggle('active', !onBoard);
+  $('tab-board').setAttribute('aria-selected', String(onBoard));
+  $('tab-players').setAttribute('aria-selected', String(!onBoard));
+
+  $('board-head').hidden = !onBoard;
+  document.querySelector('.table-wrap').hidden = !onBoard;
+  $('players-panel').hidden = onBoard;
+  $('btn-more').hidden = !onBoard || state.shown >= state.filtered.length;
+
+  if (!onBoard && !state.playerData) loadPlayers();
 }
 
 /* --------------------------------------------------------------- filters */
@@ -330,6 +456,11 @@ $('f-bankroll').addEventListener('change', (e) => {
   state.bankroll = Math.max(1, Number(e.target.value) || 100);
   load().then(priceSlip);
 });
+
+$('tab-board').addEventListener('click', () => showTab('board'));
+$('tab-players').addEventListener('click', () => showTab('players'));
+$('p-match').addEventListener('change', () => { state.playerData = null; loadPlayers(); });
+$('p-sort').addEventListener('change', renderPlayers);
 
 $('btn-import').addEventListener('click', () => $('dlg-import').showModal());
 $('btn-method').addEventListener('click', () => $('dlg-method').showModal());

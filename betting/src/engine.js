@@ -20,6 +20,7 @@ function loadContext() {
     teams: readJson('teams.json').teams,
     players: readJson('players.json').players,
     referees: readJson('referees.json').referees,
+    roles: readJson('roles.json'),
     fixturesFile: readJson('fixtures.json'),
   };
 }
@@ -144,6 +145,11 @@ function runSlate(options = {}) {
       expectations: model.expectations,
       markets,
       picks: fixturePicks,
+      // Player layer: the projection chain behind every player market.
+      players: model.players,
+      shares: model.shares,
+      projections: model.projections,
+      matchups: model.matchups,
     });
   }
 

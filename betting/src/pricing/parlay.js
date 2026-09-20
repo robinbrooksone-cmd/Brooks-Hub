@@ -55,6 +55,60 @@ const FAMILY_CORRELATION = {
   'match_corners|team_corners': 0.62,
   'match_cards|team_cards': 0.60,
   'match_shots|team_shots': 0.60,
+
+  // ---- same player: attacking chain ----
+  'player_shots|player_box_touches': 0.55,
+  'player_sot|player_box_touches': 0.50,
+  'player_goals|player_box_touches': 0.45,
+  'player_shots|player_att3_touches': 0.45,
+  'player_box_touches|player_att3_touches': 0.62,
+  'player_chances|player_assists': 0.60,
+  'player_crosses|player_chances': 0.45,
+  'player_crosses|player_assists': 0.30,
+  'player_shots|player_assists': -0.05,
+  'player_goals|player_offsides': 0.10,
+
+  // ---- same player: carrying ----
+  'player_dribbles_att|player_dribbles': 0.78,
+  'player_dribbles_att|player_fouls_drawn': 0.50,
+  'player_dribbles|player_fouls_drawn': 0.45,
+  'player_dribbles_att|player_dispossessed': 0.50,
+  'player_dribbles_att|player_touches': 0.45,
+
+  // ---- same player: volume ----
+  'player_touches|player_passes': 0.85,
+  'player_touches|player_passes_comp': 0.82,
+  'player_passes|player_passes_comp': 0.92,
+  'player_passes|player_prog_passes': 0.60,
+  'player_touches|player_att3_touches': 0.55,
+
+  // ---- same player: defending ----
+  'player_tackles|player_tackles_won': 0.82,
+  'player_tackles|player_interceptions': 0.35,
+  'player_tackles|player_def_actions': 0.70,
+  'player_interceptions|player_def_actions': 0.55,
+  'player_clearances|player_def_actions': 0.65,
+  'player_clearances|player_aerials': 0.40,
+  'player_tackles|player_fouls': 0.45,
+  'player_def_actions|player_fouls': 0.35,
+  'player_fouls|player_red': 0.35,
+  'player_booked|player_red': 0.50,
+
+  // ---- player to team / match ----
+  'player_box_touches|team_goals': 0.35,
+  'player_chances|team_goals': 0.30,
+  'player_crosses|match_corners': 0.30,
+  'player_crosses|team_corners': 0.32,
+  'player_def_actions|team_cards': 0.25,
+  'player_tackles|match_cards': 0.22,
+  'player_fouls_drawn|match_cards': 0.30,
+  'player_fouls_drawn|team_cards': 0.28,
+  'player_red|match_cards': 0.30,
+  'player_saves|match_goals': 0.28,
+  'player_saves|team_shots': 0.40,
+  'player_touches|team_shots': 0.30,
+  'player_att3_touches|team_shots': 0.42,
+  'player_assists|team_goals': 0.40,
 };
 
 /**
@@ -88,7 +142,13 @@ function isOver(leg) {
  * legs concern opposing teams (a shared tempo effect, but a weaker one).
  */
 const PLAYER_FAMILIES = new Set([
-  'player_shots', 'player_sot', 'player_goals', 'player_fouls', 'player_booked',
+  'player_shots', 'player_sot', 'player_goals', 'player_assists', 'player_chances',
+  'player_fouls', 'player_fouls_drawn', 'player_booked', 'player_red',
+  'player_tackles', 'player_tackles_won', 'player_interceptions', 'player_clearances',
+  'player_def_actions', 'player_dribbles_att', 'player_dribbles', 'player_crosses',
+  'player_offsides', 'player_aerials', 'player_box_touches', 'player_att3_touches',
+  'player_touches', 'player_passes', 'player_passes_comp', 'player_prog_passes',
+  'player_dispossessed', 'player_saves',
 ]);
 
 const isPlayerLeg = (leg) => PLAYER_FAMILIES.has(leg.family);

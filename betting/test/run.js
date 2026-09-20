@@ -12,6 +12,15 @@ const edge = require('../src/pricing/edge');
 const parlay = require('../src/pricing/parlay');
 const adapter = require('../src/adapters/sportingbet');
 const { runSlate, buildParlays } = require('../src/engine');
+const rolesModel = require('../src/model/roles');
+const minutesModel = require('../src/model/minutes');
+const involvement = require('../src/model/involvement');
+const matchups = require('../src/model/matchups');
+const playerEvents = require('../src/model/playerEvents');
+const squad = require('../src/model/squad');
+const rolesData = require('../data/roles.json');
+const playersData = require('../data/players.json').players;
+const teamsData = require('../data/teams.json').teams;
 
 let pass = 0;
 let fail = 0;
@@ -416,6 +425,319 @@ test('the parlay builder returns usable slips', () => {
   assert(matches.size === acc.legCount, 'accumulator legs must be in different matches');
   assert(acc.priceKnown && acc.ev > 0, 'accumulator should be positive expectation');
   close(acc.probability, acc.legs.reduce((p, l) => p * l.modelProb, 1), 1e-9, 'independence');
+});
+
+
+/* ---------------------------------------------------------- role layer */
+
+test('every player resolves to a complete per-90 profile', () => {
+  const required = Object.values(rolesData.groups).flat();
+  for (const player of playersData) {
+    const { per90 } = rolesModel.resolvePer90(player, rolesData);
+    for (const metric of required) {
+      assert(Number.isFinite(per90[metric]) && per90[metric] >= 0,
+        `${player.id} has no usable ${metric}`);
+    }
+  }
+});
+
+test('resolved profiles never violate their containment invariants', () => {
+  for (const player of playersData) {
+    const { per90 } = rolesModel.resolvePer90(player, rolesData);
+    for (const [child, parent] of rolesModel.CONTAINMENT) {
+      assert(per90[child] <= per90[parent] + 1e-9,
+        `${player.id}: ${child} (${per90[child]}) exceeds ${parent} (${per90[parent]})`);
+    }
+  }
+});
+
+test('explicit per-90 values always beat the role baseline', () => {
+  const player = playersData.find((p) => p.id === 'casemiro');
+  const { per90 } = rolesModel.resolvePer90(player, rolesData);
+  close(per90.fouls, player.per90.fouls, 1e-12, 'explicit fouls overridden');
+  close(per90.shots, player.per90.shots, 1e-12, 'explicit shots overridden');
+});
+
+test('quality inference is damped, not applied raw', () => {
+  const base = rolesData.roles['poacher'];
+  // A player who shoots far more than his archetype.
+  const hot = { id: 'x', roleType: 'poacher', per90: { shots: base.shots * 2 } };
+  const { per90 } = rolesModel.resolvePer90(hot, rolesData);
+  const boxRatio = per90.boxTouches / base.boxTouches;
+  assert(boxRatio > 1.2 && boxRatio < 1.8,
+    `doubling shots should raise box touches, but damped (got x${boxRatio.toFixed(2)})`);
+  close(boxRatio, 1 + rolesModel.DAMPING, 1e-9, 'damping factor');
+});
+
+test('quality inference does not leak across unrelated groups', () => {
+  // Shooting more says nothing about passing volume or tackling, and letting
+  // one strong attacking number inflate every metric is how a partially-known
+  // player turns into a wholly fictional one.
+  const base = rolesData.roles['poacher'];
+  const hot = { id: 'x', roleType: 'poacher', per90: { shots: base.shots * 2 } };
+  const { per90 } = rolesModel.resolvePer90(hot, rolesData);
+  close(per90.touches, base.touches, 1e-9, 'touches should be untouched');
+  close(per90.tackles, base.tackles, 1e-9, 'tackles should be untouched');
+});
+
+/* ------------------------------------------------------- minutes model */
+
+test('minutes scenario weights sum to one for every player', () => {
+  for (const player of playersData) {
+    const resolved = rolesModel.resolvePer90(player, rolesData);
+    const m = minutesModel.minutesModel(player, resolved.role);
+    const total = m.scenarios.reduce((s, x) => s + x.weight, 0);
+    close(total, 1, 1e-9, `${player.id} scenario weights`);
+  }
+});
+
+test('playing-time thresholds are monotone', () => {
+  for (const player of playersData) {
+    const resolved = rolesModel.resolvePer90(player, rolesData);
+    const m = minutesModel.minutesModel(player, resolved.role);
+    assert(m.pPlay90 <= m.pPlay75Plus + 1e-12, `${player.id}: P(90) exceeds P(75+)`);
+    assert(m.pPlay75Plus <= m.pPlay60Plus + 1e-12, `${player.id}: P(75+) exceeds P(60+)`);
+    assert(m.pPlay60Plus <= m.pAppear + 1e-12, `${player.id}: P(60+) exceeds P(appear)`);
+  }
+});
+
+test('defenders outlast forwards', () => {
+  const pick = (id) => {
+    const p = playersData.find((x) => x.id === id);
+    return minutesModel.minutesModel(p, rolesModel.resolvePer90(p, rolesData).role);
+  };
+  // Compared at equal start probability, the role profile must do the work.
+  const cb = { ...playersData.find((p) => p.id === 'van-dijk'), startProb: 0.85, benchProb: 0.1 };
+  const fw = { ...playersData.find((p) => p.id === 'ekitike'), startProb: 0.85, benchProb: 0.1 };
+  const cbM = minutesModel.minutesModel(cb, rolesModel.resolvePer90(cb, rolesData).role);
+  const fwM = minutesModel.minutesModel(fw, rolesModel.resolvePer90(fw, rolesData).role);
+  assert(cbM.pPlay90 > fwM.pPlay90, 'a centre-back should be likelier to finish than a forward');
+  assert(pick('van-dijk').expectedMinutes > pick('marmoush').expectedMinutes, 'expected minutes ordering');
+});
+
+test('fatigue and a settled game pull minutes down', () => {
+  const p = playersData.find((x) => x.id === 'casemiro');
+  const role = rolesModel.resolvePer90(p, rolesData).role;
+  const rested = minutesModel.minutesModel(p, role, { daysRest: 7 }).expectedMinutes;
+  const tired = minutesModel.minutesModel(p, role, { daysRest: 2 }).expectedMinutes;
+  const blowout = minutesModel.minutesModel(p, role, { blowoutProb: 0.9 }).expectedMinutes;
+  assert(tired < rested, 'a short turnaround should reduce expected minutes');
+  assert(blowout < rested, 'a game likely settled early should reduce expected minutes');
+});
+
+/* --------------------------------------------------- involvement layer */
+
+test('possession shares are complementary and bounded', () => {
+  const t = (id) => teamsData.find((x) => x.id === id);
+  for (const [h, a] of [['man-city', 'hull'], ['hull', 'man-city'], ['fulham', 'man-utd']]) {
+    const p = involvement.possessionShare(t(h), t(a));
+    assert(p > 0.25 && p < 0.75, `possession out of plausible range: ${p}`);
+  }
+  const strong = involvement.possessionShare(t('man-city'), t('hull'));
+  const weak = involvement.possessionShare(t('hull'), t('man-city'));
+  assert(strong > weak, 'the stronger side should see more of the ball');
+});
+
+test('reconciliation moves the player aggregate toward the team total', () => {
+  const raws = [{ i: 0, value: 3 }, { i: 1, value: 2 }, { i: 2, value: 1 }];
+  const r = involvement.reconcileMetric({
+    metric: 'shots', raws, teamExpected: 14, blendWeight: 0.7, minutesCovered: 9,
+  });
+  assert(r.diagnostics.reconciled, 'should have reconciled');
+  const after = r.values.reduce((s, v) => s + v, 0);
+  assert(after > 6, 'aggregate should rise toward the larger team projection');
+  // The blend must sit between the two views, never outside them.
+  const d = r.diagnostics;
+  const lo = Math.min(d.teamExpected, d.bottomUpTeam);
+  const hi = Math.max(d.teamExpected, d.bottomUpTeam);
+  assert(d.blendedTeam >= lo - 1e-9 && d.blendedTeam <= hi + 1e-9, 'blend outside its inputs');
+});
+
+test('reconciliation is skipped rather than guessed when inputs are unusable', () => {
+  const raws = [{ i: 0, value: 0 }];
+  const r = involvement.reconcileMetric({
+    metric: 'shots', raws, teamExpected: 12, blendWeight: 0.7, minutesCovered: 9,
+  });
+  assert(!r.diagnostics.reconciled, 'must not scale a zero aggregate');
+  close(r.values[0], 0, 1e-12);
+});
+
+/* ------------------------------------------------------ matchup layer */
+
+test('game state splits into proper probabilities', () => {
+  const grid = goals.scoreMatrix(2.2, 0.9, -0.045, 10);
+  const st = matchups.gameState(grid);
+  close(st.homeWin + st.draw + st.awayWin, 1, 1e-9, '1X2');
+  assert(st.home.chaseIndex < st.away.chaseIndex, 'the weaker side should expect to chase more');
+  assert(st.away.attack > st.home.attack, 'the chasing side should shoot more');
+  assert(st.home.fouls > st.away.fouls, 'the side protecting a lead should foul more');
+});
+
+test('a duel raises the defender fouls and the attacker fouls won together', () => {
+  const slate = runSlate({ minEdge: 0 });
+  const fixture = slate.fixtures.find((f) => f.id === 'mci-sun');
+  const sunDefs = fixture.players.filter((p) => p.side === 'away' && p.line === 'DEF' && p.matchup);
+  const cityAtt = fixture.players.filter((p) => p.side === 'home' && p.line !== 'DEF' && p.line !== 'GK' && p.matchup);
+
+  const pressured = sunDefs.filter((p) => p.matchup.fouls > 1.05);
+  assert(pressured.length > 0, 'a side defending this much should have pressured defenders');
+  const drawing = cityAtt.filter((p) => p.matchup.foulsDrawn > 1.02);
+  assert(drawing.length > 0, 'the attackers they foul must draw more fouls in return');
+});
+
+test('matchup multipliers stay within their declared bounds', () => {
+  const slate = runSlate({ minEdge: 0 });
+  for (const f of slate.fixtures) {
+    for (const p of f.players) {
+      if (!p.matchup) continue;
+      for (const [key, v] of Object.entries(p.matchup)) {
+        assert(v >= 0.6 - 1e-9 && v <= 1.6 + 1e-9, `${p.name} ${key} = ${v} out of bounds`);
+      }
+    }
+  }
+});
+
+/* -------------------------------------------------- player event layer */
+
+test('player market tails are monotone in the line', () => {
+  const slate = runSlate({ minEdge: 0 });
+  const byKey = new Map();
+  for (const f of slate.fixtures) {
+    for (const m of f.markets) {
+      if (!m.playerId) continue;
+      const key = `${m.matchId}|${m.family}|${m.playerId}`;
+      if (!byKey.has(key)) byKey.set(key, []);
+      byKey.get(key).push(m);
+    }
+  }
+  let checked = 0;
+  for (const group of byKey.values()) {
+    if (group.length < 2) continue;
+    const sorted = [...group].sort((a, b) => a.line - b.line);
+    for (let i = 1; i < sorted.length; i++) {
+      const prev = sorted[i - 1].selections.find((s) => s.key === 'over').modelProb;
+      const curr = sorted[i].selections.find((s) => s.key === 'over').modelProb;
+      assert(curr <= prev + 1e-9, `${sorted[i].id}: P rises with the line`);
+      checked++;
+    }
+  }
+  assert(checked > 200, `expected a lot of player lines, only checked ${checked}`);
+});
+
+test('the shots -> SOT -> goals chain is ordered correctly', () => {
+  const slate = runSlate({ minEdge: 0 });
+  for (const f of slate.fixtures) {
+    for (const p of f.players) {
+      const x = p.expectations;
+      assert(x.sot <= x.shots + 1e-6, `${p.name}: SOT (${x.sot}) exceeds shots (${x.shots})`);
+      assert(x.goals <= x.sot + 0.15, `${p.name}: goals (${x.goals}) far exceed SOT (${x.sot})`);
+    }
+  }
+});
+
+test('every requested player market family is quoted somewhere', () => {
+  const slate = runSlate({ minEdge: 0 });
+  const families = new Set();
+  for (const f of slate.fixtures) for (const m of f.markets) families.add(m.family);
+  const wanted = [
+    'player_shots', 'player_sot', 'player_goals', 'player_assists', 'player_chances',
+    'player_fouls', 'player_fouls_drawn', 'player_booked',
+    'player_tackles', 'player_tackles_won', 'player_interceptions', 'player_clearances',
+    'player_def_actions', 'player_dribbles_att', 'player_dribbles', 'player_crosses',
+    'player_offsides', 'player_aerials', 'player_box_touches', 'player_att3_touches',
+    'player_touches', 'player_passes', 'player_passes_comp', 'player_prog_passes',
+    'player_dispossessed', 'player_saves',
+  ];
+  for (const w of wanted) assert(families.has(w), `missing player market family: ${w}`);
+});
+
+test('goalkeepers get save markets and outfielders do not', () => {
+  const slate = runSlate({ minEdge: 0 });
+  const saveMarkets = [];
+  for (const f of slate.fixtures) {
+    for (const m of f.markets) if (m.family === 'player_saves') saveMarkets.push({ m, f });
+  }
+  assert(saveMarkets.length > 0, 'no save markets produced');
+  for (const { m, f } of saveMarkets) {
+    const player = f.players.find((p) => p.id === m.playerId);
+    assert(player && player.line === 'GK', `${m.playerId} is not a goalkeeper`);
+  }
+});
+
+test('booking probability responds to fouls and referee', () => {
+  const player = { id: 't', cardProneness: 1.3 };
+  const minutes = { minutesShare: 1, scenarios: [{ minutes: 90, weight: 1 }] };
+  const low = playerEvents.bookingProbability({ foulExpectation: 0.6, minutes, player, refStrictness: 1 });
+  const high = playerEvents.bookingProbability({ foulExpectation: 2.6, minutes, player, refStrictness: 1 });
+  const strict = playerEvents.bookingProbability({ foulExpectation: 2.6, minutes, player, refStrictness: 1.2 });
+  assert(high > low, 'more fouls must mean more cards');
+  assert(strict > high, 'a stricter referee must mean more cards');
+  assert(high > 0 && strict < 1, 'out of range');
+});
+
+test('red card probability stays rare and tracks the yellow', () => {
+  const player = { cardProneness: 1.4 };
+  const r = playerEvents.redCardProbability({ yellowProb: 0.3, player, refStrictness: 1.1 });
+  assert(r > 0 && r < 0.05, `red card probability implausible: ${r}`);
+});
+
+test('a player who cannot play carries no expectation', () => {
+  const dist = playerEvents.distributionFor(0, { minutesShare: 0, scenarios: [] }, 0.25, 10);
+  close(dist.atLeast(1), 0, 1e-12);
+  close(dist.atLeast(0), 1, 1e-12);
+});
+
+/* ------------------------------------------- two-way team/player chain */
+
+test('team cards blend the top-down rating with the player aggregate', () => {
+  const slate = runSlate({ minEdge: 0 });
+  for (const f of slate.fixtures) {
+    const c = f.expectations.cards;
+    const top = c.topDown.home + c.topDown.away;
+    const bottom = c.bottomUp.home + c.bottomUp.away;
+    assert(bottom > 0, 'player aggregate produced no cards');
+    const lo = Math.min(top, bottom) - 1e-6;
+    const hi = Math.max(top, bottom) + 1e-6;
+    assert(c.total >= lo && c.total <= hi,
+      `${f.id}: blended ${c.total} outside [${lo}, ${hi}]`);
+  }
+});
+
+test('the player aggregate is in the same ballpark as the team rating', () => {
+  // A large divergence means the player data or the team rating is wrong; this
+  // is the check that would catch it.
+  const slate = runSlate({ minEdge: 0 });
+  for (const f of slate.fixtures) {
+    const c = f.expectations.cards;
+    const top = c.topDown.home + c.topDown.away;
+    const bottom = c.bottomUp.home + c.bottomUp.away;
+    const ratio = bottom / top;
+    assert(ratio > 0.6 && ratio < 1.6,
+      `${f.id}: player card aggregate ${bottom.toFixed(2)} vs team rating ${top.toFixed(2)}`);
+  }
+});
+
+test('involvement shares sum to one and are led by the right players', () => {
+  const slate = runSlate({ minEdge: 0 });
+  const f = slate.fixtures.find((x) => x.id === 'mci-sun');
+  for (const side of ['home', 'away']) {
+    for (const [metric, table] of Object.entries(f.shares[side])) {
+      const total = Object.values(table).reduce((s, v) => s + v, 0);
+      close(total, 1, 1e-9, `${side} ${metric} shares`);
+    }
+  }
+  const topShooter = Object.entries(f.shares.home.shots).sort((a, b) => b[1] - a[1])[0];
+  assert(topShooter[0] === 'haaland', `expected Haaland to lead City's shot share, got ${topShooter[0]}`);
+});
+
+test('squad coverage is reported and plausible', () => {
+  const slate = runSlate({ minEdge: 0 });
+  for (const f of slate.fixtures) {
+    for (const side of ['home', 'away']) {
+      const c = f.projections[side].coverage;
+      assert(c > 0.6 && c <= 1, `${f.id} ${side}: coverage ${c} implausible`);
+    }
+  }
 });
 
 /* --------------------------------------------------------------- report */

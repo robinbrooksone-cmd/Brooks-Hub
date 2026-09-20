@@ -2,115 +2,2678 @@
   "_provenance": "Per-90 rates are informed priors for the squads as of the 2026/27 season start. IMPORTANT: 'fouls' is fouls COMMITTED, not fouls suffered - that is the market this model prices. cardProneness scales the per-foul booking hazard for players who foul cynically or tactically. startProb/benchProb are selection estimates and are the single most valuable thing to refresh once team news drops about an hour before kick-off.",
   "_refresh": "Update startProb/benchProb from confirmed line-ups via scripts/set-lineups.js, or edit in place. Everything downstream re-prices automatically.",
   "players": [
-    { "id": "haaland",    "name": "Erling Haaland",     "team": "man-city", "role": "FWD", "startProb": 0.92, "benchProb": 0.04, "cardProneness": 1.05, "per90": { "shots": 4.3, "sot": 2.00, "goals": 1.08, "assists": 0.12, "fouls": 0.80 } },
-    { "id": "foden",      "name": "Phil Foden",         "team": "man-city", "role": "AM",  "startProb": 0.72, "benchProb": 0.24, "cardProneness": 0.90, "per90": { "shots": 2.3, "sot": 0.85, "goals": 0.42, "assists": 0.24, "fouls": 0.70 } },
-    { "id": "doku",       "name": "Jérémy Doku",        "team": "man-city", "role": "AM",  "startProb": 0.68, "benchProb": 0.27, "cardProneness": 0.95, "per90": { "shots": 1.9, "sot": 0.60, "goals": 0.25, "assists": 0.30, "fouls": 0.90 } },
-    { "id": "savinho",    "name": "Savinho",            "team": "man-city", "role": "AM",  "startProb": 0.60, "benchProb": 0.32, "cardProneness": 1.00, "per90": { "shots": 2.0, "sot": 0.65, "goals": 0.22, "assists": 0.26, "fouls": 0.85 } },
-    { "id": "cherki",     "name": "Rayan Cherki",       "team": "man-city", "role": "AM",  "startProb": 0.55, "benchProb": 0.36, "cardProneness": 1.00, "per90": { "shots": 2.1, "sot": 0.70, "goals": 0.28, "assists": 0.32, "fouls": 0.80 } },
-    { "id": "marmoush",   "name": "Omar Marmoush",      "team": "man-city", "role": "FWD", "startProb": 0.50, "benchProb": 0.40, "cardProneness": 1.05, "per90": { "shots": 2.8, "sot": 1.10, "goals": 0.50, "assists": 0.18, "fouls": 0.90 } },
-    { "id": "reijnders",  "name": "Tijjani Reijnders",  "team": "man-city", "role": "MID", "startProb": 0.80, "benchProb": 0.15, "cardProneness": 1.10, "per90": { "shots": 1.5, "sot": 0.50, "goals": 0.22, "assists": 0.16, "fouls": 1.10 } },
-    { "id": "rodri",      "name": "Rodri",              "team": "man-city", "role": "MID", "startProb": 0.70, "benchProb": 0.20, "cardProneness": 1.30, "per90": { "shots": 1.0, "sot": 0.30, "goals": 0.10, "assists": 0.10, "fouls": 1.50 } },
-    { "id": "bernardo",   "name": "Bernardo Silva",     "team": "man-city", "role": "MID", "startProb": 0.65, "benchProb": 0.28, "cardProneness": 1.15, "per90": { "shots": 1.1, "sot": 0.35, "goals": 0.15, "assists": 0.20, "fouls": 1.20 } },
-    { "id": "nico-gonzalez", "name": "Nico González",   "team": "man-city", "role": "MID", "startProb": 0.45, "benchProb": 0.35, "cardProneness": 1.30, "per90": { "shots": 0.9, "sot": 0.25, "goals": 0.08, "assists": 0.08, "fouls": 1.60 } },
-    { "id": "gvardiol",   "name": "Joško Gvardiol",     "team": "man-city", "role": "DEF", "startProb": 0.85, "benchProb": 0.08, "cardProneness": 1.10, "per90": { "shots": 0.7, "sot": 0.20, "goals": 0.10, "assists": 0.08, "fouls": 1.10 } },
-    { "id": "dias",       "name": "Rúben Dias",         "team": "man-city", "role": "DEF", "startProb": 0.88, "benchProb": 0.06, "cardProneness": 1.10, "per90": { "shots": 0.5, "sot": 0.15, "goals": 0.06, "assists": 0.04, "fouls": 1.00 } },
-    { "id": "ait-nouri",  "name": "Rayan Aït-Nouri",    "team": "man-city", "role": "DEF", "startProb": 0.70, "benchProb": 0.20, "cardProneness": 1.20, "per90": { "shots": 0.8, "sot": 0.22, "goals": 0.07, "assists": 0.16, "fouls": 1.50 } },
-    { "id": "oreilly",    "name": "Nico O'Reilly",      "team": "man-city", "role": "DEF", "startProb": 0.55, "benchProb": 0.30, "cardProneness": 1.15, "per90": { "shots": 0.5, "sot": 0.15, "goals": 0.05, "assists": 0.10, "fouls": 1.30 } },
-
-    { "id": "isidor",     "name": "Wilson Isidor",      "team": "sunderland", "role": "FWD", "startProb": 0.60, "benchProb": 0.32, "cardProneness": 1.10, "per90": { "shots": 2.5, "sot": 0.90, "goals": 0.38, "assists": 0.10, "fouls": 1.30 } },
-    { "id": "mayenda",    "name": "Eliezer Mayenda",    "team": "sunderland", "role": "FWD", "startProb": 0.60, "benchProb": 0.30, "cardProneness": 1.10, "per90": { "shots": 2.2, "sot": 0.80, "goals": 0.32, "assists": 0.12, "fouls": 1.20 } },
-    { "id": "brobbey",    "name": "Brian Brobbey",      "team": "sunderland", "role": "FWD", "startProb": 0.50, "benchProb": 0.38, "cardProneness": 1.15, "per90": { "shots": 2.4, "sot": 0.85, "goals": 0.35, "assists": 0.10, "fouls": 1.50 } },
-    { "id": "talbi",      "name": "Chemsdine Talbi",    "team": "sunderland", "role": "AM",  "startProb": 0.65, "benchProb": 0.28, "cardProneness": 1.10, "per90": { "shots": 1.8, "sot": 0.55, "goals": 0.20, "assists": 0.16, "fouls": 1.10 } },
-    { "id": "le-fee",     "name": "Enzo Le Fée",        "team": "sunderland", "role": "MID", "startProb": 0.70, "benchProb": 0.22, "cardProneness": 1.20, "per90": { "shots": 1.3, "sot": 0.40, "goals": 0.14, "assists": 0.18, "fouls": 1.40 } },
-    { "id": "xhaka",      "name": "Granit Xhaka",       "team": "sunderland", "role": "MID", "startProb": 0.90, "benchProb": 0.05, "cardProneness": 1.45, "per90": { "shots": 1.0, "sot": 0.30, "goals": 0.10, "assists": 0.14, "fouls": 1.70 } },
-    { "id": "sadiki",     "name": "Noah Sadiki",        "team": "sunderland", "role": "MID", "startProb": 0.72, "benchProb": 0.20, "cardProneness": 1.35, "per90": { "shots": 0.6, "sot": 0.18, "goals": 0.05, "assists": 0.06, "fouls": 2.00 } },
-    { "id": "bertrand-traore", "name": "Bertrand Traoré", "team": "sunderland", "role": "MID", "startProb": 0.50, "benchProb": 0.35, "cardProneness": 1.30, "per90": { "shots": 0.8, "sot": 0.25, "goals": 0.06, "assists": 0.10, "fouls": 1.80 } },
-    { "id": "ballard",    "name": "Daniel Ballard",     "team": "sunderland", "role": "DEF", "startProb": 0.85, "benchProb": 0.08, "cardProneness": 1.30, "per90": { "shots": 0.6, "sot": 0.20, "goals": 0.09, "assists": 0.03, "fouls": 1.40 } },
-    { "id": "mukiele",    "name": "Nordi Mukiele",      "team": "sunderland", "role": "DEF", "startProb": 0.80, "benchProb": 0.12, "cardProneness": 1.35, "per90": { "shots": 0.4, "sot": 0.12, "goals": 0.04, "assists": 0.06, "fouls": 1.60 } },
-    { "id": "alderete",   "name": "Omar Alderete",      "team": "sunderland", "role": "DEF", "startProb": 0.78, "benchProb": 0.14, "cardProneness": 1.30, "per90": { "shots": 0.4, "sot": 0.12, "goals": 0.05, "assists": 0.02, "fouls": 1.50 } },
-    { "id": "hume",       "name": "Trai Hume",          "team": "sunderland", "role": "DEF", "startProb": 0.82, "benchProb": 0.10, "cardProneness": 1.20, "per90": { "shots": 0.5, "sot": 0.15, "goals": 0.04, "assists": 0.08, "fouls": 1.40 } },
-
-    { "id": "evanilson",  "name": "Evanilson",          "team": "bournemouth", "role": "FWD", "startProb": 0.82, "benchProb": 0.12, "cardProneness": 1.15, "per90": { "shots": 2.9, "sot": 1.05, "goals": 0.45, "assists": 0.12, "fouls": 1.40 } },
-    { "id": "semenyo",    "name": "Antoine Semenyo",    "team": "bournemouth", "role": "AM",  "startProb": 0.88, "benchProb": 0.07, "cardProneness": 1.10, "per90": { "shots": 2.8, "sot": 1.00, "goals": 0.42, "assists": 0.20, "fouls": 1.20 } },
-    { "id": "kluivert",   "name": "Justin Kluivert",    "team": "bournemouth", "role": "AM",  "startProb": 0.80, "benchProb": 0.15, "cardProneness": 1.00, "per90": { "shots": 2.4, "sot": 0.85, "goals": 0.38, "assists": 0.18, "fouls": 0.80 } },
-    { "id": "tavernier",  "name": "Marcus Tavernier",   "team": "bournemouth", "role": "MID", "startProb": 0.70, "benchProb": 0.22, "cardProneness": 1.20, "per90": { "shots": 1.4, "sot": 0.45, "goals": 0.16, "assists": 0.16, "fouls": 1.50 } },
-    { "id": "tyler-adams","name": "Tyler Adams",        "team": "bournemouth", "role": "MID", "startProb": 0.80, "benchProb": 0.12, "cardProneness": 1.45, "per90": { "shots": 0.7, "sot": 0.20, "goals": 0.05, "assists": 0.06, "fouls": 2.30 } },
-    { "id": "christie",   "name": "Ryan Christie",      "team": "bournemouth", "role": "MID", "startProb": 0.70, "benchProb": 0.22, "cardProneness": 1.25, "per90": { "shots": 1.0, "sot": 0.30, "goals": 0.10, "assists": 0.12, "fouls": 1.60 } },
-    { "id": "alex-scott", "name": "Alex Scott",         "team": "bournemouth", "role": "MID", "startProb": 0.65, "benchProb": 0.26, "cardProneness": 1.30, "per90": { "shots": 1.2, "sot": 0.35, "goals": 0.12, "assists": 0.12, "fouls": 1.70 } },
-    { "id": "brooks-bou", "name": "David Brooks",       "team": "bournemouth", "role": "AM",  "startProb": 0.45, "benchProb": 0.40, "cardProneness": 1.00, "per90": { "shots": 1.5, "sot": 0.50, "goals": 0.18, "assists": 0.14, "fouls": 0.90 } },
-    { "id": "diakite",    "name": "Bafodé Diakité",     "team": "bournemouth", "role": "DEF", "startProb": 0.85, "benchProb": 0.08, "cardProneness": 1.30, "per90": { "shots": 0.5, "sot": 0.15, "goals": 0.06, "assists": 0.04, "fouls": 1.50 } },
-    { "id": "senesi",     "name": "Marcos Senesi",      "team": "bournemouth", "role": "DEF", "startProb": 0.85, "benchProb": 0.08, "cardProneness": 1.25, "per90": { "shots": 0.5, "sot": 0.15, "goals": 0.07, "assists": 0.03, "fouls": 1.30 } },
-    { "id": "truffert",   "name": "Adrien Truffert",    "team": "bournemouth", "role": "DEF", "startProb": 0.80, "benchProb": 0.13, "cardProneness": 1.20, "per90": { "shots": 0.6, "sot": 0.18, "goals": 0.05, "assists": 0.12, "fouls": 1.40 } },
-    { "id": "adam-smith", "name": "Adam Smith",         "team": "bournemouth", "role": "DEF", "startProb": 0.75, "benchProb": 0.16, "cardProneness": 1.25, "per90": { "shots": 0.5, "sot": 0.14, "goals": 0.04, "assists": 0.08, "fouls": 1.30 } },
-
-    { "id": "salah",      "name": "Mohamed Salah",      "team": "liverpool", "role": "FWD", "startProb": 0.88, "benchProb": 0.09, "cardProneness": 0.80, "per90": { "shots": 3.9, "sot": 1.55, "goals": 0.70, "assists": 0.32, "fouls": 0.50 } },
-    { "id": "isak",       "name": "Alexander Isak",     "team": "liverpool", "role": "FWD", "startProb": 0.62, "benchProb": 0.30, "cardProneness": 0.95, "per90": { "shots": 3.2, "sot": 1.25, "goals": 0.62, "assists": 0.10, "fouls": 0.80 } },
-    { "id": "ekitike",    "name": "Hugo Ekitiké",       "team": "liverpool", "role": "FWD", "startProb": 0.60, "benchProb": 0.32, "cardProneness": 1.10, "per90": { "shots": 3.0, "sot": 1.15, "goals": 0.52, "assists": 0.14, "fouls": 1.10 } },
-    { "id": "gakpo",      "name": "Cody Gakpo",         "team": "liverpool", "role": "AM",  "startProb": 0.72, "benchProb": 0.22, "cardProneness": 0.95, "per90": { "shots": 2.4, "sot": 0.90, "goals": 0.38, "assists": 0.16, "fouls": 0.70 } },
-    { "id": "wirtz",      "name": "Florian Wirtz",      "team": "liverpool", "role": "AM",  "startProb": 0.70, "benchProb": 0.24, "cardProneness": 1.00, "per90": { "shots": 1.9, "sot": 0.65, "goals": 0.25, "assists": 0.30, "fouls": 0.90 } },
-    { "id": "szoboszlai", "name": "Dominik Szoboszlai", "team": "liverpool", "role": "MID", "startProb": 0.80, "benchProb": 0.14, "cardProneness": 1.20, "per90": { "shots": 1.9, "sot": 0.60, "goals": 0.20, "assists": 0.18, "fouls": 1.40 } },
-    { "id": "mac-allister","name": "Alexis Mac Allister","team": "liverpool", "role": "MID", "startProb": 0.78, "benchProb": 0.15, "cardProneness": 1.30, "per90": { "shots": 1.2, "sot": 0.40, "goals": 0.15, "assists": 0.16, "fouls": 1.60 } },
-    { "id": "gravenberch","name": "Ryan Gravenberch",   "team": "liverpool", "role": "MID", "startProb": 0.85, "benchProb": 0.10, "cardProneness": 1.35, "per90": { "shots": 0.9, "sot": 0.28, "goals": 0.09, "assists": 0.10, "fouls": 1.80 } },
-    { "id": "van-dijk",   "name": "Virgil van Dijk",    "team": "liverpool", "role": "DEF", "startProb": 0.92, "benchProb": 0.04, "cardProneness": 1.10, "per90": { "shots": 0.7, "sot": 0.25, "goals": 0.11, "assists": 0.04, "fouls": 0.90 } },
-    { "id": "konate",     "name": "Ibrahima Konaté",    "team": "liverpool", "role": "DEF", "startProb": 0.80, "benchProb": 0.12, "cardProneness": 1.30, "per90": { "shots": 0.4, "sot": 0.12, "goals": 0.05, "assists": 0.02, "fouls": 1.20 } },
-    { "id": "kerkez",     "name": "Milos Kerkez",       "team": "liverpool", "role": "DEF", "startProb": 0.75, "benchProb": 0.18, "cardProneness": 1.35, "per90": { "shots": 0.5, "sot": 0.15, "goals": 0.04, "assists": 0.12, "fouls": 1.60 } },
-    { "id": "frimpong",   "name": "Jeremie Frimpong",   "team": "liverpool", "role": "DEF", "startProb": 0.60, "benchProb": 0.30, "cardProneness": 1.15, "per90": { "shots": 1.0, "sot": 0.30, "goals": 0.10, "assists": 0.16, "fouls": 1.20 } },
-    { "id": "bradley",    "name": "Conor Bradley",      "team": "liverpool", "role": "DEF", "startProb": 0.50, "benchProb": 0.35, "cardProneness": 1.25, "per90": { "shots": 0.7, "sot": 0.20, "goals": 0.06, "assists": 0.14, "fouls": 1.40 } },
-
-    { "id": "piroe",      "name": "Joël Piroe",         "team": "leeds", "role": "FWD", "startProb": 0.60, "benchProb": 0.32, "cardProneness": 1.00, "per90": { "shots": 2.6, "sot": 0.95, "goals": 0.40, "assists": 0.10, "fouls": 0.90 } },
-    { "id": "calvert-lewin","name": "Dominic Calvert-Lewin","team": "leeds", "role": "FWD", "startProb": 0.60, "benchProb": 0.30, "cardProneness": 1.20, "per90": { "shots": 2.3, "sot": 0.80, "goals": 0.33, "assists": 0.08, "fouls": 1.60 } },
-    { "id": "dan-james",  "name": "Daniel James",       "team": "leeds", "role": "AM",  "startProb": 0.80, "benchProb": 0.14, "cardProneness": 1.00, "per90": { "shots": 1.9, "sot": 0.60, "goals": 0.20, "assists": 0.16, "fouls": 0.90 } },
-    { "id": "gnonto",     "name": "Wilfried Gnonto",    "team": "leeds", "role": "AM",  "startProb": 0.65, "benchProb": 0.28, "cardProneness": 1.05, "per90": { "shots": 1.8, "sot": 0.55, "goals": 0.18, "assists": 0.14, "fouls": 0.90 } },
-    { "id": "okafor",     "name": "Noah Okafor",        "team": "leeds", "role": "AM",  "startProb": 0.55, "benchProb": 0.34, "cardProneness": 1.05, "per90": { "shots": 1.9, "sot": 0.60, "goals": 0.22, "assists": 0.12, "fouls": 0.90 } },
-    { "id": "aaronson",   "name": "Brenden Aaronson",   "team": "leeds", "role": "AM",  "startProb": 0.55, "benchProb": 0.34, "cardProneness": 1.25, "per90": { "shots": 1.4, "sot": 0.45, "goals": 0.14, "assists": 0.14, "fouls": 1.40 } },
-    { "id": "stach",      "name": "Anton Stach",        "team": "leeds", "role": "MID", "startProb": 0.80, "benchProb": 0.13, "cardProneness": 1.40, "per90": { "shots": 0.9, "sot": 0.28, "goals": 0.08, "assists": 0.10, "fouls": 2.10 } },
-    { "id": "ampadu",     "name": "Ethan Ampadu",       "team": "leeds", "role": "MID", "startProb": 0.82, "benchProb": 0.11, "cardProneness": 1.40, "per90": { "shots": 0.7, "sot": 0.20, "goals": 0.05, "assists": 0.06, "fouls": 1.90 } },
-    { "id": "tanaka",     "name": "Ao Tanaka",          "team": "leeds", "role": "MID", "startProb": 0.50, "benchProb": 0.35, "cardProneness": 1.30, "per90": { "shots": 0.8, "sot": 0.25, "goals": 0.07, "assists": 0.08, "fouls": 1.80 } },
-    { "id": "bijol",      "name": "Jaka Bijol",         "team": "leeds", "role": "DEF", "startProb": 0.85, "benchProb": 0.08, "cardProneness": 1.40, "per90": { "shots": 0.6, "sot": 0.18, "goals": 0.08, "assists": 0.02, "fouls": 1.60 } },
-    { "id": "rodon",      "name": "Joe Rodon",          "team": "leeds", "role": "DEF", "startProb": 0.85, "benchProb": 0.08, "cardProneness": 1.30, "per90": { "shots": 0.5, "sot": 0.15, "goals": 0.05, "assists": 0.02, "fouls": 1.40 } },
-    { "id": "struijk",    "name": "Pascal Struijk",     "team": "leeds", "role": "DEF", "startProb": 0.75, "benchProb": 0.16, "cardProneness": 1.25, "per90": { "shots": 0.5, "sot": 0.14, "goals": 0.05, "assists": 0.03, "fouls": 1.30 } },
-    { "id": "gudmundsson","name": "Gabriel Gudmundsson","team": "leeds", "role": "DEF", "startProb": 0.70, "benchProb": 0.20, "cardProneness": 1.20, "per90": { "shots": 0.6, "sot": 0.18, "goals": 0.05, "assists": 0.12, "fouls": 1.30 } },
-
-    { "id": "mateta",     "name": "Jean-Philippe Mateta","team": "crystal-palace", "role": "FWD", "startProb": 0.85, "benchProb": 0.10, "cardProneness": 1.15, "per90": { "shots": 3.0, "sot": 1.10, "goals": 0.48, "assists": 0.10, "fouls": 1.50 } },
-    { "id": "sarr",       "name": "Ismaïla Sarr",       "team": "crystal-palace", "role": "AM",  "startProb": 0.85, "benchProb": 0.10, "cardProneness": 1.05, "per90": { "shots": 2.5, "sot": 0.90, "goals": 0.35, "assists": 0.16, "fouls": 1.10 } },
-    { "id": "pino",       "name": "Yeremy Pino",        "team": "crystal-palace", "role": "AM",  "startProb": 0.70, "benchProb": 0.24, "cardProneness": 1.05, "per90": { "shots": 2.0, "sot": 0.65, "goals": 0.24, "assists": 0.16, "fouls": 1.00 } },
-    { "id": "kamada",     "name": "Daichi Kamada",      "team": "crystal-palace", "role": "MID", "startProb": 0.72, "benchProb": 0.22, "cardProneness": 1.20, "per90": { "shots": 1.3, "sot": 0.40, "goals": 0.14, "assists": 0.14, "fouls": 1.30 } },
-    { "id": "devenny",    "name": "Justin Devenny",     "team": "crystal-palace", "role": "MID", "startProb": 0.50, "benchProb": 0.36, "cardProneness": 1.20, "per90": { "shots": 1.2, "sot": 0.38, "goals": 0.12, "assists": 0.10, "fouls": 1.40 } },
-    { "id": "wharton",    "name": "Adam Wharton",       "team": "crystal-palace", "role": "MID", "startProb": 0.82, "benchProb": 0.12, "cardProneness": 1.30, "per90": { "shots": 0.8, "sot": 0.25, "goals": 0.07, "assists": 0.14, "fouls": 1.70 } },
-    { "id": "hughes",     "name": "Will Hughes",        "team": "crystal-palace", "role": "MID", "startProb": 0.70, "benchProb": 0.22, "cardProneness": 1.30, "per90": { "shots": 0.9, "sot": 0.28, "goals": 0.08, "assists": 0.10, "fouls": 1.60 } },
-    { "id": "guehi",      "name": "Marc Guéhi",         "team": "crystal-palace", "role": "DEF", "startProb": 0.88, "benchProb": 0.06, "cardProneness": 1.15, "per90": { "shots": 0.5, "sot": 0.15, "goals": 0.06, "assists": 0.02, "fouls": 1.10 } },
-    { "id": "lacroix",    "name": "Maxence Lacroix",    "team": "crystal-palace", "role": "DEF", "startProb": 0.85, "benchProb": 0.08, "cardProneness": 1.35, "per90": { "shots": 0.5, "sot": 0.16, "goals": 0.07, "assists": 0.02, "fouls": 1.50 } },
-    { "id": "richards",   "name": "Chris Richards",     "team": "crystal-palace", "role": "DEF", "startProb": 0.80, "benchProb": 0.12, "cardProneness": 1.40, "per90": { "shots": 0.5, "sot": 0.15, "goals": 0.06, "assists": 0.02, "fouls": 1.60 } },
-    { "id": "munoz",      "name": "Daniel Muñoz",       "team": "crystal-palace", "role": "DEF", "startProb": 0.88, "benchProb": 0.06, "cardProneness": 1.40, "per90": { "shots": 1.0, "sot": 0.30, "goals": 0.12, "assists": 0.16, "fouls": 1.70 } },
-    { "id": "mitchell",   "name": "Tyrick Mitchell",    "team": "crystal-palace", "role": "DEF", "startProb": 0.80, "benchProb": 0.13, "cardProneness": 1.30, "per90": { "shots": 0.6, "sot": 0.18, "goals": 0.04, "assists": 0.12, "fouls": 1.50 } },
-
-    { "id": "jimenez",    "name": "Raúl Jiménez",       "team": "fulham", "role": "FWD", "startProb": 0.80, "benchProb": 0.14, "cardProneness": 1.15, "per90": { "shots": 2.6, "sot": 0.95, "goals": 0.40, "assists": 0.12, "fouls": 1.40 } },
-    { "id": "muniz",      "name": "Rodrigo Muniz",      "team": "fulham", "role": "FWD", "startProb": 0.45, "benchProb": 0.42, "cardProneness": 1.10, "per90": { "shots": 2.4, "sot": 0.85, "goals": 0.38, "assists": 0.08, "fouls": 1.20 } },
-    { "id": "iwobi",      "name": "Alex Iwobi",         "team": "fulham", "role": "AM",  "startProb": 0.85, "benchProb": 0.10, "cardProneness": 1.05, "per90": { "shots": 1.6, "sot": 0.50, "goals": 0.18, "assists": 0.18, "fouls": 1.10 } },
-    { "id": "harry-wilson","name": "Harry Wilson",      "team": "fulham", "role": "AM",  "startProb": 0.70, "benchProb": 0.24, "cardProneness": 1.05, "per90": { "shots": 1.8, "sot": 0.60, "goals": 0.22, "assists": 0.18, "fouls": 0.90 } },
-    { "id": "smith-rowe", "name": "Emile Smith Rowe",   "team": "fulham", "role": "AM",  "startProb": 0.60, "benchProb": 0.32, "cardProneness": 1.05, "per90": { "shots": 1.7, "sot": 0.55, "goals": 0.20, "assists": 0.14, "fouls": 1.00 } },
-    { "id": "berge",      "name": "Sander Berge",       "team": "fulham", "role": "MID", "startProb": 0.80, "benchProb": 0.13, "cardProneness": 1.30, "per90": { "shots": 1.1, "sot": 0.35, "goals": 0.12, "assists": 0.08, "fouls": 1.60 } },
-    { "id": "lukic",      "name": "Saša Lukić",         "team": "fulham", "role": "MID", "startProb": 0.78, "benchProb": 0.15, "cardProneness": 1.45, "per90": { "shots": 0.9, "sot": 0.28, "goals": 0.08, "assists": 0.08, "fouls": 2.00 } },
-    { "id": "cairney",    "name": "Tom Cairney",        "team": "fulham", "role": "MID", "startProb": 0.40, "benchProb": 0.40, "cardProneness": 1.15, "per90": { "shots": 0.8, "sot": 0.25, "goals": 0.07, "assists": 0.12, "fouls": 1.40 } },
-    { "id": "bassey",     "name": "Calvin Bassey",      "team": "fulham", "role": "DEF", "startProb": 0.88, "benchProb": 0.06, "cardProneness": 1.25, "per90": { "shots": 0.5, "sot": 0.15, "goals": 0.05, "assists": 0.04, "fouls": 1.30 } },
-    { "id": "diop",       "name": "Issa Diop",          "team": "fulham", "role": "DEF", "startProb": 0.80, "benchProb": 0.12, "cardProneness": 1.30, "per90": { "shots": 0.5, "sot": 0.16, "goals": 0.06, "assists": 0.02, "fouls": 1.40 } },
-    { "id": "robinson",   "name": "Antonee Robinson",   "team": "fulham", "role": "DEF", "startProb": 0.85, "benchProb": 0.08, "cardProneness": 1.30, "per90": { "shots": 0.6, "sot": 0.18, "goals": 0.05, "assists": 0.16, "fouls": 1.50 } },
-    { "id": "castagne",   "name": "Timothy Castagne",   "team": "fulham", "role": "DEF", "startProb": 0.70, "benchProb": 0.20, "cardProneness": 1.25, "per90": { "shots": 0.5, "sot": 0.15, "goals": 0.04, "assists": 0.10, "fouls": 1.40 } },
-    { "id": "tete",       "name": "Kenny Tete",         "team": "fulham", "role": "DEF", "startProb": 0.60, "benchProb": 0.28, "cardProneness": 1.25, "per90": { "shots": 0.6, "sot": 0.18, "goals": 0.04, "assists": 0.10, "fouls": 1.40 } },
-
-    { "id": "sesko",      "name": "Benjamin Šeško",     "team": "man-utd", "role": "FWD", "startProb": 0.80, "benchProb": 0.15, "cardProneness": 1.10, "per90": { "shots": 3.1, "sot": 1.15, "goals": 0.50, "assists": 0.10, "fouls": 1.20 } },
-    { "id": "mbeumo",     "name": "Bryan Mbeumo",       "team": "man-utd", "role": "AM",  "startProb": 0.88, "benchProb": 0.08, "cardProneness": 1.05, "per90": { "shots": 2.7, "sot": 0.95, "goals": 0.40, "assists": 0.18, "fouls": 1.00 } },
-    { "id": "cunha",      "name": "Matheus Cunha",      "team": "man-utd", "role": "AM",  "startProb": 0.85, "benchProb": 0.10, "cardProneness": 1.30, "per90": { "shots": 2.5, "sot": 0.85, "goals": 0.32, "assists": 0.20, "fouls": 1.50 } },
-    { "id": "fernandes",  "name": "Bruno Fernandes",    "team": "man-utd", "role": "MID", "startProb": 0.92, "benchProb": 0.04, "cardProneness": 1.25, "per90": { "shots": 2.6, "sot": 0.85, "goals": 0.32, "assists": 0.26, "fouls": 1.40 } },
-    { "id": "amad",       "name": "Amad Diallo",        "team": "man-utd", "role": "AM",  "startProb": 0.70, "benchProb": 0.24, "cardProneness": 1.15, "per90": { "shots": 1.8, "sot": 0.60, "goals": 0.20, "assists": 0.20, "fouls": 1.20 } },
-    { "id": "mount",      "name": "Mason Mount",        "team": "man-utd", "role": "AM",  "startProb": 0.40, "benchProb": 0.42, "cardProneness": 1.15, "per90": { "shots": 1.5, "sot": 0.50, "goals": 0.16, "assists": 0.14, "fouls": 1.10 } },
-    { "id": "casemiro",   "name": "Casemiro",           "team": "man-utd", "role": "MID", "startProb": 0.70, "benchProb": 0.20, "cardProneness": 1.60, "per90": { "shots": 0.9, "sot": 0.28, "goals": 0.10, "assists": 0.06, "fouls": 2.40 } },
-    { "id": "ugarte",     "name": "Manuel Ugarte",      "team": "man-utd", "role": "MID", "startProb": 0.60, "benchProb": 0.30, "cardProneness": 1.55, "per90": { "shots": 0.6, "sot": 0.18, "goals": 0.04, "assists": 0.06, "fouls": 2.50 } },
-    { "id": "mainoo",     "name": "Kobbie Mainoo",      "team": "man-utd", "role": "MID", "startProb": 0.50, "benchProb": 0.36, "cardProneness": 1.20, "per90": { "shots": 0.9, "sot": 0.28, "goals": 0.08, "assists": 0.08, "fouls": 1.50 } },
-    { "id": "de-ligt",    "name": "Matthijs de Ligt",   "team": "man-utd", "role": "DEF", "startProb": 0.85, "benchProb": 0.08, "cardProneness": 1.30, "per90": { "shots": 0.5, "sot": 0.16, "goals": 0.07, "assists": 0.02, "fouls": 1.20 } },
-    { "id": "maguire",    "name": "Harry Maguire",      "team": "man-utd", "role": "DEF", "startProb": 0.75, "benchProb": 0.16, "cardProneness": 1.30, "per90": { "shots": 0.6, "sot": 0.20, "goals": 0.09, "assists": 0.03, "fouls": 1.30 } },
-    { "id": "shaw",       "name": "Luke Shaw",          "team": "man-utd", "role": "DEF", "startProb": 0.70, "benchProb": 0.20, "cardProneness": 1.20, "per90": { "shots": 0.4, "sot": 0.12, "goals": 0.03, "assists": 0.08, "fouls": 1.20 } },
-    { "id": "dalot",      "name": "Diogo Dalot",        "team": "man-utd", "role": "DEF", "startProb": 0.80, "benchProb": 0.14, "cardProneness": 1.30, "per90": { "shots": 0.8, "sot": 0.25, "goals": 0.07, "assists": 0.12, "fouls": 1.40 } },
-    { "id": "dorgu",      "name": "Patrick Dorgu",      "team": "man-utd", "role": "DEF", "startProb": 0.65, "benchProb": 0.26, "cardProneness": 1.40, "per90": { "shots": 0.7, "sot": 0.20, "goals": 0.05, "assists": 0.10, "fouls": 1.70 } }
-  ]
+    {
+      "id": "haaland",
+      "name": "Erling Haaland",
+      "team": "man-city",
+      "role": "FWD",
+      "startProb": 0.92,
+      "benchProb": 0.04,
+      "cardProneness": 1.05,
+      "per90": {
+        "shots": 4.3,
+        "sot": 2,
+        "goals": 1.08,
+        "assists": 0.12,
+        "fouls": 0.8
+      },
+      "roleType": "poacher",
+      "flank": "central",
+      "pace": 82,
+      "setPieces": {
+        "penalties": 0.85,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "foden",
+      "name": "Phil Foden",
+      "team": "man-city",
+      "role": "AM",
+      "startProb": 0.72,
+      "benchProb": 0.24,
+      "cardProneness": 0.9,
+      "per90": {
+        "shots": 2.3,
+        "sot": 0.85,
+        "goals": 0.42,
+        "assists": 0.24,
+        "fouls": 0.7
+      },
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "pace": 82,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "doku",
+      "name": "J\u00e9r\u00e9my Doku",
+      "team": "man-city",
+      "role": "AM",
+      "startProb": 0.68,
+      "benchProb": 0.27,
+      "cardProneness": 0.95,
+      "per90": {
+        "shots": 1.9,
+        "sot": 0.6,
+        "goals": 0.25,
+        "assists": 0.3,
+        "fouls": 0.9
+      },
+      "roleType": "traditional-winger",
+      "flank": "left",
+      "pace": 92,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "savinho",
+      "name": "Savinho",
+      "team": "man-city",
+      "role": "AM",
+      "startProb": 0.6,
+      "benchProb": 0.32,
+      "cardProneness": 1,
+      "per90": {
+        "shots": 2,
+        "sot": 0.65,
+        "goals": 0.22,
+        "assists": 0.26,
+        "fouls": 0.85
+      },
+      "roleType": "inverted-winger",
+      "flank": "right",
+      "pace": 86,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "cherki",
+      "name": "Rayan Cherki",
+      "team": "man-city",
+      "role": "AM",
+      "startProb": 0.55,
+      "benchProb": 0.36,
+      "cardProneness": 1,
+      "per90": {
+        "shots": 2.1,
+        "sot": 0.7,
+        "goals": 0.28,
+        "assists": 0.32,
+        "fouls": 0.8
+      },
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0.4,
+        "corners": 0.4
+      }
+    },
+    {
+      "id": "marmoush",
+      "name": "Omar Marmoush",
+      "team": "man-city",
+      "role": "FWD",
+      "startProb": 0.5,
+      "benchProb": 0.4,
+      "cardProneness": 1.05,
+      "per90": {
+        "shots": 2.8,
+        "sot": 1.1,
+        "goals": 0.5,
+        "assists": 0.18,
+        "fouls": 0.9
+      },
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "pace": 87,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "reijnders",
+      "name": "Tijjani Reijnders",
+      "team": "man-city",
+      "role": "MID",
+      "startProb": 0.8,
+      "benchProb": 0.15,
+      "cardProneness": 1.1,
+      "per90": {
+        "shots": 1.5,
+        "sot": 0.5,
+        "goals": 0.22,
+        "assists": 0.16,
+        "fouls": 1.1
+      },
+      "roleType": "box-to-box",
+      "flank": "central",
+      "pace": 79,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "rodri",
+      "name": "Rodri",
+      "team": "man-city",
+      "role": "MID",
+      "startProb": 0.7,
+      "benchProb": 0.2,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 1,
+        "sot": 0.3,
+        "goals": 0.1,
+        "assists": 0.1,
+        "fouls": 1.5
+      },
+      "roleType": "holding-mid",
+      "flank": "central",
+      "pace": 68,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "bernardo",
+      "name": "Bernardo Silva",
+      "team": "man-city",
+      "role": "MID",
+      "startProb": 0.65,
+      "benchProb": 0.28,
+      "cardProneness": 1.15,
+      "per90": {
+        "shots": 1.1,
+        "sot": 0.35,
+        "goals": 0.15,
+        "assists": 0.2,
+        "fouls": 1.2
+      },
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "pace": 76,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "nico-gonzalez",
+      "name": "Nico Gonz\u00e1lez",
+      "team": "man-city",
+      "role": "MID",
+      "startProb": 0.45,
+      "benchProb": 0.35,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.9,
+        "sot": 0.25,
+        "goals": 0.08,
+        "assists": 0.08,
+        "fouls": 1.6
+      },
+      "roleType": "holding-mid",
+      "flank": "central",
+      "pace": 70,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "gvardiol",
+      "name": "Jo\u0161ko Gvardiol",
+      "team": "man-city",
+      "role": "DEF",
+      "startProb": 0.85,
+      "benchProb": 0.08,
+      "cardProneness": 1.1,
+      "per90": {
+        "shots": 0.7,
+        "sot": 0.2,
+        "goals": 0.1,
+        "assists": 0.08,
+        "fouls": 1.1
+      },
+      "roleType": "ball-playing-defender",
+      "flank": "central",
+      "pace": 82,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "dias",
+      "name": "R\u00faben Dias",
+      "team": "man-city",
+      "role": "DEF",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.1,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.06,
+        "assists": 0.04,
+        "fouls": 1
+      },
+      "roleType": "aggressive-stopper",
+      "flank": "central",
+      "pace": 74,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "ait-nouri",
+      "name": "Rayan A\u00eft-Nouri",
+      "team": "man-city",
+      "role": "DEF",
+      "startProb": 0.7,
+      "benchProb": 0.2,
+      "cardProneness": 1.2,
+      "per90": {
+        "shots": 0.8,
+        "sot": 0.22,
+        "goals": 0.07,
+        "assists": 0.16,
+        "fouls": 1.5
+      },
+      "roleType": "attacking-fullback",
+      "flank": "left",
+      "pace": 84,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "oreilly",
+      "name": "Nico O'Reilly",
+      "team": "man-city",
+      "role": "DEF",
+      "startProb": 0.55,
+      "benchProb": 0.3,
+      "cardProneness": 1.15,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.05,
+        "assists": 0.1,
+        "fouls": 1.3
+      },
+      "roleType": "inverted-fullback",
+      "flank": "left",
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "isidor",
+      "name": "Wilson Isidor",
+      "team": "sunderland",
+      "role": "FWD",
+      "startProb": 0.6,
+      "benchProb": 0.32,
+      "cardProneness": 1.1,
+      "per90": {
+        "shots": 2.5,
+        "sot": 0.9,
+        "goals": 0.38,
+        "assists": 0.1,
+        "fouls": 1.3
+      },
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "pace": 84,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "mayenda",
+      "name": "Eliezer Mayenda",
+      "team": "sunderland",
+      "role": "FWD",
+      "startProb": 0.6,
+      "benchProb": 0.3,
+      "cardProneness": 1.1,
+      "per90": {
+        "shots": 2.2,
+        "sot": 0.8,
+        "goals": 0.32,
+        "assists": 0.12,
+        "fouls": 1.2
+      },
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "pace": 85,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "brobbey",
+      "name": "Brian Brobbey",
+      "team": "sunderland",
+      "role": "FWD",
+      "startProb": 0.5,
+      "benchProb": 0.38,
+      "cardProneness": 1.15,
+      "per90": {
+        "shots": 2.4,
+        "sot": 0.85,
+        "goals": 0.35,
+        "assists": 0.1,
+        "fouls": 1.5
+      },
+      "roleType": "target-forward",
+      "flank": "central",
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "talbi",
+      "name": "Chemsdine Talbi",
+      "team": "sunderland",
+      "role": "AM",
+      "startProb": 0.65,
+      "benchProb": 0.28,
+      "cardProneness": 1.1,
+      "per90": {
+        "shots": 1.8,
+        "sot": 0.55,
+        "goals": 0.2,
+        "assists": 0.16,
+        "fouls": 1.1
+      },
+      "roleType": "inverted-winger",
+      "flank": "right",
+      "pace": 85,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "le-fee",
+      "name": "Enzo Le F\u00e9e",
+      "team": "sunderland",
+      "role": "MID",
+      "startProb": 0.7,
+      "benchProb": 0.22,
+      "cardProneness": 1.2,
+      "per90": {
+        "shots": 1.3,
+        "sot": 0.4,
+        "goals": 0.14,
+        "assists": 0.18,
+        "fouls": 1.4
+      },
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0.5,
+        "corners": 0.5
+      }
+    },
+    {
+      "id": "xhaka",
+      "name": "Granit Xhaka",
+      "team": "sunderland",
+      "role": "MID",
+      "startProb": 0.9,
+      "benchProb": 0.05,
+      "cardProneness": 1.45,
+      "per90": {
+        "shots": 1,
+        "sot": 0.3,
+        "goals": 0.1,
+        "assists": 0.14,
+        "fouls": 1.7
+      },
+      "roleType": "deep-playmaker",
+      "flank": "central",
+      "pace": 62,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0.6,
+        "corners": 0.6
+      }
+    },
+    {
+      "id": "sadiki",
+      "name": "Noah Sadiki",
+      "team": "sunderland",
+      "role": "MID",
+      "startProb": 0.72,
+      "benchProb": 0.2,
+      "cardProneness": 1.35,
+      "per90": {
+        "shots": 0.6,
+        "sot": 0.18,
+        "goals": 0.05,
+        "assists": 0.06,
+        "fouls": 2
+      },
+      "roleType": "holding-mid",
+      "flank": "central",
+      "pace": 76,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "bertrand-traore",
+      "name": "Bertrand Traor\u00e9",
+      "team": "sunderland",
+      "role": "MID",
+      "startProb": 0.5,
+      "benchProb": 0.35,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.8,
+        "sot": 0.25,
+        "goals": 0.06,
+        "assists": 0.1,
+        "fouls": 1.8
+      },
+      "roleType": "traditional-winger",
+      "flank": "right",
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "ballard",
+      "name": "Daniel Ballard",
+      "team": "sunderland",
+      "role": "DEF",
+      "startProb": 0.85,
+      "benchProb": 0.08,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.6,
+        "sot": 0.2,
+        "goals": 0.09,
+        "assists": 0.03,
+        "fouls": 1.4
+      },
+      "roleType": "aggressive-stopper",
+      "flank": "central",
+      "pace": 74,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "mukiele",
+      "name": "Nordi Mukiele",
+      "team": "sunderland",
+      "role": "DEF",
+      "startProb": 0.8,
+      "benchProb": 0.12,
+      "cardProneness": 1.35,
+      "per90": {
+        "shots": 0.4,
+        "sot": 0.12,
+        "goals": 0.04,
+        "assists": 0.06,
+        "fouls": 1.6
+      },
+      "roleType": "defensive-fullback",
+      "flank": "right",
+      "pace": 86,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "alderete",
+      "name": "Omar Alderete",
+      "team": "sunderland",
+      "role": "DEF",
+      "startProb": 0.78,
+      "benchProb": 0.14,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.4,
+        "sot": 0.12,
+        "goals": 0.05,
+        "assists": 0.02,
+        "fouls": 1.5
+      },
+      "roleType": "cover-defender",
+      "flank": "central",
+      "pace": 72,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "hume",
+      "name": "Trai Hume",
+      "team": "sunderland",
+      "role": "DEF",
+      "startProb": 0.82,
+      "benchProb": 0.1,
+      "cardProneness": 1.2,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.04,
+        "assists": 0.08,
+        "fouls": 1.4
+      },
+      "roleType": "defensive-fullback",
+      "flank": "right",
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "evanilson",
+      "name": "Evanilson",
+      "team": "bournemouth",
+      "role": "FWD",
+      "startProb": 0.82,
+      "benchProb": 0.12,
+      "cardProneness": 1.15,
+      "per90": {
+        "shots": 2.9,
+        "sot": 1.05,
+        "goals": 0.45,
+        "assists": 0.12,
+        "fouls": 1.4
+      },
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "pace": 81,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "semenyo",
+      "name": "Antoine Semenyo",
+      "team": "bournemouth",
+      "role": "AM",
+      "startProb": 0.88,
+      "benchProb": 0.07,
+      "cardProneness": 1.1,
+      "per90": {
+        "shots": 2.8,
+        "sot": 1,
+        "goals": 0.42,
+        "assists": 0.2,
+        "fouls": 1.2
+      },
+      "roleType": "inside-forward",
+      "flank": "left",
+      "pace": 88,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "kluivert",
+      "name": "Justin Kluivert",
+      "team": "bournemouth",
+      "role": "AM",
+      "startProb": 0.8,
+      "benchProb": 0.15,
+      "cardProneness": 1,
+      "per90": {
+        "shots": 2.4,
+        "sot": 0.85,
+        "goals": 0.38,
+        "assists": 0.18,
+        "fouls": 0.8
+      },
+      "roleType": "inverted-winger",
+      "flank": "right",
+      "pace": 82,
+      "setPieces": {
+        "penalties": 0.7,
+        "freeKicks": 0.6,
+        "corners": 0
+      }
+    },
+    {
+      "id": "tavernier",
+      "name": "Marcus Tavernier",
+      "team": "bournemouth",
+      "role": "MID",
+      "startProb": 0.7,
+      "benchProb": 0.22,
+      "cardProneness": 1.2,
+      "per90": {
+        "shots": 1.4,
+        "sot": 0.45,
+        "goals": 0.16,
+        "assists": 0.16,
+        "fouls": 1.5
+      },
+      "roleType": "box-to-box",
+      "flank": "central",
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0.5
+      }
+    },
+    {
+      "id": "tyler-adams",
+      "name": "Tyler Adams",
+      "team": "bournemouth",
+      "role": "MID",
+      "startProb": 0.8,
+      "benchProb": 0.12,
+      "cardProneness": 1.45,
+      "per90": {
+        "shots": 0.7,
+        "sot": 0.2,
+        "goals": 0.05,
+        "assists": 0.06,
+        "fouls": 2.3
+      },
+      "roleType": "holding-mid",
+      "flank": "central",
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "christie",
+      "name": "Ryan Christie",
+      "team": "bournemouth",
+      "role": "MID",
+      "startProb": 0.7,
+      "benchProb": 0.22,
+      "cardProneness": 1.25,
+      "per90": {
+        "shots": 1,
+        "sot": 0.3,
+        "goals": 0.1,
+        "assists": 0.12,
+        "fouls": 1.6
+      },
+      "roleType": "box-to-box",
+      "flank": "central",
+      "pace": 74,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "alex-scott",
+      "name": "Alex Scott",
+      "team": "bournemouth",
+      "role": "MID",
+      "startProb": 0.65,
+      "benchProb": 0.26,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 1.2,
+        "sot": 0.35,
+        "goals": 0.12,
+        "assists": 0.12,
+        "fouls": 1.7
+      },
+      "roleType": "box-to-box",
+      "flank": "central",
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "brooks-bou",
+      "name": "David Brooks",
+      "team": "bournemouth",
+      "role": "AM",
+      "startProb": 0.45,
+      "benchProb": 0.4,
+      "cardProneness": 1,
+      "per90": {
+        "shots": 1.5,
+        "sot": 0.5,
+        "goals": 0.18,
+        "assists": 0.14,
+        "fouls": 0.9
+      },
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "pace": 76,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "diakite",
+      "name": "Bafod\u00e9 Diakit\u00e9",
+      "team": "bournemouth",
+      "role": "DEF",
+      "startProb": 0.85,
+      "benchProb": 0.08,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.06,
+        "assists": 0.04,
+        "fouls": 1.5
+      },
+      "roleType": "aggressive-stopper",
+      "flank": "central",
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "senesi",
+      "name": "Marcos Senesi",
+      "team": "bournemouth",
+      "role": "DEF",
+      "startProb": 0.85,
+      "benchProb": 0.08,
+      "cardProneness": 1.25,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.07,
+        "assists": 0.03,
+        "fouls": 1.3
+      },
+      "roleType": "ball-playing-defender",
+      "flank": "central",
+      "pace": 75,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "truffert",
+      "name": "Adrien Truffert",
+      "team": "bournemouth",
+      "role": "DEF",
+      "startProb": 0.8,
+      "benchProb": 0.13,
+      "cardProneness": 1.2,
+      "per90": {
+        "shots": 0.6,
+        "sot": 0.18,
+        "goals": 0.05,
+        "assists": 0.12,
+        "fouls": 1.4
+      },
+      "roleType": "attacking-fullback",
+      "flank": "left",
+      "pace": 82,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "adam-smith",
+      "name": "Adam Smith",
+      "team": "bournemouth",
+      "role": "DEF",
+      "startProb": 0.75,
+      "benchProb": 0.16,
+      "cardProneness": 1.25,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.14,
+        "goals": 0.04,
+        "assists": 0.08,
+        "fouls": 1.3
+      },
+      "roleType": "defensive-fullback",
+      "flank": "right",
+      "pace": 74,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "salah",
+      "name": "Mohamed Salah",
+      "team": "liverpool",
+      "role": "FWD",
+      "startProb": 0.88,
+      "benchProb": 0.09,
+      "cardProneness": 0.8,
+      "per90": {
+        "shots": 3.9,
+        "sot": 1.55,
+        "goals": 0.7,
+        "assists": 0.32,
+        "fouls": 0.5
+      },
+      "roleType": "inside-forward",
+      "flank": "right",
+      "pace": 88,
+      "setPieces": {
+        "penalties": 0.8,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "isak",
+      "name": "Alexander Isak",
+      "team": "liverpool",
+      "role": "FWD",
+      "startProb": 0.62,
+      "benchProb": 0.3,
+      "cardProneness": 0.95,
+      "per90": {
+        "shots": 3.2,
+        "sot": 1.25,
+        "goals": 0.62,
+        "assists": 0.1,
+        "fouls": 0.8
+      },
+      "roleType": "poacher",
+      "flank": "central",
+      "pace": 86,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "ekitike",
+      "name": "Hugo Ekitik\u00e9",
+      "team": "liverpool",
+      "role": "FWD",
+      "startProb": 0.6,
+      "benchProb": 0.32,
+      "cardProneness": 1.1,
+      "per90": {
+        "shots": 3,
+        "sot": 1.15,
+        "goals": 0.52,
+        "assists": 0.14,
+        "fouls": 1.1
+      },
+      "roleType": "pressing-forward",
+      "flank": "central",
+      "pace": 84,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "gakpo",
+      "name": "Cody Gakpo",
+      "team": "liverpool",
+      "role": "AM",
+      "startProb": 0.72,
+      "benchProb": 0.22,
+      "cardProneness": 0.95,
+      "per90": {
+        "shots": 2.4,
+        "sot": 0.9,
+        "goals": 0.38,
+        "assists": 0.16,
+        "fouls": 0.7
+      },
+      "roleType": "inside-forward",
+      "flank": "left",
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "wirtz",
+      "name": "Florian Wirtz",
+      "team": "liverpool",
+      "role": "AM",
+      "startProb": 0.7,
+      "benchProb": 0.24,
+      "cardProneness": 1,
+      "per90": {
+        "shots": 1.9,
+        "sot": 0.65,
+        "goals": 0.25,
+        "assists": 0.3,
+        "fouls": 0.9
+      },
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "pace": 79,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0.4
+      }
+    },
+    {
+      "id": "szoboszlai",
+      "name": "Dominik Szoboszlai",
+      "team": "liverpool",
+      "role": "MID",
+      "startProb": 0.8,
+      "benchProb": 0.14,
+      "cardProneness": 1.2,
+      "per90": {
+        "shots": 1.9,
+        "sot": 0.6,
+        "goals": 0.2,
+        "assists": 0.18,
+        "fouls": 1.4
+      },
+      "roleType": "box-to-box",
+      "flank": "central",
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0.7,
+        "corners": 0.5
+      }
+    },
+    {
+      "id": "mac-allister",
+      "name": "Alexis Mac Allister",
+      "team": "liverpool",
+      "role": "MID",
+      "startProb": 0.78,
+      "benchProb": 0.15,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 1.2,
+        "sot": 0.4,
+        "goals": 0.15,
+        "assists": 0.16,
+        "fouls": 1.6
+      },
+      "roleType": "box-to-box",
+      "flank": "central",
+      "pace": 74,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "gravenberch",
+      "name": "Ryan Gravenberch",
+      "team": "liverpool",
+      "role": "MID",
+      "startProb": 0.85,
+      "benchProb": 0.1,
+      "cardProneness": 1.35,
+      "per90": {
+        "shots": 0.9,
+        "sot": 0.28,
+        "goals": 0.09,
+        "assists": 0.1,
+        "fouls": 1.8
+      },
+      "roleType": "holding-mid",
+      "flank": "central",
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "van-dijk",
+      "name": "Virgil van Dijk",
+      "team": "liverpool",
+      "role": "DEF",
+      "startProb": 0.92,
+      "benchProb": 0.04,
+      "cardProneness": 1.1,
+      "per90": {
+        "shots": 0.7,
+        "sot": 0.25,
+        "goals": 0.11,
+        "assists": 0.04,
+        "fouls": 0.9
+      },
+      "roleType": "aggressive-stopper",
+      "flank": "central",
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "konate",
+      "name": "Ibrahima Konat\u00e9",
+      "team": "liverpool",
+      "role": "DEF",
+      "startProb": 0.8,
+      "benchProb": 0.12,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.4,
+        "sot": 0.12,
+        "goals": 0.05,
+        "assists": 0.02,
+        "fouls": 1.2
+      },
+      "roleType": "aggressive-stopper",
+      "flank": "central",
+      "pace": 88,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "kerkez",
+      "name": "Milos Kerkez",
+      "team": "liverpool",
+      "role": "DEF",
+      "startProb": 0.75,
+      "benchProb": 0.18,
+      "cardProneness": 1.35,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.04,
+        "assists": 0.12,
+        "fouls": 1.6
+      },
+      "roleType": "attacking-fullback",
+      "flank": "left",
+      "pace": 87,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "frimpong",
+      "name": "Jeremie Frimpong",
+      "team": "liverpool",
+      "role": "DEF",
+      "startProb": 0.6,
+      "benchProb": 0.3,
+      "cardProneness": 1.15,
+      "per90": {
+        "shots": 1,
+        "sot": 0.3,
+        "goals": 0.1,
+        "assists": 0.16,
+        "fouls": 1.2
+      },
+      "roleType": "wingback",
+      "flank": "right",
+      "pace": 90,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "bradley",
+      "name": "Conor Bradley",
+      "team": "liverpool",
+      "role": "DEF",
+      "startProb": 0.5,
+      "benchProb": 0.35,
+      "cardProneness": 1.25,
+      "per90": {
+        "shots": 0.7,
+        "sot": 0.2,
+        "goals": 0.06,
+        "assists": 0.14,
+        "fouls": 1.4
+      },
+      "roleType": "attacking-fullback",
+      "flank": "right",
+      "pace": 84,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "piroe",
+      "name": "Jo\u00ebl Piroe",
+      "team": "leeds",
+      "role": "FWD",
+      "startProb": 0.6,
+      "benchProb": 0.32,
+      "cardProneness": 1,
+      "per90": {
+        "shots": 2.6,
+        "sot": 0.95,
+        "goals": 0.4,
+        "assists": 0.1,
+        "fouls": 0.9
+      },
+      "roleType": "poacher",
+      "flank": "central",
+      "pace": 76,
+      "setPieces": {
+        "penalties": 0.8,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "calvert-lewin",
+      "name": "Dominic Calvert-Lewin",
+      "team": "leeds",
+      "role": "FWD",
+      "startProb": 0.6,
+      "benchProb": 0.3,
+      "cardProneness": 1.2,
+      "per90": {
+        "shots": 2.3,
+        "sot": 0.8,
+        "goals": 0.33,
+        "assists": 0.08,
+        "fouls": 1.6
+      },
+      "roleType": "target-forward",
+      "flank": "central",
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "dan-james",
+      "name": "Daniel James",
+      "team": "leeds",
+      "role": "AM",
+      "startProb": 0.8,
+      "benchProb": 0.14,
+      "cardProneness": 1,
+      "per90": {
+        "shots": 1.9,
+        "sot": 0.6,
+        "goals": 0.2,
+        "assists": 0.16,
+        "fouls": 0.9
+      },
+      "roleType": "traditional-winger",
+      "flank": "right",
+      "pace": 92,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "gnonto",
+      "name": "Wilfried Gnonto",
+      "team": "leeds",
+      "role": "AM",
+      "startProb": 0.65,
+      "benchProb": 0.28,
+      "cardProneness": 1.05,
+      "per90": {
+        "shots": 1.8,
+        "sot": 0.55,
+        "goals": 0.18,
+        "assists": 0.14,
+        "fouls": 0.9
+      },
+      "roleType": "inverted-winger",
+      "flank": "left",
+      "pace": 87,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "okafor",
+      "name": "Noah Okafor",
+      "team": "leeds",
+      "role": "AM",
+      "startProb": 0.55,
+      "benchProb": 0.34,
+      "cardProneness": 1.05,
+      "per90": {
+        "shots": 1.9,
+        "sot": 0.6,
+        "goals": 0.22,
+        "assists": 0.12,
+        "fouls": 0.9
+      },
+      "roleType": "inside-forward",
+      "flank": "left",
+      "pace": 86,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "aaronson",
+      "name": "Brenden Aaronson",
+      "team": "leeds",
+      "role": "AM",
+      "startProb": 0.55,
+      "benchProb": 0.34,
+      "cardProneness": 1.25,
+      "per90": {
+        "shots": 1.4,
+        "sot": 0.45,
+        "goals": 0.14,
+        "assists": 0.14,
+        "fouls": 1.4
+      },
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "stach",
+      "name": "Anton Stach",
+      "team": "leeds",
+      "role": "MID",
+      "startProb": 0.8,
+      "benchProb": 0.13,
+      "cardProneness": 1.4,
+      "per90": {
+        "shots": 0.9,
+        "sot": 0.28,
+        "goals": 0.08,
+        "assists": 0.1,
+        "fouls": 2.1
+      },
+      "roleType": "box-to-box",
+      "flank": "central",
+      "pace": 74,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "ampadu",
+      "name": "Ethan Ampadu",
+      "team": "leeds",
+      "role": "MID",
+      "startProb": 0.82,
+      "benchProb": 0.11,
+      "cardProneness": 1.4,
+      "per90": {
+        "shots": 0.7,
+        "sot": 0.2,
+        "goals": 0.05,
+        "assists": 0.06,
+        "fouls": 1.9
+      },
+      "roleType": "holding-mid",
+      "flank": "central",
+      "pace": 72,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "tanaka",
+      "name": "Ao Tanaka",
+      "team": "leeds",
+      "role": "MID",
+      "startProb": 0.5,
+      "benchProb": 0.35,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.8,
+        "sot": 0.25,
+        "goals": 0.07,
+        "assists": 0.08,
+        "fouls": 1.8
+      },
+      "roleType": "box-to-box",
+      "flank": "central",
+      "pace": 74,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "bijol",
+      "name": "Jaka Bijol",
+      "team": "leeds",
+      "role": "DEF",
+      "startProb": 0.85,
+      "benchProb": 0.08,
+      "cardProneness": 1.4,
+      "per90": {
+        "shots": 0.6,
+        "sot": 0.18,
+        "goals": 0.08,
+        "assists": 0.02,
+        "fouls": 1.6
+      },
+      "roleType": "aggressive-stopper",
+      "flank": "central",
+      "pace": 76,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "rodon",
+      "name": "Joe Rodon",
+      "team": "leeds",
+      "role": "DEF",
+      "startProb": 0.85,
+      "benchProb": 0.08,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.05,
+        "assists": 0.02,
+        "fouls": 1.4
+      },
+      "roleType": "cover-defender",
+      "flank": "central",
+      "pace": 74,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "struijk",
+      "name": "Pascal Struijk",
+      "team": "leeds",
+      "role": "DEF",
+      "startProb": 0.75,
+      "benchProb": 0.16,
+      "cardProneness": 1.25,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.14,
+        "goals": 0.05,
+        "assists": 0.03,
+        "fouls": 1.3
+      },
+      "roleType": "cover-defender",
+      "flank": "central",
+      "pace": 72,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "gudmundsson",
+      "name": "Gabriel Gudmundsson",
+      "team": "leeds",
+      "role": "DEF",
+      "startProb": 0.7,
+      "benchProb": 0.2,
+      "cardProneness": 1.2,
+      "per90": {
+        "shots": 0.6,
+        "sot": 0.18,
+        "goals": 0.05,
+        "assists": 0.12,
+        "fouls": 1.3
+      },
+      "roleType": "attacking-fullback",
+      "flank": "left",
+      "pace": 82,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0.5
+      }
+    },
+    {
+      "id": "mateta",
+      "name": "Jean-Philippe Mateta",
+      "team": "crystal-palace",
+      "role": "FWD",
+      "startProb": 0.85,
+      "benchProb": 0.1,
+      "cardProneness": 1.15,
+      "per90": {
+        "shots": 3,
+        "sot": 1.1,
+        "goals": 0.48,
+        "assists": 0.1,
+        "fouls": 1.5
+      },
+      "roleType": "target-forward",
+      "flank": "central",
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0.8,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "sarr",
+      "name": "Isma\u00efla Sarr",
+      "team": "crystal-palace",
+      "role": "AM",
+      "startProb": 0.85,
+      "benchProb": 0.1,
+      "cardProneness": 1.05,
+      "per90": {
+        "shots": 2.5,
+        "sot": 0.9,
+        "goals": 0.35,
+        "assists": 0.16,
+        "fouls": 1.1
+      },
+      "roleType": "inside-forward",
+      "flank": "right",
+      "pace": 88,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "pino",
+      "name": "Yeremy Pino",
+      "team": "crystal-palace",
+      "role": "AM",
+      "startProb": 0.7,
+      "benchProb": 0.24,
+      "cardProneness": 1.05,
+      "per90": {
+        "shots": 2,
+        "sot": 0.65,
+        "goals": 0.24,
+        "assists": 0.16,
+        "fouls": 1
+      },
+      "roleType": "inverted-winger",
+      "flank": "left",
+      "pace": 85,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "kamada",
+      "name": "Daichi Kamada",
+      "team": "crystal-palace",
+      "role": "MID",
+      "startProb": 0.72,
+      "benchProb": 0.22,
+      "cardProneness": 1.2,
+      "per90": {
+        "shots": 1.3,
+        "sot": 0.4,
+        "goals": 0.14,
+        "assists": 0.14,
+        "fouls": 1.3
+      },
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "pace": 74,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "devenny",
+      "name": "Justin Devenny",
+      "team": "crystal-palace",
+      "role": "MID",
+      "startProb": 0.5,
+      "benchProb": 0.36,
+      "cardProneness": 1.2,
+      "per90": {
+        "shots": 1.2,
+        "sot": 0.38,
+        "goals": 0.12,
+        "assists": 0.1,
+        "fouls": 1.4
+      },
+      "roleType": "box-to-box",
+      "flank": "central",
+      "pace": 76,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "wharton",
+      "name": "Adam Wharton",
+      "team": "crystal-palace",
+      "role": "MID",
+      "startProb": 0.82,
+      "benchProb": 0.12,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.8,
+        "sot": 0.25,
+        "goals": 0.07,
+        "assists": 0.14,
+        "fouls": 1.7
+      },
+      "roleType": "deep-playmaker",
+      "flank": "central",
+      "pace": 68,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0.6,
+        "corners": 0.7
+      }
+    },
+    {
+      "id": "hughes",
+      "name": "Will Hughes",
+      "team": "crystal-palace",
+      "role": "MID",
+      "startProb": 0.7,
+      "benchProb": 0.22,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.9,
+        "sot": 0.28,
+        "goals": 0.08,
+        "assists": 0.1,
+        "fouls": 1.6
+      },
+      "roleType": "box-to-box",
+      "flank": "central",
+      "pace": 70,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "guehi",
+      "name": "Marc Gu\u00e9hi",
+      "team": "crystal-palace",
+      "role": "DEF",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.15,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.06,
+        "assists": 0.02,
+        "fouls": 1.1
+      },
+      "roleType": "ball-playing-defender",
+      "flank": "central",
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "lacroix",
+      "name": "Maxence Lacroix",
+      "team": "crystal-palace",
+      "role": "DEF",
+      "startProb": 0.85,
+      "benchProb": 0.08,
+      "cardProneness": 1.35,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.16,
+        "goals": 0.07,
+        "assists": 0.02,
+        "fouls": 1.5
+      },
+      "roleType": "aggressive-stopper",
+      "flank": "central",
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "richards",
+      "name": "Chris Richards",
+      "team": "crystal-palace",
+      "role": "DEF",
+      "startProb": 0.8,
+      "benchProb": 0.12,
+      "cardProneness": 1.4,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.06,
+        "assists": 0.02,
+        "fouls": 1.6
+      },
+      "roleType": "aggressive-stopper",
+      "flank": "central",
+      "pace": 79,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "munoz",
+      "name": "Daniel Mu\u00f1oz",
+      "team": "crystal-palace",
+      "role": "DEF",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.4,
+      "per90": {
+        "shots": 1,
+        "sot": 0.3,
+        "goals": 0.12,
+        "assists": 0.16,
+        "fouls": 1.7
+      },
+      "roleType": "wingback",
+      "flank": "right",
+      "pace": 86,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "mitchell",
+      "name": "Tyrick Mitchell",
+      "team": "crystal-palace",
+      "role": "DEF",
+      "startProb": 0.8,
+      "benchProb": 0.13,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.6,
+        "sot": 0.18,
+        "goals": 0.04,
+        "assists": 0.12,
+        "fouls": 1.5
+      },
+      "roleType": "wingback",
+      "flank": "left",
+      "pace": 84,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "jimenez",
+      "name": "Ra\u00fal Jim\u00e9nez",
+      "team": "fulham",
+      "role": "FWD",
+      "startProb": 0.8,
+      "benchProb": 0.14,
+      "cardProneness": 1.15,
+      "per90": {
+        "shots": 2.6,
+        "sot": 0.95,
+        "goals": 0.4,
+        "assists": 0.12,
+        "fouls": 1.4
+      },
+      "roleType": "target-forward",
+      "flank": "central",
+      "pace": 70,
+      "setPieces": {
+        "penalties": 0.8,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "muniz",
+      "name": "Rodrigo Muniz",
+      "team": "fulham",
+      "role": "FWD",
+      "startProb": 0.45,
+      "benchProb": 0.42,
+      "cardProneness": 1.1,
+      "per90": {
+        "shots": 2.4,
+        "sot": 0.85,
+        "goals": 0.38,
+        "assists": 0.08,
+        "fouls": 1.2
+      },
+      "roleType": "poacher",
+      "flank": "central",
+      "pace": 76,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "iwobi",
+      "name": "Alex Iwobi",
+      "team": "fulham",
+      "role": "AM",
+      "startProb": 0.85,
+      "benchProb": 0.1,
+      "cardProneness": 1.05,
+      "per90": {
+        "shots": 1.6,
+        "sot": 0.5,
+        "goals": 0.18,
+        "assists": 0.18,
+        "fouls": 1.1
+      },
+      "roleType": "wide-playmaker",
+      "flank": "right",
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "harry-wilson",
+      "name": "Harry Wilson",
+      "team": "fulham",
+      "role": "AM",
+      "startProb": 0.7,
+      "benchProb": 0.24,
+      "cardProneness": 1.05,
+      "per90": {
+        "shots": 1.8,
+        "sot": 0.6,
+        "goals": 0.22,
+        "assists": 0.18,
+        "fouls": 0.9
+      },
+      "roleType": "inverted-winger",
+      "flank": "right",
+      "pace": 76,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0.7,
+        "corners": 0.6
+      }
+    },
+    {
+      "id": "smith-rowe",
+      "name": "Emile Smith Rowe",
+      "team": "fulham",
+      "role": "AM",
+      "startProb": 0.6,
+      "benchProb": 0.32,
+      "cardProneness": 1.05,
+      "per90": {
+        "shots": 1.7,
+        "sot": 0.55,
+        "goals": 0.2,
+        "assists": 0.14,
+        "fouls": 1
+      },
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "berge",
+      "name": "Sander Berge",
+      "team": "fulham",
+      "role": "MID",
+      "startProb": 0.8,
+      "benchProb": 0.13,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 1.1,
+        "sot": 0.35,
+        "goals": 0.12,
+        "assists": 0.08,
+        "fouls": 1.6
+      },
+      "roleType": "box-to-box",
+      "flank": "central",
+      "pace": 72,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "lukic",
+      "name": "Sa\u0161a Luki\u0107",
+      "team": "fulham",
+      "role": "MID",
+      "startProb": 0.78,
+      "benchProb": 0.15,
+      "cardProneness": 1.45,
+      "per90": {
+        "shots": 0.9,
+        "sot": 0.28,
+        "goals": 0.08,
+        "assists": 0.08,
+        "fouls": 2
+      },
+      "roleType": "holding-mid",
+      "flank": "central",
+      "pace": 72,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "cairney",
+      "name": "Tom Cairney",
+      "team": "fulham",
+      "role": "MID",
+      "startProb": 0.4,
+      "benchProb": 0.4,
+      "cardProneness": 1.15,
+      "per90": {
+        "shots": 0.8,
+        "sot": 0.25,
+        "goals": 0.07,
+        "assists": 0.12,
+        "fouls": 1.4
+      },
+      "roleType": "deep-playmaker",
+      "flank": "central",
+      "pace": 62,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0.5
+      }
+    },
+    {
+      "id": "bassey",
+      "name": "Calvin Bassey",
+      "team": "fulham",
+      "role": "DEF",
+      "startProb": 0.88,
+      "benchProb": 0.06,
+      "cardProneness": 1.25,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.05,
+        "assists": 0.04,
+        "fouls": 1.3
+      },
+      "roleType": "ball-playing-defender",
+      "flank": "central",
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "diop",
+      "name": "Issa Diop",
+      "team": "fulham",
+      "role": "DEF",
+      "startProb": 0.8,
+      "benchProb": 0.12,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.16,
+        "goals": 0.06,
+        "assists": 0.02,
+        "fouls": 1.4
+      },
+      "roleType": "aggressive-stopper",
+      "flank": "central",
+      "pace": 76,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "robinson",
+      "name": "Antonee Robinson",
+      "team": "fulham",
+      "role": "DEF",
+      "startProb": 0.85,
+      "benchProb": 0.08,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.6,
+        "sot": 0.18,
+        "goals": 0.05,
+        "assists": 0.16,
+        "fouls": 1.5
+      },
+      "roleType": "attacking-fullback",
+      "flank": "left",
+      "pace": 88,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "castagne",
+      "name": "Timothy Castagne",
+      "team": "fulham",
+      "role": "DEF",
+      "startProb": 0.7,
+      "benchProb": 0.2,
+      "cardProneness": 1.25,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.15,
+        "goals": 0.04,
+        "assists": 0.1,
+        "fouls": 1.4
+      },
+      "roleType": "defensive-fullback",
+      "flank": "right",
+      "pace": 78,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "tete",
+      "name": "Kenny Tete",
+      "team": "fulham",
+      "role": "DEF",
+      "startProb": 0.6,
+      "benchProb": 0.28,
+      "cardProneness": 1.25,
+      "per90": {
+        "shots": 0.6,
+        "sot": 0.18,
+        "goals": 0.04,
+        "assists": 0.1,
+        "fouls": 1.4
+      },
+      "roleType": "defensive-fullback",
+      "flank": "right",
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "sesko",
+      "name": "Benjamin \u0160e\u0161ko",
+      "team": "man-utd",
+      "role": "FWD",
+      "startProb": 0.8,
+      "benchProb": 0.15,
+      "cardProneness": 1.1,
+      "per90": {
+        "shots": 3.1,
+        "sot": 1.15,
+        "goals": 0.5,
+        "assists": 0.1,
+        "fouls": 1.2
+      },
+      "roleType": "target-forward",
+      "flank": "central",
+      "pace": 84,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "mbeumo",
+      "name": "Bryan Mbeumo",
+      "team": "man-utd",
+      "role": "AM",
+      "startProb": 0.88,
+      "benchProb": 0.08,
+      "cardProneness": 1.05,
+      "per90": {
+        "shots": 2.7,
+        "sot": 0.95,
+        "goals": 0.4,
+        "assists": 0.18,
+        "fouls": 1
+      },
+      "roleType": "inside-forward",
+      "flank": "right",
+      "pace": 86,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "cunha",
+      "name": "Matheus Cunha",
+      "team": "man-utd",
+      "role": "AM",
+      "startProb": 0.85,
+      "benchProb": 0.1,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 2.5,
+        "sot": 0.85,
+        "goals": 0.32,
+        "assists": 0.2,
+        "fouls": 1.5
+      },
+      "roleType": "inside-forward",
+      "flank": "left",
+      "pace": 80,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "fernandes",
+      "name": "Bruno Fernandes",
+      "team": "man-utd",
+      "role": "MID",
+      "startProb": 0.92,
+      "benchProb": 0.04,
+      "cardProneness": 1.25,
+      "per90": {
+        "shots": 2.6,
+        "sot": 0.85,
+        "goals": 0.32,
+        "assists": 0.26,
+        "fouls": 1.4
+      },
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "pace": 74,
+      "setPieces": {
+        "penalties": 0.85,
+        "freeKicks": 0.7,
+        "corners": 0.6
+      }
+    },
+    {
+      "id": "amad",
+      "name": "Amad Diallo",
+      "team": "man-utd",
+      "role": "AM",
+      "startProb": 0.7,
+      "benchProb": 0.24,
+      "cardProneness": 1.15,
+      "per90": {
+        "shots": 1.8,
+        "sot": 0.6,
+        "goals": 0.2,
+        "assists": 0.2,
+        "fouls": 1.2
+      },
+      "roleType": "inverted-winger",
+      "flank": "right",
+      "pace": 84,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "mount",
+      "name": "Mason Mount",
+      "team": "man-utd",
+      "role": "AM",
+      "startProb": 0.4,
+      "benchProb": 0.42,
+      "cardProneness": 1.15,
+      "per90": {
+        "shots": 1.5,
+        "sot": 0.5,
+        "goals": 0.16,
+        "assists": 0.14,
+        "fouls": 1.1
+      },
+      "roleType": "attacking-mid",
+      "flank": "central",
+      "pace": 76,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "casemiro",
+      "name": "Casemiro",
+      "team": "man-utd",
+      "role": "MID",
+      "startProb": 0.7,
+      "benchProb": 0.2,
+      "cardProneness": 1.6,
+      "per90": {
+        "shots": 0.9,
+        "sot": 0.28,
+        "goals": 0.1,
+        "assists": 0.06,
+        "fouls": 2.4
+      },
+      "roleType": "holding-mid",
+      "flank": "central",
+      "pace": 64,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "ugarte",
+      "name": "Manuel Ugarte",
+      "team": "man-utd",
+      "role": "MID",
+      "startProb": 0.6,
+      "benchProb": 0.3,
+      "cardProneness": 1.55,
+      "per90": {
+        "shots": 0.6,
+        "sot": 0.18,
+        "goals": 0.04,
+        "assists": 0.06,
+        "fouls": 2.5
+      },
+      "roleType": "holding-mid",
+      "flank": "central",
+      "pace": 76,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "mainoo",
+      "name": "Kobbie Mainoo",
+      "team": "man-utd",
+      "role": "MID",
+      "startProb": 0.5,
+      "benchProb": 0.36,
+      "cardProneness": 1.2,
+      "per90": {
+        "shots": 0.9,
+        "sot": 0.28,
+        "goals": 0.08,
+        "assists": 0.08,
+        "fouls": 1.5
+      },
+      "roleType": "box-to-box",
+      "flank": "central",
+      "pace": 76,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "de-ligt",
+      "name": "Matthijs de Ligt",
+      "team": "man-utd",
+      "role": "DEF",
+      "startProb": 0.85,
+      "benchProb": 0.08,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.5,
+        "sot": 0.16,
+        "goals": 0.07,
+        "assists": 0.02,
+        "fouls": 1.2
+      },
+      "roleType": "aggressive-stopper",
+      "flank": "central",
+      "pace": 76,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "maguire",
+      "name": "Harry Maguire",
+      "team": "man-utd",
+      "role": "DEF",
+      "startProb": 0.75,
+      "benchProb": 0.16,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.6,
+        "sot": 0.2,
+        "goals": 0.09,
+        "assists": 0.03,
+        "fouls": 1.3
+      },
+      "roleType": "aggressive-stopper",
+      "flank": "central",
+      "pace": 66,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "shaw",
+      "name": "Luke Shaw",
+      "team": "man-utd",
+      "role": "DEF",
+      "startProb": 0.7,
+      "benchProb": 0.2,
+      "cardProneness": 1.2,
+      "per90": {
+        "shots": 0.4,
+        "sot": 0.12,
+        "goals": 0.03,
+        "assists": 0.08,
+        "fouls": 1.2
+      },
+      "roleType": "defensive-fullback",
+      "flank": "left",
+      "pace": 74,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "dalot",
+      "name": "Diogo Dalot",
+      "team": "man-utd",
+      "role": "DEF",
+      "startProb": 0.8,
+      "benchProb": 0.14,
+      "cardProneness": 1.3,
+      "per90": {
+        "shots": 0.8,
+        "sot": 0.25,
+        "goals": 0.07,
+        "assists": 0.12,
+        "fouls": 1.4
+      },
+      "roleType": "attacking-fullback",
+      "flank": "right",
+      "pace": 82,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "dorgu",
+      "name": "Patrick Dorgu",
+      "team": "man-utd",
+      "role": "DEF",
+      "startProb": 0.65,
+      "benchProb": 0.26,
+      "cardProneness": 1.4,
+      "per90": {
+        "shots": 0.7,
+        "sot": 0.2,
+        "goals": 0.05,
+        "assists": 0.1,
+        "fouls": 1.7
+      },
+      "roleType": "wingback",
+      "flank": "left",
+      "pace": 89,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      }
+    },
+    {
+      "id": "donnarumma",
+      "name": "Gianluigi Donnarumma",
+      "team": "man-city",
+      "role": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "pace": 60,
+      "startProb": 0.97,
+      "benchProb": 0.02,
+      "cardProneness": 0.45,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.02,
+        "sot": 0.005,
+        "goals": 0.002,
+        "assists": 0.02,
+        "fouls": 0.1,
+        "saves": 2.35
+      }
+    },
+    {
+      "id": "roefs",
+      "name": "Robin Roefs",
+      "team": "sunderland",
+      "role": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "pace": 60,
+      "startProb": 0.95,
+      "benchProb": 0.04,
+      "cardProneness": 0.45,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.02,
+        "sot": 0.005,
+        "goals": 0.002,
+        "assists": 0.02,
+        "fouls": 0.1,
+        "saves": 3.7
+      }
+    },
+    {
+      "id": "petrovic",
+      "name": "Djordje Petrovic",
+      "team": "bournemouth",
+      "role": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "pace": 60,
+      "startProb": 0.96,
+      "benchProb": 0.03,
+      "cardProneness": 0.45,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.02,
+        "sot": 0.005,
+        "goals": 0.002,
+        "assists": 0.02,
+        "fouls": 0.1,
+        "saves": 3.35
+      }
+    },
+    {
+      "id": "alisson",
+      "name": "Alisson",
+      "team": "liverpool",
+      "role": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "pace": 60,
+      "startProb": 0.93,
+      "benchProb": 0.06,
+      "cardProneness": 0.45,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.02,
+        "sot": 0.005,
+        "goals": 0.002,
+        "assists": 0.02,
+        "fouls": 0.1,
+        "saves": 2.6
+      }
+    },
+    {
+      "id": "perri",
+      "name": "Lucas Perri",
+      "team": "leeds",
+      "role": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "pace": 60,
+      "startProb": 0.95,
+      "benchProb": 0.04,
+      "cardProneness": 0.45,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.02,
+        "sot": 0.005,
+        "goals": 0.002,
+        "assists": 0.02,
+        "fouls": 0.1,
+        "saves": 3.85
+      }
+    },
+    {
+      "id": "henderson",
+      "name": "Dean Henderson",
+      "team": "crystal-palace",
+      "role": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "pace": 60,
+      "startProb": 0.96,
+      "benchProb": 0.03,
+      "cardProneness": 0.45,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.02,
+        "sot": 0.005,
+        "goals": 0.002,
+        "assists": 0.02,
+        "fouls": 0.1,
+        "saves": 3.1
+      }
+    },
+    {
+      "id": "leno",
+      "name": "Bernd Leno",
+      "team": "fulham",
+      "role": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "pace": 60,
+      "startProb": 0.96,
+      "benchProb": 0.03,
+      "cardProneness": 0.45,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.02,
+        "sot": 0.005,
+        "goals": 0.002,
+        "assists": 0.02,
+        "fouls": 0.1,
+        "saves": 3.25
+      }
+    },
+    {
+      "id": "lammens",
+      "name": "Senne Lammens",
+      "team": "man-utd",
+      "role": "GK",
+      "roleType": "goalkeeper",
+      "flank": "central",
+      "pace": 60,
+      "startProb": 0.92,
+      "benchProb": 0.07,
+      "cardProneness": 0.45,
+      "setPieces": {
+        "penalties": 0,
+        "freeKicks": 0,
+        "corners": 0
+      },
+      "per90": {
+        "shots": 0.02,
+        "sot": 0.005,
+        "goals": 0.002,
+        "assists": 0.02,
+        "fouls": 0.1,
+        "saves": 3.05
+      }
+    }
+  ],
+  "_roles": "roleType maps each player to an archetype in roles.json, which supplies every per-90 metric not listed explicitly below. flank drives the positional matchup model; pace feeds duel outcomes; setPieces are shares of the team's penalties, direct free kicks and corners."
 }

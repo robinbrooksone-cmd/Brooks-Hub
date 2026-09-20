@@ -73,6 +73,9 @@ router.get('/api/picks', (req, res) => {
         referee: f.referee, refereeConfirmed: f.refereeConfirmed,
         expectations: f.expectations,
         pickCount: f.picks.length,
+        players: f.players,
+        shares: f.shares,
+        projections: f.projections,
       })),
       picks: slate.picks,
     });
@@ -189,6 +192,25 @@ router.post('/api/odds/import', (req, res) => {
     const file = sportingbet.saveBoard(board.date, board);
     invalidate();
     res.json({ imported: board.prices.length, date: board.date, file, errors });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/** Full player projection chain for one fixture, including the duel map. */
+router.get('/api/players/:matchId', (req, res) => {
+  try {
+    const slate = getSlate({ minEdge: 0, bankroll: 100 });
+    const fixture = slate.fixtures.find((f) => f.id === req.params.matchId);
+    if (!fixture) return res.status(404).json({ error: 'Unknown fixture.' });
+    res.json({
+      fixture: { id: fixture.id, home: fixture.home, away: fixture.away, referee: fixture.referee },
+      expectations: fixture.expectations,
+      players: fixture.players,
+      shares: fixture.shares,
+      projections: fixture.projections,
+      matchups: fixture.matchups,
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -26,6 +26,7 @@ const league = require(path.join(DATA, 'league.json'));
 const teams = require(path.join(DATA, 'teams.json')).teams;
 const players = require(path.join(DATA, 'players.json')).players;
 const referees = require(path.join(DATA, 'referees.json')).referees;
+const roles = require(path.join(DATA, 'roles.json'));
 const fixturesFile = require(path.join(DATA, 'fixtures.json'));
 
 /** Bookmaker margin by market family, matching typical Entain coupon shapes. */
@@ -44,6 +45,28 @@ const MARGIN = {
   player_fouls: 0.160,
   player_goals: 0.125,
   player_booked: 0.155,
+  player_assists: 0.150,
+  player_chances: 0.150,
+  player_fouls_drawn: 0.165,
+  player_tackles: 0.155,
+  player_tackles_won: 0.160,
+  player_interceptions: 0.160,
+  player_clearances: 0.165,
+  player_def_actions: 0.150,
+  player_dribbles_att: 0.155,
+  player_dribbles: 0.160,
+  player_crosses: 0.165,
+  player_offsides: 0.175,
+  player_aerials: 0.160,
+  player_box_touches: 0.155,
+  player_att3_touches: 0.150,
+  player_touches: 0.135,
+  player_passes: 0.130,
+  player_passes_comp: 0.130,
+  player_prog_passes: 0.155,
+  player_dispossessed: 0.170,
+  player_saves: 0.140,
+  player_red: 0.220,
 };
 
 /** How far the book's opinion drifts from ours, in logit units. */
@@ -62,6 +85,28 @@ const DISAGREEMENT = {
   player_fouls: 0.26,
   player_goals: 0.20,
   player_booked: 0.25,
+  player_assists: 0.24,
+  player_chances: 0.26,
+  player_fouls_drawn: 0.27,
+  player_tackles: 0.25,
+  player_tackles_won: 0.27,
+  player_interceptions: 0.27,
+  player_clearances: 0.28,
+  player_def_actions: 0.22,
+  player_dribbles_att: 0.25,
+  player_dribbles: 0.27,
+  player_crosses: 0.28,
+  player_offsides: 0.32,
+  player_aerials: 0.26,
+  player_box_touches: 0.25,
+  player_att3_touches: 0.22,
+  player_touches: 0.16,
+  player_passes: 0.15,
+  player_passes_comp: 0.15,
+  player_prog_passes: 0.24,
+  player_dispossessed: 0.28,
+  player_saves: 0.22,
+  player_red: 0.34,
 };
 
 const logit = (p) => Math.log(p / (1 - p));
@@ -93,7 +138,7 @@ function main() {
   let dropped = 0;
 
   for (const fixture of fixturesFile.fixtures) {
-    const model = buildFixtureModel(fixture, { teams, league, players, referees });
+    const model = buildFixtureModel(fixture, { teams, league, players, referees, roles });
 
     for (const market of model.markets) {
       const margin = MARGIN[market.family] ?? 0.08;

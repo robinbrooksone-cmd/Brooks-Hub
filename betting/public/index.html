@@ -52,18 +52,55 @@
       <div class="control">
         <label for="f-family">Prop type</label>
         <select id="f-family">
-          <option value="">Any</option>
-          <option value="player_shots">Player shots</option>
-          <option value="player_sot">Player shots on target</option>
-          <option value="player_fouls">Player fouls committed</option>
-          <option value="player_goals">Player goals</option>
-          <option value="player_booked">Player to be booked</option>
-          <option value="team_corners">Team / both-teams corners</option>
-          <option value="team_cards">Team / both-teams cards</option>
-          <option value="match_corners">Total corners</option>
-          <option value="match_cards">Total cards</option>
-          <option value="match_shots">Total shots &amp; SOT</option>
-          <option value="match_goals">Total goals</option>
+          <option value="">Any market</option>
+          <optgroup label="Player · attacking">
+            <option value="player_shots">Shots</option>
+            <option value="player_sot">Shots on target</option>
+            <option value="player_goals">Goals</option>
+            <option value="player_assists">Assists</option>
+            <option value="player_chances">Chances created</option>
+            <option value="player_box_touches">Touches in opposition box</option>
+            <option value="player_att3_touches">Attacking-third touches</option>
+            <option value="player_offsides">Offsides</option>
+          </optgroup>
+          <optgroup label="Player · carrying">
+            <option value="player_dribbles_att">Dribbles attempted</option>
+            <option value="player_dribbles">Successful dribbles</option>
+            <option value="player_crosses">Crosses</option>
+            <option value="player_dispossessed">Dispossessed</option>
+            <option value="player_fouls_drawn">Fouls won</option>
+          </optgroup>
+          <optgroup label="Player · duels &amp; discipline">
+            <option value="player_fouls">Fouls committed</option>
+            <option value="player_booked">To be booked</option>
+            <option value="player_red">To be sent off</option>
+            <option value="player_aerials">Aerial duels won</option>
+          </optgroup>
+          <optgroup label="Player · defending">
+            <option value="player_tackles">Tackles</option>
+            <option value="player_tackles_won">Tackles won</option>
+            <option value="player_interceptions">Interceptions</option>
+            <option value="player_clearances">Clearances</option>
+            <option value="player_def_actions">Defensive actions</option>
+            <option value="player_saves">Goalkeeper saves</option>
+          </optgroup>
+          <optgroup label="Player · possession">
+            <option value="player_touches">Touches</option>
+            <option value="player_passes">Passes attempted</option>
+            <option value="player_passes_comp">Passes completed</option>
+            <option value="player_prog_passes">Progressive passes</option>
+          </optgroup>
+          <optgroup label="Team &amp; match">
+            <option value="team_corners">Team / both-teams corners</option>
+            <option value="team_cards">Team / both-teams cards</option>
+            <option value="team_shots">Team shots &amp; SOT</option>
+            <option value="team_goals">Team goals</option>
+            <option value="match_corners">Total corners</option>
+            <option value="match_cards">Total cards</option>
+            <option value="match_shots">Total shots &amp; SOT</option>
+            <option value="match_goals">Total goals</option>
+            <option value="btts">Both teams to score</option>
+          </optgroup>
         </select>
       </div>
       <div class="control">
@@ -85,7 +122,12 @@
       </div>
     </div>
 
-    <div class="board-head">
+    <div class="tabs" role="tablist">
+      <button class="tab active" id="tab-board" role="tab" aria-selected="true">Value board</button>
+      <button class="tab" id="tab-players" role="tab" aria-selected="false">Player projections</button>
+    </div>
+
+    <div class="board-head" id="board-head">
       <h2>Picks <span id="pick-count" class="muted"></span></h2>
       <div class="legend">
         <span><i class="chip a"></i>A / A+</span>
@@ -115,6 +157,46 @@
       <p id="empty" class="empty" hidden>No selections clear that edge threshold. Lower the slider.</p>
     </div>
     <button class="btn ghost wide" id="btn-more" hidden>Show more</button>
+
+    <div id="players-panel" hidden>
+      <div class="controls slim">
+        <div class="control">
+          <label for="p-match">Fixture</label>
+          <select id="p-match"></select>
+        </div>
+        <div class="control">
+          <label for="p-sort">Sort by</label>
+          <select id="p-sort">
+            <option value="shots">Expected shots</option>
+            <option value="sot">Expected shots on target</option>
+            <option value="goals">Expected goals</option>
+            <option value="fouls">Expected fouls committed</option>
+            <option value="foulsDrawn">Expected fouls won</option>
+            <option value="tackles">Expected tackles</option>
+            <option value="dribblesAttempted">Expected dribbles</option>
+            <option value="yellowProb">Card probability</option>
+            <option value="expectedMinutes">Expected minutes</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="chain-summary" class="chain"></div>
+
+      <div class="table-wrap">
+        <table class="picks players">
+          <thead>
+            <tr>
+              <th>Player</th><th>Role</th>
+              <th class="num">E[min]</th><th class="num">Shots</th><th class="num">SOT</th>
+              <th class="num">xG</th><th class="num">Fouls</th><th class="num">Won</th>
+              <th class="num">Tkl</th><th class="num">Drib</th><th class="num">Box</th>
+              <th class="num">Card</th><th class="num">Duel</th>
+            </tr>
+          </thead>
+          <tbody id="players-body"></tbody>
+        </table>
+      </div>
+    </div>
   </section>
 
   <aside class="slip" aria-label="Bet slip">
@@ -168,6 +250,9 @@ ful-mun:both_cards:1 | yes | 1.44</pre>
       <p><b>Player props</b> — per-90 rates scaled by a mixture over minutes scenarios rather than a point estimate, so a rotation risk shows up as real mass at zero. Fouls are <b>committed</b>, not suffered. Bookings are derived from the foul distribution through a per-foul card hazard, scaled by referee strictness.</p>
       <p><b>Fair prices</b> — the book's margin is removed before any comparison, using the power method on wide markets and proportional on tight ones. Skipping this step makes almost everything look like value.</p>
       <p><b>Parlays</b> — cross-match legs are independent, so multiplying is correct. Same-game legs are not: they run through a Gaussian copula. A slip is scored on a correlation-adjusted probability, never on a naive product.</p>
+      <p><b>Player layer</b> — every player is mapped to a functional role (inverted winger, holding midfielder, aggressive stopper…), which supplies the twenty-odd per-90 metrics not known for them individually. Shots on target are built as a chain — expected shots × on-target rate — rather than as an independent rate, and goals from shots on target × conversion.</p>
+      <p><b>Team ↔ player consistency</b> — the two directions are reconciled. Top-down, the team's expected shots are distributed by involvement share. Bottom-up, individual booking probabilities are summed into a team card total and blended with the team rating. A board where the strikers' shot props exceed the team's shot total is quietly incoherent; the reconciliation factor is reported so a large disagreement is visible rather than hidden.</p>
+      <p><b>Matchups</b> — a full-back's foul rate is not a property of the full-back alone. Wide attackers are paired against the opposing defender, and dribble volume and pace gap shade both his fouls and the attacker's fouls won. The duel is resolved in one direction and then the other, so a foul counts once from each end.</p>
       <p class="warn">Model output, not advice. A model is only as good as its inputs — refresh team form and confirmed line-ups before staking. 18+ · begambleaware.org</p>
     </div>
     <menu><button class="btn primary" value="close">Close</button></menu>

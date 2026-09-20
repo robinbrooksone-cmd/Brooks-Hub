@@ -27,6 +27,7 @@ function parseArgs(argv) {
       case '--max-legs': out.maxLegs = Number(next()); break;
       case '--min-legs': out.minLegs = Number(next()); break;
       case '--date': out.date = next(); break;
+      case '--players': out.players = inline || argv[i + 1] && !argv[i + 1].startsWith('--') ? next() : 'all'; break;
       case '--help': out.help = true; break;
       default: break;
     }
@@ -48,6 +49,7 @@ ${C.bold}Premier League value finder${C.reset}
   --min-legs=N     minimum parlay legs (default 3)
   --max-legs=N     maximum parlay legs (default 4)
   --date=YYYY-MM-DD
+  --players[=ID]   show the player projection chain (optionally one fixture)
 `);
 }
 
@@ -94,6 +96,60 @@ function main() {
       ` | fouls ${e.fouls.total.toFixed(1)}` +
       ` | ref ${f.referee}${f.refereeConfirmed ? '' : ' (assumed)'}${C.reset}`
     );
+  }
+
+  if (args.players) {
+    const wanted = args.players === 'all'
+      ? slate.fixtures
+      : slate.fixtures.filter((f) => f.id === args.players);
+
+    for (const f of wanted) {
+      const e = f.expectations;
+      console.log(`\n${C.bold}${f.home.name} v ${f.away.name}${C.reset}`);
+      console.log(
+        `${C.grey}  possession ${(e.possession.home * 100).toFixed(0)}/${(e.possession.away * 100).toFixed(0)}` +
+        ` | chase ${(e.gameState.homeChase * 100).toFixed(0)}/${(e.gameState.awayChase * 100).toFixed(0)}` +
+        ` | settled early ${(e.gameState.blowoutProb * 100).toFixed(0)}%` +
+        ` | cards top-down ${(e.cards.topDown.home + e.cards.topDown.away).toFixed(2)}` +
+        ` vs player aggregate ${(e.cards.bottomUp.home + e.cards.bottomUp.away).toFixed(2)}` +
+        ` -> ${e.cards.total.toFixed(2)}${C.reset}`
+      );
+
+      for (const side of ['home', 'away']) {
+        const d = f.projections[side].diagnostics;
+        const parts = Object.entries(d)
+          .map(([k, x]) => `${k} ${x.playerSum.toFixed(1)}->${x.blendedTeam.toFixed(1)} (x${x.factor.toFixed(2)})`);
+        console.log(`${C.grey}  ${side === 'home' ? f.home.short : f.away.short} reconciliation: ${parts.join(' | ')}` +
+          ` | coverage ${(f.projections[side].coverage * 100).toFixed(0)}%${C.reset}`);
+      }
+
+      console.log(
+        C.grey + pad('', 2) + pad('PLAYER', 22) + pad('ROLE', 21) + pad('MIN', 5) +
+        pad('SHOT', 6) + pad('SOT', 6) + pad('xG', 6) + pad('FOUL', 6) + pad('WON', 6) +
+        pad('TKL', 6) + pad('DRIB', 6) + pad('CARD', 6) + 'DUEL' + C.reset
+      );
+
+      const rows = [...f.players].sort((a, b) => b.expectations.shots - a.expectations.shots);
+      for (const p of rows) {
+        const x = p.expectations;
+        const isDef = p.line === 'DEF' || p.line === 'GK';
+        const duel = p.matchup ? (isDef ? p.matchup.fouls : p.matchup.foulsDrawn) : 1;
+        const duelStr = Math.abs(duel - 1) > 0.04
+          ? (duel > 1 ? C.yellow : C.blue) + 'x' + duel.toFixed(2) + C.reset
+          : C.grey + 'x' + duel.toFixed(2) + C.reset;
+        console.log(
+          pad('', 2) + pad(p.name.slice(0, 20), 22) +
+          pad(C.grey + p.role.replace(/-/g, ' ').slice(0, 19) + C.reset, 21) +
+          pad(p.expectedMinutes.toFixed(0), 5) +
+          pad(x.shots.toFixed(2), 6) + pad(x.sot.toFixed(2), 6) + pad(x.goals.toFixed(2), 6) +
+          pad(x.fouls.toFixed(2), 6) + pad(x.foulsDrawn.toFixed(2), 6) +
+          pad(x.tackles.toFixed(2), 6) + pad(x.dribblesAttempted.toFixed(2), 6) +
+          pad((p.yellowProb * 100).toFixed(0) + '%', 6) + duelStr
+        );
+      }
+    }
+    console.log(`\n${C.grey}Model output, not advice. 18+ | begambleaware.org${C.reset}\n`);
+    return;
   }
 
   let picks = slate.picks;

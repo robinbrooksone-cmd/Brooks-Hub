@@ -255,3 +255,39 @@ dialog menu { display: flex; justify-content: flex-end; gap: 8px; padding: 0; ma
   table.picks { font-size: 12px; }
   table.picks td, table.picks th { padding: 7px 8px; }
 }
+
+/* ---------- tabs ---------- */
+.tabs { display: flex; gap: 6px; margin-bottom: 12px; border-bottom: 1px solid var(--line); }
+.tab {
+  background: none; border: none; border-bottom: 2px solid transparent;
+  color: var(--muted); padding: 8px 12px; font-size: 13px; font-weight: 550;
+  cursor: pointer; font-family: inherit;
+}
+.tab:hover { color: var(--text); }
+.tab.active { color: var(--text); border-bottom-color: var(--accent); }
+
+.controls.slim { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 12px; }
+
+/* ---------- projection chain summary ---------- */
+.chain {
+  display: grid; gap: 10px; margin-bottom: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+}
+.chain-card {
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 11px 13px;
+}
+.chain-card h4 {
+  margin: 0 0 7px; font-size: 11px; text-transform: uppercase;
+  letter-spacing: .05em; color: var(--muted); font-weight: 600;
+}
+.chain-row { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; padding: 2px 0; }
+.chain-row span:first-child { color: var(--muted); }
+.chain-row span:last-child { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.chain-note { margin-top: 7px; font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+table.picks.players td { white-space: nowrap; }
+table.picks.players .pname { font-weight: 550; }
+table.picks.players .prole { color: var(--muted); font-size: 11.5px; }
+.duel-up { color: var(--warn); }
+.duel-down { color: var(--blue); }
