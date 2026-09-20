@@ -52,7 +52,7 @@
     },
     {
       "id": "doku",
-      "name": "J\u00e9r\u00e9my Doku",
+      "name": "Jérémy Doku",
       "team": "man-city",
       "role": "AM",
       "startProb": 0.68,
@@ -68,30 +68,6 @@
       "roleType": "traditional-winger",
       "flank": "left",
       "pace": 92,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "savinho",
-      "name": "Savinho",
-      "team": "man-city",
-      "role": "AM",
-      "startProb": 0.6,
-      "benchProb": 0.32,
-      "cardProneness": 1,
-      "per90": {
-        "shots": 2,
-        "sot": 0.65,
-        "goals": 0.22,
-        "assists": 0.26,
-        "fouls": 0.85
-      },
-      "roleType": "inverted-winger",
-      "flank": "right",
-      "pace": 86,
       "setPieces": {
         "penalties": 0,
         "freeKicks": 0,
@@ -195,32 +171,8 @@
       }
     },
     {
-      "id": "bernardo",
-      "name": "Bernardo Silva",
-      "team": "man-city",
-      "role": "MID",
-      "startProb": 0.65,
-      "benchProb": 0.28,
-      "cardProneness": 1.15,
-      "per90": {
-        "shots": 1.1,
-        "sot": 0.35,
-        "goals": 0.15,
-        "assists": 0.2,
-        "fouls": 1.2
-      },
-      "roleType": "attacking-mid",
-      "flank": "central",
-      "pace": 76,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
       "id": "nico-gonzalez",
-      "name": "Nico Gonz\u00e1lez",
+      "name": "Nico González",
       "team": "man-city",
       "role": "MID",
       "startProb": 0.45,
@@ -244,7 +196,7 @@
     },
     {
       "id": "gvardiol",
-      "name": "Jo\u0161ko Gvardiol",
+      "name": "Joško Gvardiol",
       "team": "man-city",
       "role": "DEF",
       "startProb": 0.85,
@@ -268,7 +220,7 @@
     },
     {
       "id": "dias",
-      "name": "R\u00faben Dias",
+      "name": "Rúben Dias",
       "team": "man-city",
       "role": "DEF",
       "startProb": 0.88,
@@ -292,7 +244,7 @@
     },
     {
       "id": "ait-nouri",
-      "name": "Rayan A\u00eft-Nouri",
+      "name": "Rayan Aït-Nouri",
       "team": "man-city",
       "role": "DEF",
       "startProb": 0.7,
@@ -436,7 +388,7 @@
     },
     {
       "id": "le-fee",
-      "name": "Enzo Le F\u00e9e",
+      "name": "Enzo Le Fée",
       "team": "sunderland",
       "role": "MID",
       "startProb": 0.7,
@@ -508,7 +460,7 @@
     },
     {
       "id": "bertrand-traore",
-      "name": "Bertrand Traor\u00e9",
+      "name": "Bertrand Traoré",
       "team": "sunderland",
       "role": "MID",
       "startProb": 0.5,
@@ -644,30 +596,6 @@
       "roleType": "pressing-forward",
       "flank": "central",
       "pace": 81,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "semenyo",
-      "name": "Antoine Semenyo",
-      "team": "bournemouth",
-      "role": "AM",
-      "startProb": 0.88,
-      "benchProb": 0.07,
-      "cardProneness": 1.1,
-      "per90": {
-        "shots": 2.8,
-        "sot": 1,
-        "goals": 0.42,
-        "assists": 0.2,
-        "fouls": 1.2
-      },
-      "roleType": "inside-forward",
-      "flank": "left",
-      "pace": 88,
       "setPieces": {
         "penalties": 0,
         "freeKicks": 0,
@@ -820,7 +748,7 @@
     },
     {
       "id": "diakite",
-      "name": "Bafod\u00e9 Diakit\u00e9",
+      "name": "Bafodé Diakité",
       "team": "bournemouth",
       "role": "DEF",
       "startProb": 0.85,
@@ -915,30 +843,6 @@
       }
     },
     {
-      "id": "salah",
-      "name": "Mohamed Salah",
-      "team": "liverpool",
-      "role": "FWD",
-      "startProb": 0.88,
-      "benchProb": 0.09,
-      "cardProneness": 0.8,
-      "per90": {
-        "shots": 3.9,
-        "sot": 1.55,
-        "goals": 0.7,
-        "assists": 0.32,
-        "fouls": 0.5
-      },
-      "roleType": "inside-forward",
-      "flank": "right",
-      "pace": 88,
-      "setPieces": {
-        "penalties": 0.8,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
       "id": "isak",
       "name": "Alexander Isak",
       "team": "liverpool",
@@ -964,7 +868,7 @@
     },
     {
       "id": "ekitike",
-      "name": "Hugo Ekitik\u00e9",
+      "name": "Hugo Ekitiké",
       "team": "liverpool",
       "role": "FWD",
       "startProb": 0.6,
@@ -1131,30 +1035,6 @@
       }
     },
     {
-      "id": "konate",
-      "name": "Ibrahima Konat\u00e9",
-      "team": "liverpool",
-      "role": "DEF",
-      "startProb": 0.8,
-      "benchProb": 0.12,
-      "cardProneness": 1.3,
-      "per90": {
-        "shots": 0.4,
-        "sot": 0.12,
-        "goals": 0.05,
-        "assists": 0.02,
-        "fouls": 1.2
-      },
-      "roleType": "aggressive-stopper",
-      "flank": "central",
-      "pace": 88,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
       "id": "kerkez",
       "name": "Milos Kerkez",
       "team": "liverpool",
@@ -1228,7 +1108,7 @@
     },
     {
       "id": "piroe",
-      "name": "Jo\u00ebl Piroe",
+      "name": "Joël Piroe",
       "team": "leeds",
       "role": "FWD",
       "startProb": 0.6,
@@ -1564,7 +1444,7 @@
     },
     {
       "id": "sarr",
-      "name": "Isma\u00efla Sarr",
+      "name": "Ismaïla Sarr",
       "team": "crystal-palace",
       "role": "AM",
       "startProb": 0.85,
@@ -1708,7 +1588,7 @@
     },
     {
       "id": "guehi",
-      "name": "Marc Gu\u00e9hi",
+      "name": "Marc Guéhi",
       "team": "crystal-palace",
       "role": "DEF",
       "startProb": 0.88,
@@ -1724,30 +1604,6 @@
       "roleType": "ball-playing-defender",
       "flank": "central",
       "pace": 80,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "lacroix",
-      "name": "Maxence Lacroix",
-      "team": "crystal-palace",
-      "role": "DEF",
-      "startProb": 0.85,
-      "benchProb": 0.08,
-      "cardProneness": 1.35,
-      "per90": {
-        "shots": 0.5,
-        "sot": 0.16,
-        "goals": 0.07,
-        "assists": 0.02,
-        "fouls": 1.5
-      },
-      "roleType": "aggressive-stopper",
-      "flank": "central",
-      "pace": 78,
       "setPieces": {
         "penalties": 0,
         "freeKicks": 0,
@@ -1780,7 +1636,7 @@
     },
     {
       "id": "munoz",
-      "name": "Daniel Mu\u00f1oz",
+      "name": "Daniel Muñoz",
       "team": "crystal-palace",
       "role": "DEF",
       "startProb": 0.88,
@@ -1822,30 +1678,6 @@
       "pace": 84,
       "setPieces": {
         "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "jimenez",
-      "name": "Ra\u00fal Jim\u00e9nez",
-      "team": "fulham",
-      "role": "FWD",
-      "startProb": 0.8,
-      "benchProb": 0.14,
-      "cardProneness": 1.15,
-      "per90": {
-        "shots": 2.6,
-        "sot": 0.95,
-        "goals": 0.4,
-        "assists": 0.12,
-        "fouls": 1.4
-      },
-      "roleType": "target-forward",
-      "flank": "central",
-      "pace": 70,
-      "setPieces": {
-        "penalties": 0.8,
         "freeKicks": 0,
         "corners": 0
       }
@@ -1899,30 +1731,6 @@
       }
     },
     {
-      "id": "harry-wilson",
-      "name": "Harry Wilson",
-      "team": "fulham",
-      "role": "AM",
-      "startProb": 0.7,
-      "benchProb": 0.24,
-      "cardProneness": 1.05,
-      "per90": {
-        "shots": 1.8,
-        "sot": 0.6,
-        "goals": 0.22,
-        "assists": 0.18,
-        "fouls": 0.9
-      },
-      "roleType": "inverted-winger",
-      "flank": "right",
-      "pace": 76,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0.7,
-        "corners": 0.6
-      }
-    },
-    {
       "id": "smith-rowe",
       "name": "Emile Smith Rowe",
       "team": "fulham",
@@ -1972,7 +1780,7 @@
     },
     {
       "id": "lukic",
-      "name": "Sa\u0161a Luki\u0107",
+      "name": "Saša Lukić",
       "team": "fulham",
       "role": "MID",
       "startProb": 0.78,
@@ -2140,7 +1948,7 @@
     },
     {
       "id": "sesko",
-      "name": "Benjamin \u0160e\u0161ko",
+      "name": "Benjamin Šeško",
       "team": "man-utd",
       "role": "FWD",
       "startProb": 0.8,
@@ -2274,54 +2082,6 @@
         "fouls": 1.1
       },
       "roleType": "attacking-mid",
-      "flank": "central",
-      "pace": 76,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "casemiro",
-      "name": "Casemiro",
-      "team": "man-utd",
-      "role": "MID",
-      "startProb": 0.7,
-      "benchProb": 0.2,
-      "cardProneness": 1.6,
-      "per90": {
-        "shots": 0.9,
-        "sot": 0.28,
-        "goals": 0.1,
-        "assists": 0.06,
-        "fouls": 2.4
-      },
-      "roleType": "holding-mid",
-      "flank": "central",
-      "pace": 64,
-      "setPieces": {
-        "penalties": 0,
-        "freeKicks": 0,
-        "corners": 0
-      }
-    },
-    {
-      "id": "ugarte",
-      "name": "Manuel Ugarte",
-      "team": "man-utd",
-      "role": "MID",
-      "startProb": 0.6,
-      "benchProb": 0.3,
-      "cardProneness": 1.55,
-      "per90": {
-        "shots": 0.6,
-        "sot": 0.18,
-        "goals": 0.04,
-        "assists": 0.06,
-        "fouls": 2.5
-      },
-      "roleType": "holding-mid",
       "flank": "central",
       "pace": 76,
       "setPieces": {
@@ -2675,5 +2435,60 @@
       }
     }
   ],
-  "_roles": "roleType maps each player to an archetype in roles.json, which supplies every per-90 metric not listed explicitly below. flank drives the positional matchup model; pace feeds duel outcomes; setPieces are shares of the team's penalties, direct free kicks and corners."
+  "_roles": "roleType maps each player to an archetype in roles.json, which supplies every per-90 metric not listed explicitly below. flank drives the positional matchup model; pace feeds duel outcomes; setPieces are shares of the team's penalties, direct free kicks and corners.",
+  "_squadVerification": {
+    "verifiedAt": null,
+    "note": "Confirmed departures have been removed, but the roster as a whole has NOT been verified against a confirmed team sheet. Arrivals are listed in _knownGaps and are absent from the model. Player markets stay gated until verifiedAt is set to a date after the last transfer window close.",
+    "lastTransfersApplied": "2026-09-20",
+    "removedThisPass": [
+      "Mohamed Salah (liverpool) - left on a free at contract expiry",
+      "Ibrahima Konaté (liverpool) - departed",
+      "Casemiro (man-utd) - left on a free at contract expiry",
+      "Manuel Ugarte (man-utd) - sold",
+      "Savinho (man-city) - Tottenham Hotspur (club record)",
+      "Bernardo Silva (man-city) - Real Madrid (free)",
+      "Antoine Semenyo (bournemouth) - Manchester City (Jan 2026, GBP 64m)",
+      "Raúl Jiménez (fulham) - departed on a free",
+      "Harry Wilson (fulham) - Leeds United (free)",
+      "Maxence Lacroix (crystal-palace) - departed"
+    ]
+  },
+  "_knownGaps": {
+    "note": "Known arrivals with no per-90 data in this file. The model cannot price them; add real numbers before relying on player markets.",
+    "arrivals": {
+      "liverpool": [
+        "Bradley Barcola (PSG)",
+        "Victor Munoz (Osasuna)",
+        "Jeremy Jacquet",
+        "Ronald Araujo (loan)"
+      ],
+      "man-city": [
+        "Enzo Fernandez (Chelsea)",
+        "Iliman Ndiaye (Everton)",
+        "Elliot Anderson",
+        "Ayyoub Bouaddi",
+        "Antoine Semenyo (Bournemouth)"
+      ],
+      "man-utd": [
+        "Andrey Santos (Chelsea)",
+        "Karl Darlow (Leeds)"
+      ],
+      "leeds": [
+        "Harry Wilson (Fulham)"
+      ],
+      "crystal-palace": [
+        "Oscar Mingueza"
+      ],
+      "sunderland": [
+        "Thomas Meunier"
+      ],
+      "bournemouth": [
+        "Alvaro Rodriguez (Elche)",
+        "Antonio Silva (Benfica)",
+        "Amine Adli",
+        "Eli Junior Kroupi"
+      ],
+      "fulham": []
+    }
+  }
 }

@@ -66,6 +66,9 @@ router.get('/api/picks', (req, res) => {
       matchweek: slate.matchweek,
       board: slate.board,
       dataWarning: slate.dataWarning,
+      warnings: slate.warnings,
+      squad: slate.squad,
+      playerPicksSuppressed: slate.playerPicksSuppressed,
       summary: slate.summary,
       fixtures: slate.fixtures.map((f) => ({
         id: f.id, localTime: f.localTime, venue: f.venue,

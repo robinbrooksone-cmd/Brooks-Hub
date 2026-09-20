@@ -7,6 +7,7 @@ const { buildFixtureModel } = require('./model/markets');
 const { priceSelection, grade } = require('./pricing/edge');
 const { buildBestParlay, priceParlay } = require('./pricing/parlay');
 const sportingbet = require('./adapters/sportingbet');
+const { assessSquad, isPlayerMarket } = require('./model/squadStatus');
 
 const DATA = path.join(__dirname, '..', 'data');
 
@@ -15,10 +16,12 @@ function readJson(name) {
 }
 
 function loadContext() {
+  const playersFile = readJson('players.json');
   return {
     league: readJson('league.json'),
     teams: readJson('teams.json').teams,
-    players: readJson('players.json').players,
+    playersFile,
+    players: playersFile.players,
     referees: readJson('referees.json').referees,
     roles: readJson('roles.json'),
     fixturesFile: readJson('fixtures.json'),
@@ -41,10 +44,17 @@ function runSlate(options = {}) {
     bankroll = 100,
     kellyCap = 0.25,
     board: providedBoard,
+    allowUnverifiedSquads = false,
   } = options;
 
   const ctx = loadContext();
   const slateDate = date || ctx.fixturesFile.date;
+
+  // Fail closed on stale squads. Player markets are still priced - they become
+  // useful the moment the roster is refreshed - but they cannot become
+  // recommendations until someone has confirmed who is actually at the club.
+  const squad = assessSquad(ctx.playersFile, slateDate);
+  const suppressPlayerPicks = !squad.verified && !allowUnverifiedSquads;
   const board = providedBoard || sportingbet.loadBoard(slateDate);
 
   const fixtures = [];
@@ -79,9 +89,16 @@ function runSlate(options = {}) {
         return { ...base, ...priced, grade: grade(priced.evPct) };
       });
 
-      markets.push({ ...market, selections: enriched });
+      markets.push({
+        ...market,
+        selections: enriched,
+        squadUnverified: isPlayerMarket(market) && !squad.verified,
+      });
 
       if (!hasBoth) continue;
+
+      const playerMarket = isPlayerMarket(market);
+      if (playerMarket && suppressPlayerPicks) continue;
 
       for (const sel of enriched) {
         if (sel.edge === undefined) continue;
@@ -155,16 +172,29 @@ function runSlate(options = {}) {
 
   allPicks.sort((a, b) => b.ev - a.ev);
 
+  const warnings = [];
+  if (!squad.verified) {
+    warnings.push(
+      `SQUADS UNVERIFIED - ${squad.reason} Player markets are priced but withheld from picks; ` +
+      'a pick on a player who has left the club is worse than no pick at all. ' +
+      'Run scripts/import-squad.js with a confirmed roster to re-enable them.'
+    );
+  }
+  if (!board) {
+    warnings.push('No price board found for this date - model probabilities only, no edges computed.');
+  } else if (!board.meta.isLiveData) {
+    warnings.push('Running on SAMPLE prices, not live Sportingbet odds. Edges shown are illustrative until you import a real board.');
+  }
+
   return {
     date: slateDate,
     competition: ctx.fixturesFile.competition,
     matchweek: ctx.fixturesFile.matchweek,
     board: board ? board.meta : null,
-    dataWarning: !board
-      ? 'No price board found for this date - model probabilities only, no edges computed.'
-      : board.meta.isLiveData
-        ? null
-        : 'Running on SAMPLE prices, not live Sportingbet odds. Edges shown are illustrative until you import a real board.',
+    squad,
+    playerPicksSuppressed: suppressPlayerPicks,
+    warnings,
+    dataWarning: warnings.length ? warnings[0] : null,
     fixtures,
     picks: allPicks,
     summary: {
@@ -250,6 +280,7 @@ function fairSheet(options = {}) {
 
   const ctx = loadContext();
   const slateDate = date || ctx.fixturesFile.date;
+  const squad = assessSquad(ctx.playersFile, slateDate);
   const fixtures = [];
 
   for (const fixture of ctx.fixturesFile.fixtures) {
@@ -257,6 +288,9 @@ function fairSheet(options = {}) {
     const rows = [];
 
     for (const market of model.markets) {
+      // Stale squads cannot produce trustworthy player rows.
+      if (market.playerId && !squad.verified && !options.allowUnverifiedSquads) continue;
+
       // One row per MARKET, carrying both sides. A coupon quotes both, and the
       // value can sit on either, so collapsing to a single "preferred" side
       // would throw away half of what the sheet is for.
@@ -342,6 +376,8 @@ function fairSheet(options = {}) {
     competition: ctx.fixturesFile.competition,
     matchweek: ctx.fixturesFile.matchweek,
     requiredEdge,
+    squad,
+    playerRowsSuppressed: !squad.verified && !options.allowUnverifiedSquads,
     fixtures,
   };
 }

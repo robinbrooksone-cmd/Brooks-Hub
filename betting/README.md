@@ -28,7 +28,28 @@ margin applied. It exercises the whole pipeline honestly, but **every edge shown
 against it is illustrative**. The UI and CLI both say so, loudly, until you
 import a real board. See *Getting real prices in* below.
 
-**2. Team and player rates are informed priors, not a fitted season sample.**
+**2. Squad data is gated, and gated shut by default.**
+Player markets are only as good as the roster behind them, and a confident pick
+on a player who has left the club is worse than no pick at all. Each player
+carries a `verifiedAt` date; the engine compares it against the last transfer
+window close and, if the squad has not been confirmed since, **player markets
+are priced but withheld from every recommendation** and the warning is rendered
+in red. Team and match markets are unaffected.
+
+```bash
+node betting/scripts/import-squad.js --status          # what is gated and why
+node betting/scripts/import-squad.js liverpool roster.txt
+node betting/scripts/import-squad.js --verify          # lift the gate
+```
+
+This gate exists because of a real failure: the model priced and recommended
+props for players who had moved on in the previous window, and nothing in the
+pipeline objected, because every layer downstream assumes the roster is right.
+`_knownGaps` in `players.json` records arrivals known to be missing — they are
+deliberately *not* invented, since fabricating per-90 numbers for a new signing
+swaps one class of error for another.
+
+**3. Team and player rates are informed priors, not a fitted season sample.**
 Per-90 rates, start probabilities and team rates are realistic estimates, not
 scraped season-to-date numbers. They are plain per-game rates in flat JSON, so a
 real stats table drops straight in. `startProb` is the single highest-value field
@@ -336,6 +357,10 @@ dozen players) would crowd every other market off the sheet.
   with numbers from real event data.
 - Watch the reconciliation factors in the player view. Anything far from 1.00
   means the player data and the team rating disagree, and one of them is wrong.
+- **Re-verify squads after every transfer window.** The gate will tell you, but
+  it only knows about window dates listed in `src/model/squadStatus.js`.
+- Tests deliberately select players by role and property, never by name. A test
+  pinned to a named player breaks the moment a roster is refreshed.
 - Fill in the referee in `data/fixtures.json`. It is `null` by default, which
   means league-average, and it moves every card and foul market.
 - Refresh `startProb` when line-ups are confirmed.

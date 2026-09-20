@@ -11,13 +11,14 @@ const devig = require('../src/pricing/devig');
 const edge = require('../src/pricing/edge');
 const parlay = require('../src/pricing/parlay');
 const adapter = require('../src/adapters/sportingbet');
-const { runSlate, buildParlays } = require('../src/engine');
+const { runSlate, buildParlays, fairSheet: fairSheetFn } = require('../src/engine');
 const rolesModel = require('../src/model/roles');
 const minutesModel = require('../src/model/minutes');
 const involvement = require('../src/model/involvement');
 const matchups = require('../src/model/matchups');
 const playerEvents = require('../src/model/playerEvents');
 const squad = require('../src/model/squad');
+const squadStatus = require('../src/model/squadStatus');
 const rolesData = require('../data/roles.json');
 const playersData = require('../data/players.json').players;
 const teamsData = require('../data/teams.json').teams;
@@ -452,7 +453,11 @@ test('resolved profiles never violate their containment invariants', () => {
 });
 
 test('explicit per-90 values always beat the role baseline', () => {
-  const player = playersData.find((p) => p.id === 'casemiro');
+  // Pick by property, never by name: players move clubs, and a test pinned to
+  // one breaks the moment the roster is refreshed - which is the whole reason
+  // the squad gate exists.
+  const player = playersData.find((p) => p.per90 && p.per90.fouls !== undefined && p.per90.shots !== undefined);
+  assert(player, 'no player carries explicit shots and fouls');
   const { per90 } = rolesModel.resolvePer90(player, rolesData);
   close(per90.fouls, player.per90.fouls, 1e-12, 'explicit fouls overridden');
   close(per90.shots, player.per90.shots, 1e-12, 'explicit shots overridden');
@@ -516,7 +521,10 @@ test('defenders outlast forwards', () => {
 });
 
 test('fatigue and a settled game pull minutes down', () => {
-  const p = playersData.find((x) => x.id === 'casemiro');
+  // A midfielder with real rotation risk, chosen by profile rather than name.
+  const p = playersData.find((x) => x.roleType === 'holding-mid' && x.startProb < 0.9)
+    || playersData.find((x) => x.roleType === 'holding-mid');
+  assert(p, 'no holding midfielder in the squad file');
   const role = rolesModel.resolvePer90(p, rolesData).role;
   const rested = minutesModel.minutesModel(p, role, { daysRest: 7 }).expectedMinutes;
   const tired = minutesModel.minutesModel(p, role, { daysRest: 2 }).expectedMinutes;
@@ -726,8 +734,13 @@ test('involvement shares sum to one and are led by the right players', () => {
       close(total, 1, 1e-9, `${side} ${metric} shares`);
     }
   }
-  const topShooter = Object.entries(f.shares.home.shots).sort((a, b) => b[1] - a[1])[0];
-  assert(topShooter[0] === 'haaland', `expected Haaland to lead City's shot share, got ${topShooter[0]}`);
+  // Structural check rather than a named player: the leading shot share must
+  // belong to a forward, and must be a plausible share of the team's output.
+  const [topId, topShare] = Object.entries(f.shares.home.shots).sort((a, b) => b[1] - a[1])[0];
+  const leader = f.players.find((p) => p.id === topId);
+  assert(leader && ['FWD', 'WIDE'].includes(leader.line),
+    `expected a forward to lead the shot share, got ${topId} (${leader && leader.line})`);
+  assert(topShare > 0.12 && topShare < 0.45, `implausible leading shot share: ${topShare}`);
 });
 
 test('squad coverage is reported and plausible', () => {
@@ -737,6 +750,67 @@ test('squad coverage is reported and plausible', () => {
       const c = f.projections[side].coverage;
       assert(c > 0.6 && c <= 1, `${f.id} ${side}: coverage ${c} implausible`);
     }
+  }
+});
+
+
+/* -------------------------------------------------- squad verification */
+
+test('the last transfer window close is identified correctly', () => {
+  close(squadStatus.lastWindowClose('2026-09-20') === '2026-09-01' ? 1 : 0, 1, 0, 'Sept 2026');
+  assert(squadStatus.lastWindowClose('2026-08-15') === '2026-02-02', 'mid-window should look back to February');
+});
+
+test('a squad verified before the window closed is rejected', () => {
+  const file = { _squadVerification: { verifiedAt: '2026-05-01' }, players: [{ id: 'a', verifiedAt: '2026-05-01' }] };
+  const a = squadStatus.assessSquad(file, '2026-09-20');
+  assert(!a.verified, 'pre-window verification must not count');
+  assert(/before the transfer window/.test(a.reason), `unhelpful reason: ${a.reason}`);
+});
+
+test('a squad verified after the window closed is accepted', () => {
+  const file = { _squadVerification: { verifiedAt: '2026-09-05' }, players: [{ id: 'a', verifiedAt: '2026-09-05' }] };
+  assert(squadStatus.assessSquad(file, '2026-09-20').verified, 'post-window verification should count');
+});
+
+test('an unverified squad suppresses player picks entirely', () => {
+  const slate = runSlate({ minEdge: 0.02 });
+  if (slate.squad.verified) return; // nothing to prove once verified
+  assert(slate.playerPicksSuppressed, 'gate should be closed');
+  const leaked = slate.picks.filter((p) => p.playerId);
+  assert(leaked.length === 0,
+    `${leaked.length} player picks leaked past the gate, e.g. ${leaked[0] && leaked[0].selection}`);
+  assert(slate.warnings.some((w) => w.startsWith('SQUADS UNVERIFIED')), 'must warn loudly');
+});
+
+test('team and match markets are unaffected by the squad gate', () => {
+  const slate = runSlate({ minEdge: 0.02 });
+  assert(slate.picks.length > 0, 'team markets should still produce picks');
+  const categories = new Set(slate.picks.map((p) => p.category));
+  assert(!categories.has('Player props'), 'player props must not appear while gated');
+  assert(categories.size >= 2, 'team-level categories should survive');
+});
+
+test('the fair sheet honours the same gate', () => {
+  const sheet = fairSheetFn({ requiredEdge: 0.06 });
+  if (sheet.squad.verified) return;
+  assert(sheet.playerRowsSuppressed, 'fair sheet gate should be closed');
+  for (const f of sheet.fixtures) {
+    const leaked = f.all.filter((r) => r.playerId);
+    assert(leaked.length === 0, `${f.id}: player rows leaked into the fair sheet`);
+  }
+});
+
+test('overriding the gate is possible but must be explicit', () => {
+  const slate = runSlate({ minEdge: 0.02, allowUnverifiedSquads: true });
+  assert(!slate.playerPicksSuppressed, 'explicit override should open the gate');
+  assert(slate.picks.some((p) => p.playerId), 'player picks should return when overridden');
+});
+
+test('players removed in a transfer window are gone from the squad', () => {
+  const gone = ['salah', 'casemiro', 'ugarte', 'savinho', 'bernardo', 'semenyo', 'jimenez', 'harry-wilson', 'lacroix', 'konate'];
+  for (const id of gone) {
+    assert(!playersData.some((p) => p.id === id), `${id} has left his club but is still in the squad file`);
   }
 });
 

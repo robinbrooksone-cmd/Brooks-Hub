@@ -73,6 +73,14 @@ a { color: var(--blue); }
   border-bottom: 1px solid rgba(251, 191, 36, .28);
   color: #f5d98a;
 }
+.banner div + div { margin-top: 5px; }
+/* A stale squad is not a caveat, it is a correctness failure: colour it as one. */
+.banner.severe {
+  background: rgba(248, 113, 113, .12);
+  border-bottom-color: rgba(248, 113, 113, .38);
+  color: #fca5a5;
+}
+.banner.severe div:first-child { font-weight: 650; }
 
 /* ---------- fixtures ---------- */
 .fixtures {

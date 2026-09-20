@@ -80,6 +80,11 @@ function printFairSheet(args) {
   const sheet = fairSheet({ date: args.date, requiredEdge: args.requiredEdge ?? 0.06 });
 
   console.log(`\n${C.bold}${sheet.competition} - Matchweek ${sheet.matchweek} - ${sheet.date}${C.reset}`);
+  if (sheet.playerRowsSuppressed) {
+    console.log(`${C.red}${C.bold}! SQUADS UNVERIFIED - ${sheet.squad.reason}${C.reset}`);
+    console.log(`${C.red}  Player markets are withheld. Team and match markets below are unaffected.${C.reset}`);
+    console.log(`${C.grey}  Fix with: node betting/scripts/import-squad.js --status${C.reset}`);
+  }
   console.log(`${C.grey}Model fair prices. No bookmaker board used - compare each TAKE AT figure against the coupon.${C.reset}`);
   console.log(`${C.grey}Each market shows both sides. TAKE AT is the shortest price worth backing, with a ${((args.requiredEdge ?? 0.06) * 100).toFixed(0)}% margin of safety.${C.reset}`);
   console.log(`${C.grey}If the coupon pays MORE than TAKE AT, it is a bet. If less, pass.${C.reset}`);
@@ -137,7 +142,10 @@ function main() {
     const live = slate.board.isLiveData;
     console.log(`${C.grey}Board: ${slate.board.bookmaker} | ${slate.board.priceCount} prices | source: ${live ? 'live' : slate.board.source}${C.reset}`);
   }
-  if (slate.dataWarning) console.log(`${C.yellow}! ${slate.dataWarning}${C.reset}`);
+  for (const w of slate.warnings || []) {
+    const severe = w.startsWith('SQUADS UNVERIFIED');
+    console.log(`${severe ? C.red + C.bold : C.yellow}! ${w}${C.reset}`);
+  }
 
   console.log(`\n${C.bold}FIXTURES${C.reset}`);
   for (const f of slate.fixtures) {

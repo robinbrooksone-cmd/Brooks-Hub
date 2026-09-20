@@ -64,11 +64,15 @@ function renderMeta() {
     : 'No price board loaded';
 
   const banner = $('banner');
-  if (s.dataWarning) {
-    banner.textContent = s.dataWarning;
+  const warnings = s.warnings || (s.dataWarning ? [s.dataWarning] : []);
+  if (warnings.length) {
+    const severe = warnings.some((w) => w.startsWith('SQUADS UNVERIFIED'));
+    banner.classList.toggle('severe', severe);
+    banner.innerHTML = warnings.map((w) => `<div>${esc(w)}</div>`).join('');
     banner.hidden = false;
   } else {
     banner.hidden = true;
+    banner.classList.remove('severe');
   }
 }
 
