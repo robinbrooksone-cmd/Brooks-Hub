@@ -168,3 +168,8 @@ than the prototype's drag-and-drop floor plan, to keep the admin surface
 simple and reliable; everything else (RSVP search-by-family, BrooksWay
 game logic, bilingual copy, guest roster grouping) matches the original
 prototype's behavior.
+
+## Deploying
+
+The live site deploys automatically from the `wedding-site-live` branch of
+this repo: push a change there and Vercel publishes it within a few minutes.
