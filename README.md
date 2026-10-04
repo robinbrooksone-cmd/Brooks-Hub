@@ -172,4 +172,5 @@ prototype's behavior.
 ## Deploying
 
 The live site deploys automatically from the `wedding-site-live` branch of
-this repo: push a change there and Vercel publishes it within a few minutes.
+this repo (Vercel → Settings → Environments → Production → Branch Tracking):
+push a change there and Vercel publishes it within a few minutes.
