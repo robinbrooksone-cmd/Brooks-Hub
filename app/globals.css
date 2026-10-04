@@ -1,0 +1,132 @@
+@import "tailwindcss";
+
+:root {
+  --c-choc: #3a2a21;
+  --c-champ: #cbb190;
+  --c-gold: #b3884e;
+  --c-ivory: #f8f3ec;
+  --c-cream: #ece1d0;
+  --c-panel: rgba(248, 243, 236, 0.04);
+  --c-line: rgba(203, 177, 144, 0.16);
+  --c-muted: rgba(248, 243, 236, 0.62);
+  --c-bg-1: #2e2019;
+  --c-bg-2: #3a2a21;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--c-bg-2);
+}
+
+body {
+  color: var(--c-ivory);
+}
+
+::selection {
+  background: rgba(179, 136, 78, 0.25);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(58, 42, 33, 0.2);
+  border-radius: 8px;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes kb {
+  from {
+    transform: scale(1.02);
+  }
+  to {
+    transform: scale(1.16);
+  }
+}
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(9px);
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.font-display {
+  font-family: var(--font-cormorant), Georgia, serif;
+}
+.font-body {
+  font-family: var(--font-jost), Arial, sans-serif;
+}
+
+.fade-up {
+  animation: fadeUp 0.7s ease both;
+}
+.fade-in {
+  animation: fadeIn 0.5s ease both;
+}
+
+/* The seating print pack: a clean, vendor-ready document that replaces the
+   whole page when printing. Screen chrome is hidden; #seating-print-doc
+   (normally display:none) becomes the entire printed output. */
+#seating-print-doc {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 12mm;
+  }
+  body {
+    background: #fff !important;
+  }
+  body * {
+    visibility: hidden;
+  }
+  #seating-print-doc,
+  #seating-print-doc * {
+    visibility: visible;
+  }
+  #seating-print-doc {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: #fff !important;
+    color: #111 !important;
+  }
+  .seating-print-hide {
+    display: none !important;
+  }
+}
