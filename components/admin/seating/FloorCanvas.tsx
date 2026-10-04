@@ -1,11 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import type { FloorItem } from "@/lib/types";
 import { FloorItemView } from "./FloorItemView";
-
-const MIN_ZOOM = 0.25;
-const MAX_ZOOM = 2.5;
 
 export function FloorCanvas({
   containerRef,
@@ -16,10 +12,10 @@ export function FloorCanvas({
   panY,
   gridSize,
   snap,
+  layoutLocked,
   dropTargetId,
   onSelect,
   onDeselect,
-  onViewChange,
   onGestureStart,
   onLiveChange,
   onGestureEnd,
@@ -37,10 +33,10 @@ export function FloorCanvas({
   panY: number;
   gridSize: number;
   snap: boolean;
+  layoutLocked: boolean;
   dropTargetId: string | null;
   onSelect: (id: string) => void;
   onDeselect: () => void;
-  onViewChange: (patch: { zoom?: number; panX?: number; panY?: number }) => void;
   onGestureStart: () => void;
   onLiveChange: (id: string, patch: Partial<FloorItem>) => void;
   onGestureEnd: (id: string, patch: Partial<FloorItem>) => void;
@@ -50,55 +46,30 @@ export function FloorCanvas({
   guestName: (key: string) => string;
   guestDiet: (key: string) => string | undefined;
 }) {
-  const [panning, setPanning] = useState(false);
-
   const toWorld = (clientX: number, clientY: number) => {
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return { x: 0, y: 0 };
     return { x: (clientX - rect.left - panX) / zoom, y: (clientY - rect.top - panY) / zoom };
   };
 
-  const onWheel = (e: React.WheelEvent) => {
-    if (e.ctrlKey || e.metaKey) {
-      e.preventDefault();
-      const rect = containerRef.current?.getBoundingClientRect();
-      if (!rect) return;
-      const cursorX = e.clientX - rect.left;
-      const cursorY = e.clientY - rect.top;
-      const worldX = (cursorX - panX) / zoom;
-      const worldY = (cursorY - panY) / zoom;
-      const nextZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom * (1 - e.deltaY * 0.0016)));
-      onViewChange({ zoom: nextZoom, panX: cursorX - worldX * nextZoom, panY: cursorY - worldY * nextZoom });
-    } else {
-      onViewChange({ panX: panX - e.deltaX, panY: panY - e.deltaY });
-    }
-  };
-
-  const startPan = (e: React.PointerEvent) => {
-    if (e.target !== e.currentTarget) return;
-    onDeselect();
-    setPanning(true);
-    const startX = e.clientX;
-    const startY = e.clientY;
-    const startPanX = panX;
-    const startPanY = panY;
-    const move = (ev: PointerEvent) => {
-      onViewChange({ panX: startPanX + (ev.clientX - startX), panY: startPanY + (ev.clientY - startY) });
-    };
-    const up = () => {
-      setPanning(false);
-      window.removeEventListener("pointermove", move);
-      window.removeEventListener("pointerup", up);
-    };
-    window.addEventListener("pointermove", move);
-    window.addEventListener("pointerup", up);
+  // The view is fixed: dragged items stay inside the visible floor so nothing gets lost off-screen.
+  const clampToView = (x: number, y: number) => {
+    const el = containerRef.current;
+    if (!el) return { x, y };
+    const margin = 20 / zoom;
+    const minX = -panX / zoom + margin;
+    const minY = -panY / zoom + margin;
+    const maxX = (el.clientWidth - panX) / zoom - margin;
+    const maxY = (el.clientHeight - panY) / zoom - margin;
+    return { x: Math.min(maxX, Math.max(minX, x)), y: Math.min(maxY, Math.max(minY, y)) };
   };
 
   return (
     <div
       ref={containerRef}
-      onWheel={onWheel}
-      onPointerDown={startPan}
+      onPointerDown={(e) => {
+        if (e.target === e.currentTarget) onDeselect();
+      }}
       className="relative"
       style={{
         width: "100%",
@@ -108,8 +79,6 @@ export function FloorCanvas({
         backgroundImage: "radial-gradient(rgba(203,177,144,0.25) 1px, transparent 1px)",
         backgroundSize: `${gridSize * zoom}px ${gridSize * zoom}px`,
         backgroundPosition: `${panX}px ${panY}px`,
-        cursor: panning ? "grabbing" : "grab",
-        touchAction: "none",
         borderRadius: 10,
         border: "1px solid var(--c-line)",
       }}
@@ -131,6 +100,8 @@ export function FloorCanvas({
             toWorld={toWorld}
             gridSize={gridSize}
             snap={snap}
+            layoutLocked={layoutLocked}
+            clampToView={clampToView}
             guestName={guestName}
             guestDiet={guestDiet}
             isDropTarget={dropTargetId === item.id}

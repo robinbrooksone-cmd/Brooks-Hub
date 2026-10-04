@@ -12,6 +12,8 @@ export function FloorItemView({
   toWorld,
   gridSize,
   snap,
+  layoutLocked,
+  clampToView,
   guestName,
   guestDiet,
   onGestureStart,
@@ -28,6 +30,8 @@ export function FloorItemView({
   toWorld: (clientX: number, clientY: number) => { x: number; y: number };
   gridSize: number;
   snap: boolean;
+  layoutLocked: boolean;
+  clampToView: (x: number, y: number) => { x: number; y: number };
   guestName: (key: string) => string;
   guestDiet: (key: string) => string | undefined;
   onGestureStart: () => void;
@@ -44,32 +48,38 @@ export function FloorItemView({
   const movedRef = useRef(false);
 
   const snapVal = (v: number) => (snap ? Math.round(v / gridSize) * gridSize : v);
+  // Tables stay put unless "Move tables" is on (and the item itself isn't locked).
+  const fixed = !!item.locked || layoutLocked;
 
   const startMove = (e: React.PointerEvent) => {
-    if (item.locked || renaming) return;
+    if (fixed || renaming) return;
     if ((e.target as HTMLElement).closest("[data-handle]")) return;
     e.stopPropagation();
     e.preventDefault();
+    const startClientX = e.clientX;
+    const startClientY = e.clientY;
     const startWorld = toWorld(e.clientX, e.clientY);
     const startX = item.x;
     const startY = item.y;
     movedRef.current = false;
     onGestureStart();
-    const move = (ev: PointerEvent) => {
+    const positionAt = (ev: PointerEvent) => {
       const w = toWorld(ev.clientX, ev.clientY);
-      const dx = w.x - startWorld.x;
-      const dy = w.y - startWorld.y;
-      if (Math.abs(dx) > 2 || Math.abs(dy) > 2) movedRef.current = true;
-      onLiveChange({ x: snapVal(startX + dx), y: snapVal(startY + dy) });
+      const p = clampToView(startX + w.x - startWorld.x, startY + w.y - startWorld.y);
+      return { x: snapVal(p.x), y: snapVal(p.y) };
+    };
+    const move = (ev: PointerEvent) => {
+      // Ignore small hand jitter so a click never nudges the table.
+      if (!movedRef.current && Math.hypot(ev.clientX - startClientX, ev.clientY - startClientY) < 6) return;
+      movedRef.current = true;
+      onLiveChange(positionAt(ev));
     };
     const up = (ev: PointerEvent) => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
-      const w = toWorld(ev.clientX, ev.clientY);
-      const dx = w.x - startWorld.x;
-      const dy = w.y - startWorld.y;
+      window.removeEventListener("pointercancel", up);
       if (movedRef.current) {
-        onGestureEnd({ x: snapVal(startX + dx), y: snapVal(startY + dy) });
+        onGestureEnd(positionAt(ev));
       } else {
         onGestureEnd({});
         onSelect();
@@ -78,6 +88,7 @@ export function FloorItemView({
     };
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
   };
 
   const startResize = (corner: Corner) => (e: React.PointerEvent) => {
@@ -198,6 +209,11 @@ export function FloorItemView({
     <div
       data-floor-item-id={item.id}
       onPointerDown={startMove}
+      onClick={() => {
+        if (!fixed || renaming) return;
+        onSelect();
+        if (item.seats) onOpenPanel();
+      }}
       onContextMenu={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -210,8 +226,8 @@ export function FloorItemView({
         top: item.y - item.h / 2,
         width: item.w,
         height: item.h,
-        touchAction: "none",
-        cursor: item.locked ? "default" : "move",
+        touchAction: fixed ? "auto" : "none",
+        cursor: fixed ? "pointer" : "move",
         zIndex: selected ? 5 : 1,
       }}
     >
@@ -306,7 +322,7 @@ export function FloorItemView({
         {seatDots}
       </div>
 
-      {selected && !item.locked && (
+      {selected && !fixed && (
         <>
           {(["nw", "ne", "sw", "se"] as Corner[]).map((corner) => (
             <div

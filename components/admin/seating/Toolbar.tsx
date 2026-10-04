@@ -6,9 +6,9 @@ import { ADD_MENU } from "./floorPlanConfig";
 
 export function Toolbar({
   onAdd,
-  zoom,
-  onZoomChange,
-  onZoomBy,
+  layoutLocked,
+  onToggleLayoutLock,
+  onFit,
   snap,
   onToggleSnap,
   onUndo,
@@ -20,9 +20,9 @@ export function Toolbar({
   saveStatus,
 }: {
   onAdd: (type: FloorItemType) => void;
-  zoom: number;
-  onZoomChange: (z: number) => void;
-  onZoomBy: (delta: number) => void;
+  layoutLocked: boolean;
+  onToggleLayoutLock: () => void;
+  onFit: () => void;
   snap: boolean;
   onToggleSnap: () => void;
   onUndo: () => void;
@@ -114,15 +114,15 @@ export function Toolbar({
 
       <div style={{ width: 1, height: 22, background: "var(--c-line)" }} />
 
-      <button style={btn} onClick={() => onZoomBy(-0.1)}>
-        −
+      <button
+        style={{ ...btn, background: layoutLocked ? btn.background : "rgba(179,136,78,0.25)", borderColor: layoutLocked ? "var(--c-line)" : "var(--c-gold)" }}
+        onClick={onToggleLayoutLock}
+        title={layoutLocked ? "Tables are fixed in place. Click to rearrange them." : "Tables can be dragged. Click when done to fix them in place."}
+      >
+        {layoutLocked ? "🔒 Tables fixed · Move tables" : "✋ Moving tables · Done"}
       </button>
-      <span style={{ fontSize: 12, color: "var(--c-muted)", minWidth: 40, textAlign: "center" }}>{Math.round(zoom * 100)}%</span>
-      <button style={btn} onClick={() => onZoomBy(0.1)}>
-        +
-      </button>
-      <button style={btn} onClick={() => onZoomChange(1)}>
-        Reset
+      <button style={btn} onClick={onFit} title="Fit the whole floor plan in view">
+        ⤢ Fit to screen
       </button>
 
       <div style={{ width: 1, height: 22, background: "var(--c-line)" }} />

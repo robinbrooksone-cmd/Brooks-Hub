@@ -150,3 +150,32 @@ export const DIET_COLORS: Record<string, string> = {
 export function dietColor(diet: string | undefined): string {
   return (diet && DIET_COLORS[diet]) || "rgba(203,177,144,0.5)";
 }
+
+export type FloorView = { zoom: number; panX: number; panY: number };
+
+/**
+ * Scale and centre the plan so every item (plus its seat dots) fits inside a
+ * box of the given size. Never zooms past 100%, so a small plan isn't blown up.
+ */
+export function fitView(items: FloorItem[], width: number, height: number): FloorView {
+  if (items.length === 0 || width <= 0 || height <= 0) return { zoom: 1, panX: 0, panY: 0 };
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  for (const it of items) {
+    // Half-diagonal covers any rotation; +24 leaves room for the seat dots.
+    const r = Math.hypot(it.w, it.h) / 2 + 24;
+    minX = Math.min(minX, it.x - r);
+    minY = Math.min(minY, it.y - r);
+    maxX = Math.max(maxX, it.x + r);
+    maxY = Math.max(maxY, it.y + r);
+  }
+  const pad = 16;
+  const zoom = Math.max(0.2, Math.min(1, (width - pad * 2) / (maxX - minX), (height - pad * 2) / (maxY - minY)));
+  return {
+    zoom,
+    panX: width / 2 - ((minX + maxX) / 2) * zoom,
+    panY: height / 2 - ((minY + maxY) / 2) * zoom,
+  };
+}

@@ -6,7 +6,7 @@ import type { Family } from "@/lib/roster";
 import type { FloorItem, FloorItemType, Rsvp, SeatingLayout } from "@/lib/types";
 import { ContextMenu } from "./seating/ContextMenu";
 import { FloorCanvas } from "./seating/FloorCanvas";
-import { createFloorItem, splitGuestsAndBabies, type Guest, type GuestStatus, uid } from "./seating/floorPlanConfig";
+import { createFloorItem, fitView, type FloorView, splitGuestsAndBabies, type Guest, type GuestStatus, uid } from "./seating/floorPlanConfig";
 import { GuestSidebar } from "./seating/GuestSidebar";
 import { TablePanel } from "./seating/TablePanel";
 import { SeatingPrintSheet } from "./seating/SeatingPrintSheet";
@@ -41,9 +41,19 @@ export function SeatingTab() {
 
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // The plan view is fixed and fitted to the box — never panned or saved — so
+  // the floor stays put while you work. It refits when tables are added or
+  // removed, on undo/redo, when the window resizes, or via "Fit to screen".
+  const [fitItems, setFitItems] = useState<FloorItem[]>([]);
+  const [boxSize, setBoxSize] = useState({ w: 0, h: 0 });
+  const [layoutLocked, setLayoutLocked] = useState(true);
+  const view: FloorView = useMemo(() => fitView(fitItems, boxSize.w, boxSize.h), [fitItems, boxSize]);
+  const refit = (l: SeatingLayout | null = layout) => setFitItems(l ? l.items : []);
+
   useEffect(() => {
     Promise.all([getSeatingLayoutAction(), getRsvpsAction(), getFamiliesAction()]).then(([l, r, f]) => {
       setLayout(l);
+      setFitItems(l.items);
       setRsvps(r);
       setFamilies(f);
       setLoaded(true);
@@ -53,6 +63,14 @@ export function SeatingTab() {
   useEffect(() => {
     layoutRef.current = layout;
   }, [layout]);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setBoxSize({ w: el.clientWidth, h: el.clientHeight }));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [loaded]);
 
   // Debounced autosave — fires ~700ms after the layout settles, skipped on the initial load.
   useEffect(() => {
@@ -100,7 +118,9 @@ export function SeatingTab() {
     if (!layout) return;
     setHistory((h) => [...h.slice(-(HISTORY_LIMIT - 1)), layout]);
     setFuture([]);
-    setLayout(mutator(layout));
+    const next = mutator(layout);
+    setLayout(next);
+    if (next.items.length !== layout.items.length) refit(next); // table added or removed
   }
 
   function beginGesture() {
@@ -119,12 +139,6 @@ export function SeatingTab() {
     }
     setLayout((prev) => (prev ? { ...prev, items: prev.items.map((it) => (it.id === id ? { ...it, ...patch } : it)) } : prev));
   }
-  function onViewChange(patch: { zoom?: number; panX?: number; panY?: number }) {
-    setLayout((prev) => (prev ? { ...prev, ...patch } : prev));
-  }
-  function zoomBy(delta: number) {
-    setLayout((prev) => (prev ? { ...prev, zoom: Math.min(2.5, Math.max(0.25, prev.zoom + delta)) } : prev));
-  }
 
   function undo() {
     if (history.length === 0 || !layout) return;
@@ -132,6 +146,7 @@ export function SeatingTab() {
     setHistory((h) => h.slice(0, -1));
     setFuture((f) => [layout, ...f].slice(0, HISTORY_LIMIT));
     setLayout(prev);
+    refit(prev);
   }
   function redo() {
     if (future.length === 0 || !layout) return;
@@ -139,16 +154,18 @@ export function SeatingTab() {
     setFuture((f) => f.slice(1));
     setHistory((h) => [...h, layout].slice(-HISTORY_LIMIT));
     setLayout(next);
+    refit(next);
   }
 
   function addItem(type: FloorItemType) {
     if (!layout) return;
     const rect = containerRef.current?.getBoundingClientRect();
-    const cx = rect ? (rect.width / 2 - layout.panX) / layout.zoom : 300;
-    const cy = rect ? (rect.height / 2 - layout.panY) / layout.zoom : 300;
+    const cx = rect ? (rect.width / 2 - view.panX) / view.zoom : 300;
+    const cy = rect ? (rect.height / 2 - view.panY) / view.zoom : 300;
     const item = createFloorItem(type, cx, cy, layout.items);
     commitAction((l) => ({ ...l, items: [...l.items, item] }));
     setSelectedId(item.id);
+    setLayoutLocked(false); // let them place what they just added
   }
 
   function deleteItem(id: string) {
@@ -298,7 +315,7 @@ export function SeatingTab() {
       } else if (mod && (e.key.toLowerCase() === "y" || (e.key.toLowerCase() === "z" && e.shiftKey))) {
         e.preventDefault();
         redo();
-      } else if ((e.key === "Delete" || e.key === "Backspace") && selectedId) {
+      } else if ((e.key === "Delete" || e.key === "Backspace") && selectedId && !layoutLocked) {
         e.preventDefault();
         deleteItem(selectedId);
       } else if (mod && e.key.toLowerCase() === "d" && selectedId) {
@@ -308,7 +325,7 @@ export function SeatingTab() {
         setSelectedId(null);
         setPanelOpenId(null);
         setContextMenu(null);
-      } else if (selectedId && layout && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
+      } else if (selectedId && layout && !layoutLocked && ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.key)) {
         e.preventDefault();
         const step = e.altKey ? 1 : layout.snap ? layout.gridSize : 10;
         const dx = e.key === "ArrowLeft" ? -step : e.key === "ArrowRight" ? step : 0;
@@ -319,23 +336,26 @@ export function SeatingTab() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedId, layout, history, future]);
+  }, [selectedId, layout, history, future, layoutLocked]);
 
   if (!loaded || !layout) return <div style={{ color: "var(--c-muted)" }}>Loading floor plan…</div>;
 
   return (
     <div className="flex flex-col">
       <p style={{ color: "var(--c-muted)", fontSize: 13, marginBottom: 12 }}>
-        Drag guests from the sidebar onto a table to seat them. Drag tables and objects to arrange your reception — resize from the corners, rotate from the top
-        handle, double-click a name to rename. Everything autosaves.
+        Drag guests from the sidebar onto a table to seat them, or tap a table to see who&apos;s at it. Tables stay fixed in place — click{" "}
+        <strong>Move tables</strong> to rearrange them (resize from the corners, rotate from the top handle), then <strong>Done</strong>. Everything autosaves.
       </p>
 
       <div className="seating-print-hide">
         <Toolbar
           onAdd={addItem}
-          zoom={layout.zoom}
-          onZoomChange={(z) => onViewChange({ zoom: z })}
-          onZoomBy={zoomBy}
+          layoutLocked={layoutLocked}
+          onToggleLayoutLock={() => {
+            setLayoutLocked((v) => !v);
+            setSelectedId(null);
+          }}
+          onFit={() => refit()}
           snap={layout.snap}
           onToggleSnap={() => commitAction((l) => ({ ...l, snap: !l.snap }))}
           onUndo={undo}
@@ -357,7 +377,7 @@ export function SeatingTab() {
       </button>
 
       <div className="flex gap-4" style={{ minHeight: 0 }}>
-        <div className="hidden md:flex flex-col seating-print-hide" style={{ width: 240, flexShrink: 0, height: "72vh", minHeight: 480 }}>
+        <div className="hidden md:flex flex-col seating-print-hide" style={{ width: 240, flexShrink: 0, height: "min(62vh, 600px)", minHeight: 380 }}>
           <GuestSidebar
             guests={guests}
             search={search}
@@ -371,20 +391,20 @@ export function SeatingTab() {
           />
         </div>
 
-        <div style={{ flex: 1, minWidth: 0, height: "72vh", minHeight: 480 }}>
+        <div style={{ flex: 1, minWidth: 0, height: "min(62vh, 600px)", minHeight: 380 }}>
           <FloorCanvas
             containerRef={containerRef}
             items={layout.items}
             selectedId={selectedId}
-            zoom={layout.zoom}
-            panX={layout.panX}
-            panY={layout.panY}
+            zoom={view.zoom}
+            panX={view.panX}
+            panY={view.panY}
             gridSize={layout.gridSize}
             snap={layout.snap}
+            layoutLocked={layoutLocked}
             dropTargetId={dropTargetId}
             onSelect={setSelectedId}
             onDeselect={() => setSelectedId(null)}
-            onViewChange={onViewChange}
             onGestureStart={beginGesture}
             onLiveChange={liveChangeItem}
             onGestureEnd={endGestureItem}
@@ -500,7 +520,8 @@ export function SeatingTab() {
 
       {selectedItem && !panelItem && (
         <div className="seating-print-hide" style={{ marginTop: 10, fontSize: 11, color: "var(--c-muted)" }}>
-          Selected: {selectedItem.name} · Delete to remove · Ctrl/Cmd+D to duplicate · Arrow keys to nudge
+          Selected: {selectedItem.name}
+          {layoutLocked ? " · Click Move tables to rearrange" : " · Delete to remove · Ctrl/Cmd+D to duplicate · Arrow keys to nudge"}
         </div>
       )}
     </div>
