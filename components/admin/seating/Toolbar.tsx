@@ -9,7 +9,6 @@ export function Toolbar({
   layoutLocked,
   onToggleLayoutLock,
   onFit,
-  onArrange,
   snap,
   onToggleSnap,
   onUndo,
@@ -24,7 +23,6 @@ export function Toolbar({
   layoutLocked: boolean;
   onToggleLayoutLock: () => void;
   onFit: () => void;
-  onArrange: () => void;
   snap: boolean;
   onToggleSnap: () => void;
   onUndo: () => void;
@@ -117,19 +115,11 @@ export function Toolbar({
       <div style={{ width: 1, height: 22, background: "var(--c-line)" }} />
 
       <button
-        style={{ ...btn, background: layoutLocked ? "rgba(179,136,78,0.25)" : btn.background, borderColor: layoutLocked ? "var(--c-gold)" : "var(--c-line)" }}
+        style={{ ...btn, background: layoutLocked ? btn.background : "rgba(179,136,78,0.25)", borderColor: layoutLocked ? "var(--c-line)" : "var(--c-gold)" }}
         onClick={onToggleLayoutLock}
-        title={layoutLocked ? "Tables are locked in place. Click to move them again." : "Tables can be dragged. Click to lock them in place."}
+        title={layoutLocked ? "Tables are fixed in place. Click to rearrange them." : "Tables can be dragged. Click when done to fix them in place."}
       >
-        {layoutLocked ? "🔒 Locked · Unlock" : "🔓 Lock tables"}
-      </button>
-      <button
-        style={layoutLocked ? btnDisabled : btn}
-        disabled={layoutLocked}
-        onClick={onArrange}
-        title="Line the tables up in rows by number, bridal table on top, dance floor and bar to the side"
-      >
-        ▦ Arrange in rows
+        {layoutLocked ? "🔒 Tables fixed · Move tables" : "✋ Moving tables · Done"}
       </button>
       <button style={btn} onClick={onFit} title="Fit the whole floor plan in view">
         ⤢ Fit to screen

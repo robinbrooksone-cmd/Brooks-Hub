@@ -6,7 +6,7 @@ import type { Family } from "@/lib/roster";
 import type { FloorItem, FloorItemType, Rsvp, SeatingLayout } from "@/lib/types";
 import { ContextMenu } from "./seating/ContextMenu";
 import { FloorCanvas } from "./seating/FloorCanvas";
-import { arrangeInRows, createFloorItem, fitView, type FloorView, splitGuestsAndBabies, type Guest, type GuestStatus, uid } from "./seating/floorPlanConfig";
+import { createFloorItem, fitView, type FloorView, splitGuestsAndBabies, type Guest, type GuestStatus, uid } from "./seating/floorPlanConfig";
 import { GuestSidebar } from "./seating/GuestSidebar";
 import { TablePanel } from "./seating/TablePanel";
 import { SeatingPrintSheet } from "./seating/SeatingPrintSheet";
@@ -43,10 +43,10 @@ export function SeatingTab() {
 
   // The plan view is fixed and fitted to the box — never panned or saved — so
   // the floor stays put while you work. It refits when tables are added or
-  // removed or moved, on undo/redo, when the window resizes, or via "Fit to screen".
+  // removed, on undo/redo, when the window resizes, or via "Fit to screen".
   const [fitItems, setFitItems] = useState<FloorItem[]>([]);
   const [boxSize, setBoxSize] = useState({ w: 0, h: 0 });
-  const [layoutLocked, setLayoutLocked] = useState(false);
+  const [layoutLocked, setLayoutLocked] = useState(true);
   const view: FloorView = useMemo(() => fitView(fitItems, boxSize.w, boxSize.h), [fitItems, boxSize]);
   const refit = (l: SeatingLayout | null = layout) => setFitItems(l ? l.items : []);
 
@@ -137,19 +137,7 @@ export function SeatingTab() {
       setHistory((h) => [...h.slice(-(HISTORY_LIMIT - 1)), snap]);
       setFuture([]);
     }
-    const prev = layoutRef.current;
-    if (!prev) return;
-    const next = { ...prev, items: prev.items.map((it) => (it.id === id ? { ...it, ...patch } : it)) };
-    setLayout(next);
-    refit(next); // re-centre around the new arrangement
-  }
-
-  function arrangeTables() {
-    if (!layout) return;
-    const next = { ...layout, items: arrangeInRows(layout.items, boxSize.w, boxSize.h) };
-    commitAction(() => next);
-    refit(next);
-    setToast("Tables arranged in rows — Undo to put them back.");
+    setLayout((prev) => (prev ? { ...prev, items: prev.items.map((it) => (it.id === id ? { ...it, ...patch } : it)) } : prev));
   }
 
   function undo() {
@@ -355,9 +343,8 @@ export function SeatingTab() {
   return (
     <div className="flex flex-col">
       <p style={{ color: "var(--c-muted)", fontSize: 13, marginBottom: 12 }}>
-        Drag guests from the sidebar onto a table to seat them, or tap a table to see who&apos;s at it. Drag tables to move them (resize from the corners,
-        rotate from the top handle), or use <strong>Arrange in rows</strong> to line them up. <strong>Lock tables</strong> when you&apos;re happy with the
-        layout. Everything autosaves.
+        Drag guests from the sidebar onto a table to seat them, or tap a table to see who&apos;s at it. Tables stay fixed in place — click{" "}
+        <strong>Move tables</strong> to rearrange them (resize from the corners, rotate from the top handle), then <strong>Done</strong>. Everything autosaves.
       </p>
 
       <div className="seating-print-hide">
@@ -369,7 +356,6 @@ export function SeatingTab() {
             setSelectedId(null);
           }}
           onFit={() => refit()}
-          onArrange={arrangeTables}
           snap={layout.snap}
           onToggleSnap={() => commitAction((l) => ({ ...l, snap: !l.snap }))}
           onUndo={undo}
@@ -384,14 +370,14 @@ export function SeatingTab() {
 
       <button
         onClick={() => setMobileSidebar(true)}
-        className="lg:hidden cursor-pointer seating-print-hide"
+        className="md:hidden cursor-pointer seating-print-hide"
         style={{ marginBottom: 10, padding: "8px 14px", background: "var(--c-panel)", border: "1px solid var(--c-line)", borderRadius: 8, color: "var(--c-ivory)", fontSize: 12, alignSelf: "flex-start" }}
       >
         👥 Guests ({guests.filter((g) => g.status === "attending").length})
       </button>
 
       <div className="flex gap-4" style={{ minHeight: 0 }}>
-        <div className="hidden lg:flex flex-col seating-print-hide" style={{ width: 240, flexShrink: 0, height: "min(80vh, 920px)", minHeight: 520 }}>
+        <div className="hidden md:flex flex-col seating-print-hide" style={{ width: 240, flexShrink: 0, height: "min(62vh, 600px)", minHeight: 380 }}>
           <GuestSidebar
             guests={guests}
             search={search}
@@ -405,7 +391,7 @@ export function SeatingTab() {
           />
         </div>
 
-        <div style={{ flex: 1, minWidth: 0, height: "min(80vh, 920px)", minHeight: 520 }}>
+        <div style={{ flex: 1, minWidth: 0, height: "min(62vh, 600px)", minHeight: 380 }}>
           <FloorCanvas
             containerRef={containerRef}
             items={layout.items}
@@ -432,7 +418,7 @@ export function SeatingTab() {
       </div>
 
       {mobileSidebar && (
-        <div className="fixed lg:hidden" style={{ inset: 0, zIndex: 70, background: "rgba(0,0,0,0.55)" }} onClick={() => setMobileSidebar(false)}>
+        <div className="fixed md:hidden" style={{ inset: 0, zIndex: 70, background: "rgba(0,0,0,0.55)" }} onClick={() => setMobileSidebar(false)}>
           <div onClick={(e) => e.stopPropagation()} style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "85vw", maxWidth: 340, background: "#2e2019", padding: 16 }}>
             <GuestSidebar
               guests={guests}
@@ -535,7 +521,7 @@ export function SeatingTab() {
       {selectedItem && !panelItem && (
         <div className="seating-print-hide" style={{ marginTop: 10, fontSize: 11, color: "var(--c-muted)" }}>
           Selected: {selectedItem.name}
-          {layoutLocked ? " · Unlock to rearrange" : " · Delete to remove · Ctrl/Cmd+D to duplicate · Arrow keys to nudge"}
+          {layoutLocked ? " · Click Move tables to rearrange" : " · Delete to remove · Ctrl/Cmd+D to duplicate · Arrow keys to nudge"}
         </div>
       )}
     </div>

@@ -153,12 +153,9 @@ export function dietColor(diet: string | undefined): string {
 
 export type FloorView = { zoom: number; panX: number; panY: number };
 
-const MAX_FIT_ZOOM = 1.6;
-const FIT_PAD = 16;
-
 /**
  * Scale and centre the plan so every item (plus its seat dots) fits inside a
- * box of the given size. Never zooms past 160%, so a small plan isn't blown up.
+ * box of the given size. Never zooms past 100%, so a small plan isn't blown up.
  */
 export function fitView(items: FloorItem[], width: number, height: number): FloorView {
   if (items.length === 0 || width <= 0 || height <= 0) return { zoom: 1, panX: 0, panY: 0 };
@@ -174,109 +171,11 @@ export function fitView(items: FloorItem[], width: number, height: number): Floo
     maxX = Math.max(maxX, it.x + r);
     maxY = Math.max(maxY, it.y + r);
   }
-  const pad = FIT_PAD;
-  const zoom = Math.max(0.2, Math.min(MAX_FIT_ZOOM, (width - pad * 2) / (maxX - minX), (height - pad * 2) / (maxY - minY)));
+  const pad = 16;
+  const zoom = Math.max(0.2, Math.min(1, (width - pad * 2) / (maxX - minX), (height - pad * 2) / (maxY - minY)));
   return {
     zoom,
     panX: width / 2 - ((minX + maxX) / 2) * zoom,
     panY: height / 2 - ((minY + maxY) / 2) * zoom,
   };
-}
-
-/** Room the seat dots take beyond a table's edge (ring offset 14 + half a 16px dot). */
-const SEAT_RING = 22;
-/** Space left between neighbouring tables (seat dot to seat dot) when arranging. */
-const ARRANGE_GAP = 64;
-
-/** Axis-aligned footprint of an item, including its seat dots. */
-function footprint(it: FloorItem): { w: number; h: number } {
-  const rad = (it.rotation * Math.PI) / 180;
-  const cos = Math.abs(Math.cos(rad));
-  const sin = Math.abs(Math.sin(rad));
-  const ring = it.seats ? SEAT_RING * 2 : 0;
-  return { w: it.w * cos + it.h * sin + ring, h: it.w * sin + it.h * cos + ring };
-}
-
-/** Sort key that puts "Table 2" before "Table 10". */
-function byTableNumber(a: FloorItem, b: FloorItem): number {
-  return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: "base" });
-}
-
-/**
- * Line the tables up in neat rows by table number, with the bridal table
- * centred on top and everything else (dance floor, bar, …) stacked in a
- * column to the right. The number of tables per row is chosen so the result
- * fills a box of the given size as well as possible. Only positions (and the
- * bridal table's rotation) change — seats are untouched.
- */
-export function arrangeInRows(items: FloorItem[], boxW: number, boxH: number): FloorItem[] {
-  const tables = items.filter((it) => it.type === "table").sort(byTableNumber);
-  const heads = items.filter((it) => it.type === "headTable").map((it) => ({ ...it, rotation: 0 })).sort(byTableNumber);
-  const others = items.filter((it) => it.type !== "table" && it.type !== "headTable");
-  if (tables.length === 0 && heads.length === 0) return items;
-
-  const G = ARRANGE_GAP;
-  const cellW = Math.max(0, ...tables.map((t) => footprint(t).w));
-  const cellH = Math.max(0, ...tables.map((t) => footprint(t).h));
-  const headFps = heads.map(footprint);
-  const headRowW = headFps.reduce((n, f) => n + f.w, 0) + G * Math.max(0, heads.length - 1);
-  const headRowH = Math.max(0, ...headFps.map((f) => f.h));
-  const otherFps = others.map(footprint);
-  const sideW = Math.max(0, ...otherFps.map((f) => f.w));
-  const sideH = otherFps.reduce((n, f) => n + f.h, 0) + G * Math.max(0, others.length - 1);
-
-  const plan = (cols: number) => {
-    const rows = cols > 0 ? Math.ceil(tables.length / cols) : 0;
-    const gridW = cols * cellW + G * Math.max(0, cols - 1);
-    const gridH = rows * cellH + G * Math.max(0, rows - 1);
-    const mainW = Math.max(gridW, headRowW);
-    const mainH = headRowH + (heads.length && rows ? G : 0) + gridH;
-    const totalW = mainW + (others.length ? G + sideW : 0);
-    const totalH = Math.max(mainH, sideH);
-    return { cols, rows, mainW, totalW, totalH };
-  };
-
-  // Pick the tables-per-row that lets the whole plan be drawn largest in the box.
-  let best = plan(Math.max(1, Math.ceil(Math.sqrt(tables.length))));
-  if (boxW > 0 && boxH > 0) {
-    let bestZoom = -Infinity;
-    for (let cols = 1; cols <= Math.max(1, tables.length); cols++) {
-      const p = plan(cols);
-      const zoom = Math.min((boxW - FIT_PAD * 2) / p.totalW, (boxH - FIT_PAD * 2) / p.totalH);
-      if (zoom > bestZoom + 1e-6) {
-        bestZoom = zoom;
-        best = p;
-      }
-    }
-  }
-
-  const pos = new Map<string, { x: number; y: number; rotation?: number }>();
-  const centreX = best.mainW / 2;
-
-  let x = centreX - headRowW / 2;
-  heads.forEach((h, i) => {
-    pos.set(h.id, { x: x + headFps[i].w / 2, y: headRowH / 2, rotation: 0 });
-    x += headFps[i].w + G;
-  });
-
-  const gridTop = heads.length ? headRowH + G : 0;
-  for (let r = 0; r < best.rows; r++) {
-    const row = tables.slice(r * best.cols, (r + 1) * best.cols);
-    const rowW = row.length * cellW + G * (row.length - 1);
-    row.forEach((t, c) => {
-      pos.set(t.id, { x: centreX - rowW / 2 + c * (cellW + G) + cellW / 2, y: gridTop + r * (cellH + G) + cellH / 2 });
-    });
-  }
-
-  let y = 0;
-  const sideX = best.mainW + G + sideW / 2;
-  others.forEach((o, i) => {
-    pos.set(o.id, { x: sideX, y: y + otherFps[i].h / 2 });
-    y += otherFps[i].h + G;
-  });
-
-  return items.map((it) => {
-    const p = pos.get(it.id);
-    return p ? { ...it, x: p.x, y: p.y, rotation: p.rotation ?? it.rotation } : it;
-  });
 }

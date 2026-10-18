@@ -76,11 +76,9 @@ export function FloorCanvas({
         height: "100%",
         overflow: "hidden",
         background: "#241a13",
-        backgroundImage:
-          "linear-gradient(rgba(203,177,144,0.09) 1px, transparent 1px), linear-gradient(90deg, rgba(203,177,144,0.09) 1px, transparent 1px)",
+        backgroundImage: "radial-gradient(rgba(203,177,144,0.25) 1px, transparent 1px)",
         backgroundSize: `${gridSize * zoom}px ${gridSize * zoom}px`,
         backgroundPosition: `${panX}px ${panY}px`,
-        transition: "background-size 300ms ease, background-position 300ms ease",
         borderRadius: 10,
         border: "1px solid var(--c-line)",
       }}
@@ -92,7 +90,6 @@ export function FloorCanvas({
           top: 0,
           transform: `translate(${panX}px, ${panY}px) scale(${zoom})`,
           transformOrigin: "0 0",
-          transition: "transform 300ms ease",
         }}
       >
         {items.map((item) => (
