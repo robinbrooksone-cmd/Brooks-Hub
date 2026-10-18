@@ -9,6 +9,9 @@ export function Toolbar({
   layoutLocked,
   onToggleLayoutLock,
   onFit,
+  zoomPercent,
+  onZoomIn,
+  onZoomOut,
   snap,
   onToggleSnap,
   onUndo,
@@ -23,6 +26,9 @@ export function Toolbar({
   layoutLocked: boolean;
   onToggleLayoutLock: () => void;
   onFit: () => void;
+  zoomPercent: number;
+  onZoomIn: () => void;
+  onZoomOut: () => void;
   snap: boolean;
   onToggleSnap: () => void;
   onUndo: () => void;
@@ -124,6 +130,15 @@ export function Toolbar({
       <button style={btn} onClick={onFit} title="Fit the whole floor plan in view">
         ⤢ Fit to screen
       </button>
+      <div className="flex items-center" style={{ gap: 4 }}>
+        <button style={{ ...btn, padding: "8px 12px", fontSize: 15, lineHeight: 1 }} onClick={onZoomOut} title="Zoom out">
+          −
+        </button>
+        <span style={{ minWidth: 44, textAlign: "center", fontSize: 12, color: "var(--c-muted)" }}>{zoomPercent}%</span>
+        <button style={{ ...btn, padding: "8px 12px", fontSize: 15, lineHeight: 1 }} onClick={onZoomIn} title="Zoom in — drag the empty floor to move around">
+          +
+        </button>
+      </div>
 
       <div style={{ width: 1, height: 22, background: "var(--c-line)" }} />
 

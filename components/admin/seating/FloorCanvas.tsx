@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import type { FloorItem } from "@/lib/types";
 import { FloorItemView } from "./FloorItemView";
 
@@ -10,6 +11,9 @@ export function FloorCanvas({
   zoom,
   panX,
   panY,
+  zoomedIn,
+  onZoomAt,
+  onPan,
   gridSize,
   snap,
   layoutLocked,
@@ -31,6 +35,9 @@ export function FloorCanvas({
   zoom: number;
   panX: number;
   panY: number;
+  zoomedIn: boolean;
+  onZoomAt: (factor: number, x: number, y: number) => void;
+  onPan: (dx: number, dy: number) => void;
   gridSize: number;
   snap: boolean;
   layoutLocked: boolean;
@@ -64,17 +71,60 @@ export function FloorCanvas({
     return { x: Math.min(maxX, Math.max(minX, x)), y: Math.min(maxY, Math.max(minY, y)) };
   };
 
+  // Trackpad pinch (and Ctrl/Cmd + scroll) zooms the plan around the pointer;
+  // plain scrolling still scrolls the page.
+  const zoomAtRef = useRef(onZoomAt);
+  useEffect(() => {
+    zoomAtRef.current = onZoomAt;
+  });
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      if (!e.ctrlKey && !e.metaKey) return;
+      e.preventDefault();
+      const rect = el.getBoundingClientRect();
+      zoomAtRef.current(Math.exp(-e.deltaY * 0.01), e.clientX - rect.left, e.clientY - rect.top);
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [containerRef]);
+
+  // Dragging the empty floor slides the plan around.
+  const startPan = (e: React.PointerEvent) => {
+    let lastX = e.clientX;
+    let lastY = e.clientY;
+    const move = (ev: PointerEvent) => {
+      onPan(ev.clientX - lastX, ev.clientY - lastY);
+      lastX = ev.clientX;
+      lastY = ev.clientY;
+    };
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
+    };
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
+  };
+
   return (
     <div
       ref={containerRef}
       onPointerDown={(e) => {
-        if (e.target === e.currentTarget) onDeselect();
+        if (e.target !== e.currentTarget) return;
+        onDeselect();
+        startPan(e);
       }}
       className="relative"
       style={{
         width: "100%",
         height: "100%",
         overflow: "hidden",
+        // Zoomed in, a finger on the floor pans the plan instead of scrolling the page.
+        touchAction: zoomedIn ? "none" : "auto",
+        cursor: "grab",
         background: "#241a13",
         backgroundImage: "radial-gradient(rgba(203,177,144,0.25) 1px, transparent 1px)",
         backgroundSize: `${gridSize * zoom}px ${gridSize * zoom}px`,

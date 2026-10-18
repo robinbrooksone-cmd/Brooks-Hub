@@ -251,7 +251,8 @@ export function FloorItemView({
             overflow: "hidden",
           }}
         >
-          <div style={{ fontSize: Math.min(22, item.h * 0.28), lineHeight: 1 }}>{def.icon}</div>
+          {/* Short tables drop the icon so the name still fits. */}
+          {item.h >= 80 && <div style={{ fontSize: Math.min(22, item.h * 0.28), lineHeight: 1 }}>{def.icon}</div>}
           {renaming ? (
             <input
               autoFocus

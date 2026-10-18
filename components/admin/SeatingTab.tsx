@@ -41,13 +41,25 @@ export function SeatingTab() {
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // The plan view is fixed and fitted to the box — never panned or saved — so
-  // the floor stays put while you work. It refits when tables are added or
-  // removed, on undo/redo, when the window resizes, or via "Fit to screen".
+  // The plan view is fitted to the box and never saved. It refits when tables
+  // are added or removed, on undo/redo, or when the window resizes — unless
+  // you've zoomed in with + / − (or pinched), which holds until "Fit to screen".
+  const [userView, setUserView] = useState<FloorView | null>(null);
   const [fitItems, setFitItems] = useState<FloorItem[]>([]);
   const [boxSize, setBoxSize] = useState({ w: 0, h: 0 });
   const [layoutLocked, setLayoutLocked] = useState(true);
-  const view: FloorView = useMemo(() => fitView(fitItems, boxSize.w, boxSize.h), [fitItems, boxSize]);
+  const fittedView: FloorView = useMemo(() => fitView(fitItems, boxSize.w, boxSize.h), [fitItems, boxSize]);
+  const view = userView ?? fittedView;
+  // Zoom keeping the given point of the box (default: its centre) still.
+  const zoomBy = (factor: number, cx = boxSize.w / 2, cy = boxSize.h / 2) => {
+    setUserView((uv) => {
+      const v = uv ?? fittedView;
+      const zoom = Math.min(3, Math.max(0.2, v.zoom * factor));
+      const k = zoom / v.zoom;
+      return { zoom, panX: cx - (cx - v.panX) * k, panY: cy - (cy - v.panY) * k };
+    });
+  };
+  const panBy = (dx: number, dy: number) => setUserView((uv) => ({ ...(uv ?? fittedView), panX: (uv ?? fittedView).panX + dx, panY: (uv ?? fittedView).panY + dy }));
   const refit = (l: SeatingLayout | null = layout) => setFitItems(l ? l.items : []);
 
   useEffect(() => {
@@ -355,7 +367,13 @@ export function SeatingTab() {
             setLayoutLocked((v) => !v);
             setSelectedId(null);
           }}
-          onFit={() => refit()}
+          onFit={() => {
+            setUserView(null);
+            refit();
+          }}
+          zoomPercent={Math.round(view.zoom * 100)}
+          onZoomIn={() => zoomBy(1.25)}
+          onZoomOut={() => zoomBy(0.8)}
           snap={layout.snap}
           onToggleSnap={() => commitAction((l) => ({ ...l, snap: !l.snap }))}
           onUndo={undo}
@@ -399,6 +417,9 @@ export function SeatingTab() {
             zoom={view.zoom}
             panX={view.panX}
             panY={view.panY}
+            zoomedIn={!!userView}
+            onZoomAt={zoomBy}
+            onPan={panBy}
             gridSize={layout.gridSize}
             snap={layout.snap}
             layoutLocked={layoutLocked}
