@@ -75,18 +75,14 @@ export function FloorCanvas({
         width: "100%",
         height: "100%",
         overflow: "hidden",
-        backgroundColor: "#211812",
-        backgroundImage: [
-          "radial-gradient(ellipse 120% 90% at 50% 40%, rgba(70,50,36,0.55), rgba(20,14,10,0) 70%)",
-          "linear-gradient(rgba(203,177,144,0.07) 1px, transparent 1px)",
-          "linear-gradient(90deg, rgba(203,177,144,0.07) 1px, transparent 1px)",
-        ].join(", "),
-        backgroundSize: `100% 100%, ${gridSize * zoom}px ${gridSize * zoom}px, ${gridSize * zoom}px ${gridSize * zoom}px`,
-        backgroundPosition: `0 0, ${panX}px ${panY}px, ${panX}px ${panY}px`,
+        background: "#241a13",
+        backgroundImage:
+          "linear-gradient(rgba(203,177,144,0.09) 1px, transparent 1px), linear-gradient(90deg, rgba(203,177,144,0.09) 1px, transparent 1px)",
+        backgroundSize: `${gridSize * zoom}px ${gridSize * zoom}px`,
+        backgroundPosition: `${panX}px ${panY}px`,
         transition: "background-size 300ms ease, background-position 300ms ease",
-        borderRadius: 14,
-        border: "1px solid rgba(203,177,144,0.22)",
-        boxShadow: "inset 0 0 60px rgba(0,0,0,0.45), 0 10px 30px rgba(0,0,0,0.25)",
+        borderRadius: 10,
+        border: "1px solid var(--c-line)",
       }}
     >
       <div

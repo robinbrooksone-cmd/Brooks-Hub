@@ -74,11 +74,7 @@ export type SeatingLayout = {
   panY: number;
   gridSize: number;
   snap: boolean;
-  /** Saved copies of the tables taken before a delete or "Arrange in rows", newest first. */
-  backups?: SeatingBackup[];
 };
-
-export type SeatingBackup = { at: number; label: string; items: FloorItem[] };
 
 export const emptySeatingLayout = (): SeatingLayout => ({
   items: [],

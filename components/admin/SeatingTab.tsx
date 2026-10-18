@@ -6,19 +6,13 @@ import type { Family } from "@/lib/roster";
 import type { FloorItem, FloorItemType, Rsvp, SeatingLayout } from "@/lib/types";
 import { ContextMenu } from "./seating/ContextMenu";
 import { FloorCanvas } from "./seating/FloorCanvas";
-import { arrangeInRows, createFloorItem, DIET_LEGEND, dietColor, fitView, type FloorView, splitGuestsAndBabies, type Guest, type GuestStatus, uid } from "./seating/floorPlanConfig";
+import { arrangeInRows, createFloorItem, fitView, type FloorView, splitGuestsAndBabies, type Guest, type GuestStatus, uid } from "./seating/floorPlanConfig";
 import { GuestSidebar } from "./seating/GuestSidebar";
 import { TablePanel } from "./seating/TablePanel";
 import { SeatingPrintSheet } from "./seating/SeatingPrintSheet";
 import { Toolbar } from "./seating/Toolbar";
 
 const HISTORY_LIMIT = 50;
-const BACKUP_LIMIT = 10;
-
-/** Keep a saved copy of the current tables (survives reloads, unlike undo). */
-function withBackup(l: SeatingLayout, label: string): SeatingLayout {
-  return { ...l, backups: [{ at: Date.now(), label, items: l.items }, ...(l.backups || [])].slice(0, BACKUP_LIMIT) };
-}
 
 export function SeatingTab() {
   const [layout, setLayout] = useState<SeatingLayout | null>(null);
@@ -116,18 +110,6 @@ export function SeatingTab() {
     return map;
   }, [layout]);
 
-  const stats = useMemo(() => {
-    const items = layout?.items || [];
-    const seatKeys = new Set(items.flatMap((it) => it.seats || []));
-    const attendingGuests = guests.filter((g) => g.status === "attending");
-    return {
-      tables: items.filter((it) => it.seats).length,
-      seats: items.reduce((n, it) => n + (it.cap || 0), 0),
-      attending: attendingGuests.length,
-      seated: attendingGuests.filter((g) => seatKeys.has(g.key)).length,
-    };
-  }, [layout, guests]);
-
   const selectedItem = layout?.items.find((it) => it.id === selectedId) || null;
   const panelItem = layout?.items.find((it) => it.id === panelOpenId) || null;
   const contextItem = contextMenu ? layout?.items.find((it) => it.id === contextMenu.itemId) || null : null;
@@ -164,10 +146,10 @@ export function SeatingTab() {
 
   function arrangeTables() {
     if (!layout) return;
-    const next = { ...withBackup(layout, "Before arranging in rows"), items: arrangeInRows(layout.items, boxSize.w, boxSize.h) };
+    const next = { ...layout, items: arrangeInRows(layout.items, boxSize.w, boxSize.h) };
     commitAction(() => next);
     refit(next);
-    setToast("Tables arranged in rows — Undo or Restore to put them back.");
+    setToast("Tables arranged in rows — Undo to put them back.");
   }
 
   function undo() {
@@ -198,28 +180,10 @@ export function SeatingTab() {
     setLayoutLocked(false); // let them place what they just added
   }
 
-  function deleteItem(id: string): boolean {
-    const it = layout?.items.find((x) => x.id === id);
-    if (!it) return false;
-    const seated = it.seats?.length || 0;
-    const msg = seated > 0 ? `Delete ${it.name}? Its ${seated} guest${seated === 1 ? "" : "s"} will be unseated.` : `Delete ${it.name}?`;
-    if (!window.confirm(msg)) return false;
-    commitAction((l) => ({ ...withBackup(l, `Before deleting ${it.name}`), items: l.items.filter((x) => x.id !== id) }));
+  function deleteItem(id: string) {
+    commitAction((l) => ({ ...l, items: l.items.filter((it) => it.id !== id) }));
     setSelectedId((p) => (p === id ? null : p));
     setPanelOpenId((p) => (p === id ? null : p));
-    return true;
-  }
-
-  function restoreBackup(index: number) {
-    const b = layout?.backups?.[index];
-    if (!layout || !b) return;
-    if (!window.confirm(`Restore the layout saved ${b.label.toLowerCase()}? Your current layout will be kept as a backup too.`)) return;
-    const next = { ...withBackup(layout, "Before restoring"), items: b.items };
-    commitAction(() => next);
-    refit(next);
-    setSelectedId(null);
-    setPanelOpenId(null);
-    setToast("Layout restored.");
   }
 
   function duplicateItem(id: string) {
@@ -363,7 +327,7 @@ export function SeatingTab() {
       } else if (mod && (e.key.toLowerCase() === "y" || (e.key.toLowerCase() === "z" && e.shiftKey))) {
         e.preventDefault();
         redo();
-      } else if (e.key === "Delete" && selectedId && !layoutLocked) {
+      } else if ((e.key === "Delete" || e.key === "Backspace") && selectedId && !layoutLocked) {
         e.preventDefault();
         deleteItem(selectedId);
       } else if (mod && e.key.toLowerCase() === "d" && selectedId) {
@@ -392,8 +356,7 @@ export function SeatingTab() {
     <div className="flex flex-col">
       <p style={{ color: "var(--c-muted)", fontSize: 13, marginBottom: 12 }}>
         Drag guests from the sidebar onto a table to seat them, or tap a table to see who&apos;s at it. Drag tables to move them (resize from the corners,
-        rotate from the top handle), or use <strong>Arrange in rows</strong> to line them up. <strong>Lock tables</strong>{" "}
-        when you&apos;re happy with the
+        rotate from the top handle), or use <strong>Arrange in rows</strong> to line them up. <strong>Lock tables</strong> when you&apos;re happy with the
         layout. Everything autosaves.
       </p>
 
@@ -407,8 +370,6 @@ export function SeatingTab() {
           }}
           onFit={() => refit()}
           onArrange={arrangeTables}
-          backups={layout.backups || []}
-          onRestore={restoreBackup}
           snap={layout.snap}
           onToggleSnap={() => commitAction((l) => ({ ...l, snap: !l.snap }))}
           onUndo={undo}
@@ -470,29 +431,6 @@ export function SeatingTab() {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 seating-print-hide" style={{ marginTop: 12, fontSize: 12, color: "var(--c-muted)" }}>
-        <span>
-          <strong style={{ color: "var(--c-ivory)", fontWeight: 500 }}>{stats.tables}</strong> tables ·{" "}
-          <strong style={{ color: "var(--c-ivory)", fontWeight: 500 }}>{stats.seats}</strong> seats ·{" "}
-          <strong style={{ color: stats.seated >= stats.attending ? "#8fe3ad" : "var(--c-champ)", fontWeight: 500 }}>
-            {stats.seated} of {stats.attending}
-          </strong>{" "}
-          confirmed guests seated
-        </span>
-        <span className="flex flex-wrap items-center gap-x-3 gap-y-1" style={{ marginLeft: "auto" }}>
-          {DIET_LEGEND.map((d) => (
-            <span key={d} className="flex items-center gap-1.5">
-              <span style={{ width: 9, height: 9, borderRadius: "50%", background: dietColor(d) }} />
-              {d}
-            </span>
-          ))}
-          <span className="flex items-center gap-1.5">
-            <span style={{ width: 9, height: 9, borderRadius: "50%", border: "1.5px solid rgba(203,177,144,0.55)" }} />
-            Empty seat
-          </span>
-        </span>
-      </div>
-
       {mobileSidebar && (
         <div className="fixed lg:hidden" style={{ inset: 0, zIndex: 70, background: "rgba(0,0,0,0.55)" }} onClick={() => setMobileSidebar(false)}>
           <div onClick={(e) => e.stopPropagation()} style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "85vw", maxWidth: 340, background: "#2e2019", padding: 16 }}>
@@ -520,7 +458,10 @@ export function SeatingTab() {
           onUpdate={(patch) => updateItemField(panelItem.id, patch)}
           onRemoveSeat={(key) => unassignGuest(panelItem.id, key)}
           onReorderSeats={(seats) => reorderSeats(panelItem.id, seats)}
-          onDelete={() => deleteItem(panelItem.id)}
+          onDelete={() => {
+            deleteItem(panelItem.id);
+            setPanelOpenId(null);
+          }}
           onDuplicate={() => duplicateItem(panelItem.id)}
         />
       )}
@@ -594,7 +535,7 @@ export function SeatingTab() {
       {selectedItem && !panelItem && (
         <div className="seating-print-hide" style={{ marginTop: 10, fontSize: 11, color: "var(--c-muted)" }}>
           Selected: {selectedItem.name}
-          {layoutLocked ? " · Unlock to rearrange" : " · Delete key to remove · Ctrl/Cmd+D to duplicate · Arrow keys to nudge"}
+          {layoutLocked ? " · Unlock to rearrange" : " · Delete to remove · Ctrl/Cmd+D to duplicate · Arrow keys to nudge"}
         </div>
       )}
     </div>

@@ -147,9 +147,6 @@ export const DIET_COLORS: Record<string, string> = {
   Glutenvry: "#e0907a",
 };
 
-/** One label per colour, for the legend under the plan. */
-export const DIET_LEGEND = ["No restrictions", "Vegetarian", "Vegan", "Halaal", "Gluten-free"];
-
 export function dietColor(diet: string | undefined): string {
   return (diet && DIET_COLORS[diet]) || "rgba(203,177,144,0.5)";
 }
