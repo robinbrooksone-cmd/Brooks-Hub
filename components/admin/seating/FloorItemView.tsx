@@ -48,7 +48,7 @@ export function FloorItemView({
   const movedRef = useRef(false);
 
   const snapVal = (v: number) => (snap ? Math.round(v / gridSize) * gridSize : v);
-  // Tables stay put unless "Move tables" is on (and the item itself isn't locked).
+  // Tables drag freely unless "Lock tables" is on or the item itself is locked.
   const fixed = !!item.locked || layoutLocked;
 
   const startMove = (e: React.PointerEvent) => {
@@ -192,10 +192,10 @@ export function FloorItemView({
               title={filled ? guestName(key) : "Empty seat"}
               style={{
                 position: "absolute",
-                left: item.w / 2 + sx - 6,
-                top: item.h / 2 + sy - 6,
-                width: 12,
-                height: 12,
+                left: item.w / 2 + sx - 8,
+                top: item.h / 2 + sy - 8,
+                width: 16,
+                height: 16,
                 borderRadius: "50%",
                 background: filled ? dietColor(guestDiet(key)) : "rgba(0,0,0,0.25)",
                 border: `1px solid ${filled ? "rgba(0,0,0,0.3)" : "rgba(203,177,144,0.4)"}`,
@@ -251,7 +251,7 @@ export function FloorItemView({
             overflow: "hidden",
           }}
         >
-          <div style={{ fontSize: Math.min(22, item.h * 0.28), lineHeight: 1 }}>{def.icon}</div>
+          <div style={{ fontSize: Math.min(18, item.h * 0.2), lineHeight: 1 }}>{def.icon}</div>
           {renaming ? (
             <input
               autoFocus
@@ -285,8 +285,8 @@ export function FloorItemView({
                 setRenaming(true);
               }}
               style={{
-                marginTop: 4,
-                fontSize: Math.min(13, Math.max(9, item.w * 0.09)),
+                marginTop: 3,
+                fontSize: Math.min(17, Math.max(11, item.w * 0.13)),
                 color: "#fff",
                 fontWeight: 600,
                 textShadow: "0 1px 3px rgba(0,0,0,0.5)",
@@ -303,7 +303,7 @@ export function FloorItemView({
             <div
               style={{
                 marginTop: 2,
-                fontSize: 11,
+                fontSize: 13,
                 fontWeight: 700,
                 color: over ? "#ffb4a3" : "rgba(255,255,255,0.85)",
                 textShadow: "0 1px 2px rgba(0,0,0,0.5)",
