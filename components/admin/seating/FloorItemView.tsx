@@ -155,9 +155,12 @@ export function FloorItemView({
 
   const def = ITEM_DEFAULTS[item.type];
   const isRound = item.shape === "round";
+  const isTable = !!item.seats;
   const cap = item.cap ?? 0;
   const seats = item.seats ?? [];
   const over = cap > 0 && seats.length > cap;
+  // "Table 12" reads as a small "TABLE" over a large 12; anything else shows its full name.
+  const numbered = isTable ? /^(.*?)\s*(\d+)$/.exec(item.name) : null;
 
   const commitRename = () => {
     setRenaming(false);
@@ -166,9 +169,9 @@ export function FloorItemView({
     else setNameDraft(item.name);
   };
 
-  // Seat dots around the table perimeter — round tables get a ring, rect/square get two rows.
+  // Chairs around the table — round tables get a ring, rect/square get two rows.
   const seatDots =
-    item.seats && cap > 0
+    isTable && cap > 0
       ? Array.from({ length: cap }).map((_, i) => {
           let sx = 0;
           let sy = 0;
@@ -197,13 +200,54 @@ export function FloorItemView({
                 width: 16,
                 height: 16,
                 borderRadius: "50%",
-                background: filled ? dietColor(guestDiet(key)) : "rgba(0,0,0,0.25)",
-                border: `1px solid ${filled ? "rgba(0,0,0,0.3)" : "rgba(203,177,144,0.4)"}`,
+                background: filled ? dietColor(guestDiet(key)) : "rgba(248,243,236,0.08)",
+                border: filled ? "1.5px solid rgba(255,255,255,0.85)" : "1.5px solid rgba(203,177,144,0.5)",
+                boxShadow: filled ? "0 1px 4px rgba(0,0,0,0.45)" : "none",
               }}
             />
           );
         })
       : null;
+
+  const ring = isDropTarget
+    ? "0 0 0 4px rgba(143,227,173,0.75), 0 0 24px rgba(143,227,173,0.35)"
+    : selected
+      ? "0 0 0 3px rgba(212,170,110,0.95), 0 0 22px rgba(179,136,78,0.45)"
+      : "";
+  const surface: React.CSSProperties = isTable
+    ? {
+        background: "radial-gradient(circle at 50% 36%, #fdfaf5 0%, #f3ebdf 58%, #e2d4bf 100%)",
+        border: `3px solid ${item.color}`,
+        boxShadow: [ring, "0 10px 22px rgba(0,0,0,0.42)", "inset 0 0 0 3px rgba(255,255,255,0.45)"].filter(Boolean).join(", "),
+      }
+    : {
+        background: [
+          "linear-gradient(160deg, rgba(255,255,255,0.10), rgba(0,0,0,0.22))",
+          item.type === "danceFloor" ? "repeating-conic-gradient(rgba(255,255,255,0.035) 0 25%, transparent 0 50%) 0 0 / 40px 40px" : "",
+          item.color,
+        ]
+          .filter(Boolean)
+          .join(", "),
+        border: "1px solid rgba(203,177,144,0.45)",
+        boxShadow: [ring, "0 8px 18px rgba(0,0,0,0.35)"].filter(Boolean).join(", "),
+      };
+
+  const nameStyle: React.CSSProperties = isTable
+    ? {
+        fontSize: Math.min(20, Math.max(13, item.w * 0.11)),
+        fontStyle: "italic",
+        fontWeight: 600,
+        color: "#4a3527",
+        lineHeight: 1.1,
+      }
+    : {
+        fontSize: Math.min(12, Math.max(9.5, item.w * 0.07)),
+        fontWeight: 500,
+        letterSpacing: "0.16em",
+        textTransform: "uppercase",
+        color: "#f8f3ec",
+        textShadow: "0 1px 3px rgba(0,0,0,0.5)",
+      };
 
   return (
     <div
@@ -243,15 +287,14 @@ export function FloorItemView({
           className="absolute flex flex-col items-center justify-center text-center"
           style={{
             inset: 0,
-            borderRadius: isRound ? "50%" : 10,
-            background: item.color,
-            border: `2px solid ${selected ? "#f8f3ec" : isDropTarget ? "#8fe3ad" : "rgba(0,0,0,0.25)"}`,
-            boxShadow: isDropTarget ? "0 0 0 4px rgba(143,227,173,0.35)" : selected ? "0 4px 18px rgba(0,0,0,0.35)" : "0 2px 8px rgba(0,0,0,0.2)",
+            borderRadius: isRound ? "50%" : isTable ? 12 : 10,
             padding: 6,
             overflow: "hidden",
+            transition: "box-shadow 150ms ease",
+            ...surface,
           }}
         >
-          <div style={{ fontSize: Math.min(18, item.h * 0.2), lineHeight: 1 }}>{def.icon}</div>
+          {!isTable && <div style={{ fontSize: Math.min(18, item.h * 0.26), lineHeight: 1, opacity: 0.9 }}>{def.icon}</div>}
           {renaming ? (
             <input
               autoFocus
@@ -269,12 +312,12 @@ export function FloorItemView({
               style={{
                 marginTop: 4,
                 width: "90%",
-                fontSize: 12,
+                fontSize: 13,
                 textAlign: "center",
-                background: "rgba(0,0,0,0.3)",
-                border: "1px solid rgba(255,255,255,0.4)",
+                background: isTable ? "rgba(255,255,255,0.8)" : "rgba(0,0,0,0.3)",
+                border: "1px solid rgba(179,136,78,0.6)",
                 borderRadius: 4,
-                color: "#fff",
+                color: isTable ? "#3a2a21" : "#fff",
                 padding: "2px 4px",
               }}
             />
@@ -284,29 +327,42 @@ export function FloorItemView({
                 e.stopPropagation();
                 setRenaming(true);
               }}
-              style={{
-                marginTop: 3,
-                fontSize: Math.min(17, Math.max(11, item.w * 0.13)),
-                color: "#fff",
-                fontWeight: 600,
-                textShadow: "0 1px 3px rgba(0,0,0,0.5)",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                maxWidth: "92%",
-              }}
+              className="flex flex-col items-center"
+              style={{ maxWidth: "92%", marginTop: isTable ? 0 : 4 }}
             >
-              {item.name}
+              {numbered ? (
+                <>
+                  {numbered[1] && (
+                    <span className="font-body" style={{ fontSize: Math.max(8.5, Math.min(10.5, item.w * 0.075)), letterSpacing: "0.24em", textTransform: "uppercase", color: "#8a6a45" }}>
+                      {numbered[1]}
+                    </span>
+                  )}
+                  <span className="font-display" style={{ fontSize: Math.min(42, Math.max(22, item.h * 0.3)), fontWeight: 600, lineHeight: 0.95, color: "#3a2a21" }}>
+                    {numbered[2]}
+                  </span>
+                </>
+              ) : (
+                <span
+                  className={isTable ? "font-display" : "font-body"}
+                  style={{ ...nameStyle, whiteSpace: isTable ? "nowrap" : "normal", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "100%" }}
+                >
+                  {item.name}
+                </span>
+              )}
             </div>
           )}
           {cap > 0 && (
             <div
+              className="font-body"
               style={{
-                marginTop: 2,
-                fontSize: 13,
-                fontWeight: 700,
-                color: over ? "#ffb4a3" : "rgba(255,255,255,0.85)",
-                textShadow: "0 1px 2px rgba(0,0,0,0.5)",
+                marginTop: 3,
+                padding: "1px 8px",
+                borderRadius: 999,
+                fontSize: 12,
+                fontWeight: 600,
+                letterSpacing: "0.04em",
+                color: over ? "#fff" : seats.length === cap ? "#3f7a52" : "#7a5c3c",
+                background: over ? "#c0503a" : "rgba(122,92,60,0.10)",
               }}
             >
               {seats.length}/{cap}
